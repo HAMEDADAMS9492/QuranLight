@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ma Bibliothèque | Al-Quran Premium</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Amiri&family=Inter:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --color-gold: #b08d57;
+        --color-gold-light: #d4bc96;
+        --color-emerald-deep: #05140f;
+        --color-emerald-light: #0d3a27;
+        --transition: all 0.3s ease;
+      }
+
+      /* Masquer la barre de défilement globalement */
+      ::-webkit-scrollbar {
+        display: none;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge */
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: #05140f;
+        color: #ffffff;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* --- HEADER --- */
+      .reciters-header {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: #05140f;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%; /* Assure la pleine largeur */
+      }
+
+      .back-btn {
+        color: var(--color-gold);
+        font-size: 1.2rem;
+        cursor: pointer;
+      }
+
+      .header-title {
+        text-align: center;
+        flex-grow: 1;
+      }
+      .header-title h1 {
+        font-size: 0.9rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #fff;
+      }
+
+      /* --- RECHERCHE ÉLARGIE --- */
+      .search-wrapper {
+        padding: 0 20px 15px;
+        max-width: 100%; /* Modifié : de 600px à 100% */
+        width: 100%;
+        margin: 0; /* Aligné à gauche */
+      }
+      .search-box {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(176, 141, 87, 0.2);
+        border-radius: 12px;
+        padding: 12px 15px;
+        display: flex;
+        align-items: center;
+      }
+      .search-box i {
+        color: rgba(176, 141, 87, 0.5);
+        margin-right: 10px;
+      }
+      .search-box input {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 0.9rem;
+        width: 100%;
+        outline: none;
+      }
+
+      /* --- LISTE ÉLARGIE --- */
+      .reciters-container,
+      .surah-list {
+        max-width: 100%; /* Modifié : de 700px à 100% */
+        width: 100%;
+        margin: 0;
+        padding: 0 20px 100px;
+      }
+
+      .item-card {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: var(--transition);
+        width: 100%; /* Assure que la carte prend toute la place */
+      }
+      .item-card:hover {
+        border-color: var(--color-gold);
+        background: rgba(176, 141, 87, 0.05);
+      }
+
+      .num-badge {
+        width: 35px;
+        height: 35px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-gold-light);
+        font-size: 0.7rem;
+        font-weight: 800;
+        margin-right: 15px;
+        flex-shrink: 0; /* Évite que le badge s'écrase */
+      }
+
+      .info-zone {
+        flex-grow: 1;
+      }
+      .title-fr {
+        display: block;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 2px;
+      }
+      .sub-meta {
+        font-size: 0.65rem;
+        color: rgba(255, 255, 255, 0.4);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .title-ar {
+        font-family: "Amiri", serif;
+        font-size: 1.1rem;
+        color: var(--color-gold-light);
+        text-align: right;
+      }
+
+      /* --- PANEL SOURATES --- */
+      #surahPanel {
+        position: fixed;
+        inset: 0;
+        background: #05140f;
+        z-index: 2000;
+        display: none;
+        flex-direction: column;
+        overflow-y: auto;
+        width: 100%;
+      }
+
+      .reciter-avatar-sm {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 12px;
+        border: 1px solid var(--color-gold);
+        flex-shrink: 0;
+      }
+
+      .active-row {
+        border-color: var(--color-gold) !important;
+        background: rgba(176, 141, 87, 0.1) !important;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="reciters-header">
+      <div class="back-btn" onclick="window.location.href='index.html'">
+        <i class="fas fa-chevron-left"></i>
+      </div>
+      <div class="header-title"><h1>Bibliothèque</h1></div>
+      <div style="width: 20px"></div>
+    </header>
+
+    <div class="search-wrapper">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Rechercher un récitateur..."
+          onkeyup="filterList()"
+        />
+      </div>
+    </div>
+
+    <main class="reciters-container" id="reciterList"></main>
+
+    <div id="surahPanel">
+      <header class="reciters-header">
+        <div class="back-btn" onclick="closeSurahs()">
+          <i class="fas fa-times"></i>
+        </div>
+        <div class="header-title">
+          <h1 id="activeReciterName">Chargement...</h1>
+        </div>
+        <div style="width: 20px"></div>
+      </header>
+
+      <div class="search-wrapper">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input
+            type="text"
+            id="surahSearchInput"
+            placeholder="Rechercher une sourate..."
+            onkeyup="filterSurahs()"
+          />
+        </div>
+      </div>
+
+      <div class="surah-list" id="surahContent"></div>
+    </div>
+
+    <script>
+      // Base de données complète avec type et versets
+      const allSurahs = [
+        {
+          n: 1,
+          en: "Al-Faatiha",
+          ar: "سُورَةُ الْفَاتِحَةِ",
+          t: "MECQUOISE",
+          v: 7,
+        },
+        {
+          n: 2,
+          en: "Al-Baqara",
+          ar: "سُورَةُ البَقَرَةِ",
+          t: "MÉDINOISE",
+          v: 286,
+        },
+        {
+          n: 3,
+          en: "Aal-i-Imraan",
+          ar: "سُورَةُ آلِ عِمْرَانَ",
+          t: "MÉDINOISE",
+          v: 200,
+        },
+        {
+          n: 4,
+          en: "An-Nisaa",
+          ar: "سُورَةُ النِّسَاءِ",
+          t: "MÉDINOISE",
+          v: 176,
+        },
+        {
+          n: 5,
+          en: "Al-Maaida",
+          ar: "سُورَةُ المَائـِدَةِ",
+          t: "MÉDINOISE",
+          v: 120,
+        },
+        {
+          n: 6,
+          en: "Al-An'aam",
+          ar: "سُورَةُ الأَنْعَامِ",
+          t: "MECQUOISE",
+          v: 165,
+        },
+        {
+          n: 7,
+          en: "Al-A'raaf",
+          ar: "سُورَةُ الأَعْرَافِ",
+          t: "MECQUOISE",
+          v: 206,
+        },
+        {
+          n: 8,
+          en: "Al-Anfaal",
+          ar: "سُورَةُ الأَنْفَالِ",
+          t: "MÉDINOISE",
+          v: 75,
+        },
+        {
+          n: 9,
+          en: "At-Tawba",
+          ar: "سُورَةُ التَّوْبَةِ",
+          t: "MÉDINOISE",
+          v: 129,
+        },
+        { n: 10, en: "Yunus", ar: "سُورَةُ يُونُسَ", t: "MECQUOISE", v: 109 },
+        { n: 11, en: "Hud", ar: "سُورَةُ هُودٍ", t: "MECQUOISE", v: 123 },
+        { n: 12, en: "Yusuf", ar: "سُورَةُ يُوسُفَ", t: "MECQUOISE", v: 111 },
+        {
+          n: 13,
+          en: "Ar-Ra'd",
+          ar: "سُورَةُ الرَّعْدِ",
+          t: "MÉDINOISE",
+          v: 43,
+        },
+        {
+          n: 14,
+          en: "Ibrahim",
+          ar: "سُورَةُ إِبْرَاهِيمَ",
+          t: "MECQUOISE",
+          v: 52,
+        },
+        { n: 15, en: "Al-Hijr", ar: "سُورَةُ الحِجْرِ", t: "MECQUOISE", v: 99 },
+        {
+          n: 16,
+          en: "An-Nahl",
+          ar: "سُورَةُ النَّحْلِ",
+          t: "MECQUOISE",
+          v: 128,
+        },
+        {
+          n: 17,
+          en: "Al-Isra",
+          ar: "سُورَةُ الإِسْرَاءِ",
+          t: "MECQUOISE",
+          v: 111,
+        },
+        {
+          n: 18,
+          en: "Al-Kahf",
+          ar: "سُورَةُ الكَهْفِ",
+          t: "MECQUOISE",
+          v: 110,
+        },
+        { n: 19, en: "Maryam", ar: "سُورَةُ مَرْيَمَ", t: "MECQUOISE", v: 98 },
+        { n: 20, en: "Ta-Ha", ar: "سُورَةُ طَه", t: "MECQUOISE", v: 135 },
+        {
+          n: 21,
+          en: "Al-Anbiya",
+          ar: "سُورَةُ الأَنْبِيَاءِ",
+          t: "MECQUOISE",
+          v: 112,
+        },
+        { n: 22, en: "Al-Hajj", ar: "سُورَةُ الحَجِّ", t: "MÉDINOISE", v: 78 },
+        {
+          n: 23,
+          en: "Al-Mu'minun",
+          ar: "سُورَةُ المُؤْمِنُونَ",
+          t: "MECQUOISE",
+          v: 118,
+        },
+        { n: 24, en: "An-Nur", ar: "سُورَةُ النُّورِ", t: "MÉDINOISE", v: 64 },
+        {
+          n: 25,
+          en: "Al-Furqan",
+          ar: "سُورَةُ الفُرْقَانِ",
+          t: "MECQUOISE",
+          v: 77,
+        },
+        {
+          n: 26,
+          en: "Ash-Shu'ara",
+          ar: "سُورَةُ الشُّعَرَاءِ",
+          t: "MECQUOISE",
+          v: 227,
+        },
+        {
+          n: 27,
+          en: "An-Naml",
+          ar: "سُورَةُ النَّمْلِ",
+          t: "MECQUOISE",
+          v: 93,
+        },
+        {
+          n: 28,
+          en: "Al-Qasas",
+          ar: "سُورَةُ القَصَصِ",
+          t: "MECQUOISE",
+          v: 88,
+        },
+        {
+          n: 29,
+          en: "Al-Ankabut",
+          ar: "سُورَةُ العَنْكَبُوتِ",
+          t: "MECQUOISE",
+          v: 69,
+        },
+        { n: 30, en: "Ar-Rum", ar: "سُورَةُ الرُّومِ", t: "MECQUOISE", v: 60 },
+        { n: 31, en: "Luqman", ar: "سُورَةُ لُقْمَانَ", t: "MECQUOISE", v: 34 },
+        {
+          n: 32,
+          en: "As-Sajdah",
+          ar: "سُورَةُ السَّجْدَةِ",
+          t: "MECQUOISE",
+          v: 30,
+        },
+        {
+          n: 33,
+          en: "Al-Ahzab",
+          ar: "سُورَةُ الأَحْزَابِ",
+          t: "MÉDINOISE",
+          v: 73,
+        },
+        { n: 34, en: "Saba", ar: "سُورَةُ سَبَأٍ", t: "MECQUOISE", v: 54 },
+        { n: 35, en: "Fatir", ar: "سُورَةُ فَاطِرٍ", t: "MECQUOISE", v: 45 },
+        { n: 36, en: "Ya-Sin", ar: "سُورَةُ يس", t: "MECQUOISE", v: 83 },
+        {
+          n: 37,
+          en: "As-Saffat",
+          ar: "سُورَةُ الصَّافَّاتِ",
+          t: "MECQUOISE",
+          v: 182,
+        },
+        { n: 38, en: "Sad", ar: "سُورَةُ ص", t: "MECQUOISE", v: 88 },
+        {
+          n: 39,
+          en: "Az-Zumar",
+          ar: "سُورَةُ الزُّمَرِ",
+          t: "MECQUOISE",
+          v: 75,
+        },
+        { n: 40, en: "Ghafir", ar: "سُورَةُ غَافِرٍ", t: "MECQUOISE", v: 85 },
+        {
+          n: 41,
+          en: "Fussilat",
+          ar: "سُورَةُ فُصِّلَتْ",
+          t: "MECQUOISE",
+          v: 54,
+        },
+        {
+          n: 42,
+          en: "Ash-Shura",
+          ar: "سُورَةُ الشُّورَى",
+          t: "MECQUOISE",
+          v: 53,
+        },
+        {
+          n: 43,
+          en: "Az-Zukhruf",
+          ar: "سُورَةُ الزُّخْرُفِ",
+          t: "MECQUOISE",
+          v: 89,
+        },
+        {
+          n: 44,
+          en: "Ad-Dukhan",
+          ar: "سُورَةُ الدُّخَانِ",
+          t: "MECQUOISE",
+          v: 59,
+        },
+        {
+          n: 45,
+          en: "Al-Jathiyah",
+          ar: "سُورَةُ الجَاثِيَةِ",
+          t: "MECQUOISE",
+          v: 37,
+        },
+        {
+          n: 46,
+          en: "Al-Ahqaf",
+          ar: "سُورَةُ الأَحْقَافِ",
+          t: "MECQUOISE",
+          v: 35,
+        },
+        {
+          n: 47,
+          en: "Muhammad",
+          ar: "سُورَةُ مُحَمَّدٍ",
+          t: "MÉDINOISE",
+          v: 38,
+        },
+        { n: 48, en: "Al-Fath", ar: "سُورَةُ الفَتْحِ", t: "MÉDINOISE", v: 29 },
+        {
+          n: 49,
+          en: "Al-Hujurat",
+          ar: "سُورَةُ الحُجُرَاتِ",
+          t: "MÉDINOISE",
+          v: 18,
+        },
+        { n: 50, en: "Qaf", ar: "سُورَةُ ق", t: "MECQUOISE", v: 45 },
+        {
+          n: 51,
+          en: "Adh-Dhariyat",
+          ar: "سُورَةُ الذَّارِيَاتِ",
+          t: "MECQUOISE",
+          v: 60,
+        },
+        { n: 52, en: "At-Tur", ar: "سُورَةُ الطُّورِ", t: "MECQUOISE", v: 49 },
+        {
+          n: 53,
+          en: "An-Najm",
+          ar: "سُورَةُ النَّجْمِ",
+          t: "MECQUOISE",
+          v: 62,
+        },
+        {
+          n: 54,
+          en: "Al-Qamar",
+          ar: "سُورَةُ القَمَرِ",
+          t: "MECQUOISE",
+          v: 55,
+        },
+        {
+          n: 55,
+          en: "Ar-Rahman",
+          ar: "سُورَةُ الرَّحْمَنِ",
+          t: "MÉDINOISE",
+          v: 78,
+        },
+        {
+          n: 56,
+          en: "Al-Waqi'ah",
+          ar: "سُورَةُ الوَاقِعَةِ",
+          t: "MECQUOISE",
+          v: 96,
+        },
+        {
+          n: 57,
+          en: "Al-Hadid",
+          ar: "سُورَةُ الحَدِيدِ",
+          t: "MÉDINOISE",
+          v: 29,
+        },
+        {
+          n: 58,
+          en: "Al-Mujadila",
+          ar: "سُورَةُ المُجَادَلَةِ",
+          t: "MÉDINOISE",
+          v: 22,
+        },
+        {
+          n: 59,
+          en: "Al-Hashr",
+          ar: "سُورَةُ الحَشْرِ",
+          t: "MÉDINOISE",
+          v: 24,
+        },
+        {
+          n: 60,
+          en: "Al-Mumtahanah",
+          ar: "سُورَةُ المُمْتَحَنَةِ",
+          t: "MÉDINOISE",
+          v: 13,
+        },
+        { n: 61, en: "As-Saff", ar: "سُورَةُ الصَّفِّ", t: "MÉDINOISE", v: 14 },
+        {
+          n: 62,
+          en: "Al-Jumu'ah",
+          ar: "سُورَةُ الْجُمُعَةِ",
+          t: "MÉDINOISE",
+          v: 11,
+        },
+        {
+          n: 63,
+          en: "Al-Munafiqun",
+          ar: "سُورَةُ المُنَافِقُونَ",
+          t: "MÉDINOISE",
+          v: 11,
+        },
+        {
+          n: 64,
+          en: "At-Taghabun",
+          ar: "سُورَةُ التَّغَابُنِ",
+          t: "MÉDINOISE",
+          v: 18,
+        },
+        {
+          n: 65,
+          en: "At-Talaq",
+          ar: "سُورَةُ الطَّلَاقِ",
+          t: "MÉDINOISE",
+          v: 12,
+        },
+        {
+          n: 66,
+          en: "At-Tahrim",
+          ar: "سُورَةُ التَّحْرِيمِ",
+          t: "MÉDINOISE",
+          v: 12,
+        },
+        { n: 67, en: "Al-Mulk", ar: "سُورَةُ المُلْكِ", t: "MECQUOISE", v: 30 },
+        {
+          n: 68,
+          en: "Al-Qalam",
+          ar: "سُورَةُ القَلَمِ",
+          t: "MECQUOISE",
+          v: 52,
+        },
+        {
+          n: 69,
+          en: "Al-Haqqah",
+          ar: "سُورَةُ الحاقَّةِ",
+          t: "MECQUOISE",
+          v: 52,
+        },
+        {
+          n: 70,
+          en: "Al-Ma'arij",
+          ar: "سُورَةُ المَعَارِجِ",
+          t: "MECQUOISE",
+          v: 44,
+        },
+        { n: 71, en: "Nuh", ar: "سُورَةُ نُوحٍ", t: "MECQUOISE", v: 28 },
+        { n: 72, en: "Al-Jinn", ar: "سُورَةُ الجِنِّ", t: "MECQUOISE", v: 28 },
+        {
+          n: 73,
+          en: "Al-Muzzammil",
+          ar: "سُورَةُ المُزَّمِّلِ",
+          t: "MECQUOISE",
+          v: 20,
+        },
+        {
+          n: 74,
+          en: "Al-Muddaththir",
+          ar: "سُورَةُ المُدَّثِّرِ",
+          t: "MECQUOISE",
+          v: 56,
+        },
+        {
+          n: 75,
+          en: "Al-Qiyamah",
+          ar: "سُورَةُ القِيَامَةِ",
+          t: "MECQUOISE",
+          v: 40,
+        },
+        {
+          n: 76,
+          en: "Al-Insan",
+          ar: "سُورَةُ الإِنْسَانِ",
+          t: "MÉDINOISE",
+          v: 31,
+        },
+        {
+          n: 77,
+          en: "Al-Mursalat",
+          ar: "سُورَةُ المُرْسَلَاتِ",
+          t: "MECQUOISE",
+          v: 50,
+        },
+        {
+          n: 78,
+          en: "An-Naba",
+          ar: "سُورَةُ النَّبَأِ",
+          t: "MECQUOISE",
+          v: 40,
+        },
+        {
+          n: 79,
+          en: "An-Nazi'at",
+          ar: "سُورَةُ النَّازِعَاتِ",
+          t: "MECQUOISE",
+          v: 46,
+        },
+        { n: 80, en: "Abasa", ar: "سُورَةُ عَبَسَ", t: "MECQUOISE", v: 42 },
+        {
+          n: 81,
+          en: "At-Takwir",
+          ar: "سُورَةُ التَّكْوِيرِ",
+          t: "MECQUOISE",
+          v: 29,
+        },
+        {
+          n: 82,
+          en: "Al-Infitar",
+          ar: "سُورَةُ الِانْفِطَارِ",
+          t: "MECQUOISE",
+          v: 19,
+        },
+        {
+          n: 83,
+          en: "Al-Mutaffifin",
+          ar: "سُورَةُ المُطَفِّفِينَ",
+          t: "MECQUOISE",
+          v: 36,
+        },
+        {
+          n: 84,
+          en: "Al-Inshiqaq",
+          ar: "سُورَةُ الِانْشِقَاقِ",
+          t: "MECQUOISE",
+          v: 25,
+        },
+        {
+          n: 85,
+          en: "Al-Buruj",
+          ar: "سُورَةُ البُرُوجِ",
+          t: "MECQUOISE",
+          v: 22,
+        },
+        {
+          n: 86,
+          en: "At-Tariq",
+          ar: "سُورَةُ الطَّارِقِ",
+          t: "MECQUOISE",
+          v: 17,
+        },
+        {
+          n: 87,
+          en: "Al-A'la",
+          ar: "سُورَةُ الأَعْلَى",
+          t: "MECQUOISE",
+          v: 19,
+        },
+        {
+          n: 88,
+          en: "Al-Ghashiyah",
+          ar: "سُورَةُ الغَاشِيَةِ",
+          t: "MECQUOISE",
+          v: 26,
+        },
+        { n: 89, en: "Al-Fajr", ar: "سُورَةُ الفَجْرِ", t: "MECQUOISE", v: 30 },
+        {
+          n: 90,
+          en: "Al-Balad",
+          ar: "سُورَةُ البَلَدِ",
+          t: "MECQUOISE",
+          v: 20,
+        },
+        {
+          n: 91,
+          en: "Ash-Shams",
+          ar: "سُورَةُ الشَّمْسِ",
+          t: "MECQUOISE",
+          v: 15,
+        },
+        {
+          n: 92,
+          en: "Al-Layl",
+          ar: "سُورَةُ اللَّيْلِ",
+          t: "MECQUOISE",
+          v: 21,
+        },
+        { n: 93, en: "Ad-Duha", ar: "سُورَةُ الضُّحَى", t: "MECQUOISE", v: 11 },
+        {
+          n: 94,
+          en: "Ash-Sharh",
+          ar: "سُورَةُ الشَّرْحِ",
+          t: "MECQUOISE",
+          v: 8,
+        },
+        { n: 95, en: "At-Tin", ar: "سُورَةُ التِّينِ", t: "MECQUOISE", v: 8 },
+        { n: 96, en: "Al-Alaq", ar: "سُورَةُ العَلَقِ", t: "MECQUOISE", v: 19 },
+        { n: 97, en: "Al-Qadr", ar: "سُورَةُ القَدْرِ", t: "MECQUOISE", v: 5 },
+        {
+          n: 98,
+          en: "Al-Bayyinah",
+          ar: "سُورَةُ البَيِّنَةِ",
+          t: "MÉDINOISE",
+          v: 8,
+        },
+        {
+          n: 99,
+          en: "Az-Zalzalah",
+          ar: "سُورَةُ الزَّلْزَلَةِ",
+          t: "MÉDINOISE",
+          v: 8,
+        },
+        {
+          n: 100,
+          en: "Al-Adiyat",
+          ar: "سُورَةُ العَادِيَاتِ",
+          t: "MECQUOISE",
+          v: 11,
+        },
+        {
+          n: 101,
+          en: "Al-Qari'ah",
+          ar: "سُورَةُ القَارِعَةِ",
+          t: "MECQUOISE",
+          v: 11,
+        },
+        {
+          n: 102,
+          en: "At-Takathur",
+          ar: "سُورَةُ التَّكَاثُرِ",
+          t: "MECQUOISE",
+          v: 8,
+        },
+        { n: 103, en: "Al-Asr", ar: "سُورَةُ العَصْرِ", t: "MECQUOISE", v: 3 },
+        {
+          n: 104,
+          en: "Al-Humazah",
+          ar: "سُورَةُ الهُمَزَةِ",
+          t: "MECQUOISE",
+          v: 9,
+        },
+        { n: 105, en: "Al-Fil", ar: "سُورَةُ الفِيلِ", t: "MECQUOISE", v: 5 },
+        { n: 106, en: "Quraysh", ar: "سُورَةُ قُرَيْشٍ", t: "MECQUOISE", v: 4 },
+        {
+          n: 107,
+          en: "Al-Ma'un",
+          ar: "سُورَةُ المَاعُونِ",
+          t: "MECQUOISE",
+          v: 7,
+        },
+        {
+          n: 108,
+          en: "Al-Kawthar",
+          ar: "سُورَةُ الكَوْثَرِ",
+          t: "MECQUOISE",
+          v: 3,
+        },
+        {
+          n: 109,
+          en: "Al-Kafirun",
+          ar: "سُورَةُ الكَافِرُونَ",
+          t: "MECQUOISE",
+          v: 6,
+        },
+        {
+          n: 110,
+          en: "An-Nasr",
+          ar: "سُورَةُ النَّصْرِ",
+          t: "MÉDINOISE",
+          v: 3,
+        },
+        {
+          n: 111,
+          en: "Al-Masad",
+          ar: "سُورَةُ المَسَدِ",
+          t: "MECQUOISE",
+          v: 5,
+        },
+        {
+          n: 112,
+          en: "Al-Ikhlas",
+          ar: "سُورَةُ الإِخْلَاصِ",
+          t: "MECQUOISE",
+          v: 4,
+        },
+        {
+          n: 113,
+          en: "Al-Falaq",
+          ar: "سُورَةُ الفَلَقِ",
+          t: "MECQUOISE",
+          v: 5,
+        },
+        { n: 114, en: "An-Nas", ar: "سُورَةُ النَّاسِ", t: "MECQUOISE", v: 6 },
+      ];
+      const recitersData = [
+        {
+          id: "ar.sudais",
+          name: "Abdurrahman Al-Sudais",
+          ar: "عبد الرحمن السديس",
+          img: "assets/image/sudais.jpg",
+        },
+        {
+          id: "ar.abdulbasitmurattal",
+          name: "Abd Al-Basit",
+          ar: "عبد الباسط عبد الصمد",
+          img: "assets/image/basit.jpg",
+        },
+        {
+          id: "ar.alafasy",
+          name: "Mishary Alafasy",
+          ar: "مشاري العفاسي",
+          img: "assets/image/mishary.jpg",
+        },
+        {
+          id: "ar.hanirifai",
+          name: "Hani Al-Rifai",
+          ar: "هاني الرفاعي",
+          img: "assets/image/hani.jpg",
+        },
+        {
+          id: "ar.shatri",
+          name: "Abu Bakr Al-Shatri",
+          ar: "أبو بكر الشاطري",
+          img: "assets/image/shatri.jpg",
+        },
+      ];
+
+      let currentReciterId = "";
+      let currentReciterName = "";
+
+      window.onload = () => {
+        renderReciters();
+      };
+
+      function renderReciters() {
+        const container = document.getElementById("reciterList");
+        container.innerHTML = recitersData
+          .map(
+            (r) => `
+                <div class="item-card" onclick="openSurahs('${
+                  r.id
+                }', '${r.name.toUpperCase()}')">
+                    <img src="${
+                      r.img
+                    }" class="reciter-avatar-sm" onerror="this.src='https://ui-avatars.com/api/?name=${
+              r.name
+            }&background=0D3A27&color=fff'">
+                    <div class="info-zone">
+                        <span class="title-fr">${r.name}</span>
+                        <span class="sub-meta">${r.ar}</span>
+                    </div>
+                    <i class="fas fa-chevron-right" style="color: var(--color-gold); font-size: 0.8rem;"></i>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      function openSurahs(id, name) {
+        currentReciterId = id;
+        currentReciterName = name;
+        document.getElementById("activeReciterName").innerText = name;
+        document.getElementById("surahPanel").style.display = "flex";
+        renderSurahList(allSurahs);
+      }
+
+      function renderSurahList(list) {
+        document.getElementById("surahContent").innerHTML = list
+          .map(
+            (s) => `
+                <div class="item-card" onclick="selectAudio('${currentReciterId}', ${s.n}, '${currentReciterName}', '${s.en}')">
+                    <div class="num-badge">${s.n}</div>
+                    <div class="info-zone">
+                        <span class="title-fr">${s.en}</span>
+                        <span class="sub-meta">${s.t} • ${s.v} VERSETS</span>
+                    </div>
+                    <div class="title-ar">${s.ar}</div>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      function selectAudio(reciterId, surahNum, reciterName, surahName) {
+        const padded = surahNum.toString().padStart(3, "0");
+        let url = "";
+
+        // Logique Serveurs
+        if (reciterId === "ar.sudais")
+          url = `https://server11.mp3quran.net/sds/${padded}.mp3`;
+        else if (reciterId === "ar.abdulbasitmurattal")
+          url = `https://server7.mp3quran.net/basit/murattal/${padded}.mp3`;
+        else if (reciterId === "ar.alafasy")
+          url = `https://server8.mp3quran.net/afs/${padded}.mp3`;
+        else
+          url = `https://cdn.islamic.network/quran/audio-surah/128/${reciterId}/${surahNum}.mp3`;
+
+        localStorage.setItem("autoPlayUrl", url);
+        localStorage.setItem("autoPlayTitle", surahName);
+        localStorage.setItem("autoPlayArtist", reciterName);
+        // Lecture directe
+        playSelectedAudio(url, surahName, reciterName);
+
+        // Optionnel : fermer le panneau des sourates
+        closeSurahs();
+      }
+
+      function filterList() {
+        const val = document.getElementById("searchInput").value.toLowerCase();
+        document.querySelectorAll("#reciterList .item-card").forEach((card) => {
+          card.style.display = card.innerText.toLowerCase().includes(val)
+            ? "flex"
+            : "none";
+        });
+      }
+
+      function filterSurahs() {
+        const q = document
+          .getElementById("surahSearchInput")
+          .value.toLowerCase();
+        const filtered = allSurahs.filter(
+          (s) => s.en.toLowerCase().includes(q) || s.n.toString().includes(q)
+        );
+        renderSurahList(filtered);
+      }
+
+      function closeSurahs() {
+        document.getElementById("surahPanel").style.display = "none";
+      }
+    </script>
+    <script src="assets/js/script.js"></script>
+  </body>
+</html>

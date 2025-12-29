@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QuranLight - Horaires de Prières</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/salat.css" />
+    <link rel="stylesheet" href="assets/css/calendar_style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body class="salat-page">
+    <div class="main-container">
+      <header
+        class="glass-panel"
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 15px 20px;
+        "
+      >
+        <div class="navigation-top" style="padding: 0; margin: 0">
+          <a
+            href="index.html"
+            class="floating-back-btn"
+            style="transform: scale(0.8); transform-origin: left"
+          >
+            <i class="fas fa-arrow-left"></i>
+            <span>Accueil</span>
+          </a>
+        </div>
+
+        <div class="header-location-selector">
+          <span id="header-location">
+            <i class="fa-solid fa-location-dot"></i> Abuja, Nigeria
+          </span>
+          <div id="sun-status" class="method-badge">Calcul Automatique</div>
+        </div>
+
+        <button
+          id="sync-location-btn"
+          class="settings-icon"
+          onclick="window.location.reload();"
+          style="
+            background: none;
+            border: none;
+            color: var(--gold);
+            cursor: pointer;
+          "
+          title="Mise à jour"
+        >
+          <i class="fas fa-sync-alt"></i>
+        </button>
+      </header>
+
+      <section class="prayer-header-summary">
+        <div class="prayer-card-content">
+          <div class="central-info-block">
+            <span class="now-label">Maintenant</span>
+            <span id="current-prayer-name">--:--</span>
+
+            <div class="next-prayer-details">
+              Prochaine : <span id="next-prayer-name-detail">...</span> à
+              <span id="next-prayer-time-detail">--:--</span>
+            </div>
+          </div>
+
+          <div class="prayer-carousel-wrapper">
+            <div class="carousel-center-timer">
+              <span class="timer-label">Reste</span>
+              <div id="countdown-timer">00:00:00</div>
+            </div>
+            <ul class="prayer-carousel" id="prayer-carousel-list"></ul>
+          </div>
+        </div>
+      </section>
+
+      <nav class="date-navigation-wrapper">
+        <div class="date-navigation">
+          <button class="nav-arrow" id="prev-day-btn">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <div class="date-display">
+            <h3 id="gregorian-date">Chargement...</h3>
+            <p id="hijri-date-small">-- -- 144X</p>
+          </div>
+          <button class="nav-arrow" id="next-day-btn">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </nav>
+
+      <section class="prayer-list-box">
+        <div class="list-header">
+          <span>Prière</span>
+          <span class="header-time">Heure</span>
+        </div>
+
+        <ul class="prayer-items-list" id="prayer-list-container">
+          <li class="prayer-row placeholder">
+            <div class="prayer-name-wrapper">
+              <i class="fas fa-circle-notch fa-spin"></i>
+              <span class="prayer-name-text">Chargement des horaires...</span>
+            </div>
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+    <script src="assets/js/salat_logic.js"></script>
+  </body>
+</html>

@@ -1,0 +1,1156 @@
+/* --- assets/css/style.css (GLOBAL + Header + Sidebar + Index + Footer) --- */
+
+/* =============================================== */
+/* 1. POLICES & VARIABLES GLOBALES                 */
+/* =============================================== */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap");
+
+:root {
+  /* Couleurs de marque */
+  --color-gold: #b08d57; /* Or mat prestige */
+  --color-gold-light: #d4bc96; /* Or clair pour contrastes */
+  --color-emerald-abyssal: #05140f;
+
+  /* Paramètres Layout */
+  --header-height: 70px;
+  --sidebar-width: 280px;
+
+  /* Couleurs de texte et surfaces */
+  --text-main: #ffffff;
+  --text-muted: #bebebe;
+  --bg-surface: rgba(13, 34, 27, 0.85);
+
+  /* Bordures et Transitions */
+  --glass-border: 1px solid rgba(176, 141, 87, 0.2);
+  --transition-speed: 0.3s ease-in-out;
+}
+
+/* =============================================== */
+/* 2. RESET DE BASE                                */
+/* =============================================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  min-height: 100vh;
+  color: var(--text-main);
+  line-height: 1.6;
+
+  /* --- MIX PREMIUM : DÉGRADÉ EMERALD GOLD + TEXTURE --- */
+  /* Ici, la 2e couleur émeraude est plus vibrante et le bas devient bronze/gold */
+  background: url("https://www.transparenttextures.com/patterns/dark-matter.png"),
+    linear-gradient(
+      to bottom,
+      #0d3a27 0%,
+      /* Haut : Émeraude Impérial */ #0a2d20 45%,
+      /* Milieu : Émeraude Vibrant (Emerald Gold Link) */ #1a1608 100%
+        /* Bas : Emerald Gold (Bronze chaud remplaçant le noir) */
+    );
+
+  /* Réglages pour que la texture se répète et que le dégradé couvre tout */
+  background-repeat: repeat, no-repeat;
+  background-attachment: fixed;
+  background-size: auto, cover;
+
+  /* Suppression du blur sur le body pour la performance et la netteté */
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* =============================================== */
+/* 3. STRUCTURE PRINCIPALE                         */
+/* =============================================== */
+.main-container {
+  /* Calcul dynamique de l'espace haut basé sur la barre de navigation */
+  padding-top: calc(var(--header-height) + 20px) !important;
+  padding-left: 20px;
+  padding-right: 20px;
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: var(--transition-speed);
+}
+
+/* =============================================== */
+/* 3. HEADER FLOTTANT GLASS                        */
+/* =============================================== */
+.glass-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  z-index: 800; /* Plus bas que la sidebar qui est à 1000 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  /* Optionnel : fond plus sombre pour mieux voir le texte blanc */
+  background: rgba(10, 45, 32, 0.85);
+  border-bottom: 1px solid rgba(176, 141, 87, 0.2);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+}
+
+.glass-panel.scrolled {
+  padding: 8px 20px;
+  background: rgba(0, 0, 0, 0.2); /* S'assombrit légèrement au scroll */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.menu-toggle,
+.back-arrow,
+.settings-icon {
+  background: none;
+  border: none;
+  color: inherit; /* Prend la couleur du parent */
+  font-size: 1.4rem; /* Légèrement réduit pour plus d'élégance */
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.menu-toggle:active,
+.back-arrow:active {
+  transform: scale(0.9); /* Feedback tactile au clic */
+}
+
+#header-location {
+  display: flex;
+  flex-direction: column; /* Ville en haut, badge en bas (si présent) */
+  align-items: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+
+#header-location i {
+  margin-right: 5px;
+  font-size: 1rem;
+  color: var(--color-gold);
+}
+
+/* Animation de la citation sur l'accueil */
+#daily-quote {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  display: block;
+}
+
+/* Barre de progression de prière (Accueil) */
+.progress-container {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+#prayer-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-gold), #fff);
+  width: 0%;
+  transition: width 1s ease-in-out;
+}
+
+/* =============================================== */
+/* 4. SIDEBAR PREMIUM (EMERALD & GOLD THEME)       */
+/* =============================================== */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: calc(-1 * var(--sidebar-width));
+  width: var(--sidebar-width);
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 45, 32, 0.98) 0%,
+    rgba(5, 20, 15, 1) 100%
+  );
+  z-index: 1000;
+  transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-right: 1.5px solid rgba(255, 193, 7, 0.3);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+.sidebar.open {
+  left: 0;
+}
+
+#sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  z-index: 999;
+  display: none;
+}
+
+/* --- HEADER DE LA SIDEBAR --- */
+.sidebar-header {
+  text-align: center;
+  padding: 40px 15px;
+  background: radial-gradient(
+    circle,
+    rgba(15, 79, 52, 0.6) 0%,
+    transparent 100%
+  );
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.app-logo-sidebar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 3px solid var(--color-gold);
+  box-shadow: 0 0 20px rgba(255, 193, 7, 0.3);
+  object-fit: cover;
+  margin: 0 auto;
+}
+
+/* --- NAVIGATION AJUSTÉE --- */
+.sidebar-nav {
+  flex-grow: 1;
+  padding: 15px 0;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center; /* Aligne l'icône et le texte verticalement */
+  padding: 14px 25px;
+  font-size: 0.95rem; /* Taille légèrement réduite pour l'élégance */
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  transition: all 0.3s ease;
+  border-left: 4px solid transparent;
+  text-decoration: none;
+  line-height: 1.4; /* Améliore la lisibilité des textes longs */
+  gap: 5px; /* Espace constant entre icône et texte */
+}
+
+.nav-item i {
+  font-size: 1.1rem;
+  color: var(--color-gold);
+  width: 30px; /* Largeur fixe pour que tous les textes commencent au même niveau */
+  flex-shrink: 0; /* Empêche l'icône de s'écraser */
+  text-align: center;
+}
+
+/* --- EFFETS AU SURVOL --- */
+.nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  padding-left: 30px; /* Décalage plus doux */
+}
+
+/* --- ÉTAT ACTIF --- */
+.nav-item.active {
+  background: linear-gradient(
+    90deg,
+    rgba(15, 79, 52, 0.4) 0%,
+    transparent 100%
+  );
+  color: var(--color-gold);
+  border-left: 4px solid var(--color-gold);
+}
+
+/* --- FOOTER DE LA SIDEBAR --- */
+.sidebar-footer {
+  padding: 15px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+/* =============================================== */
+/* 5. BLOC ACCUEIL + BARRE DE PROGRESSION          */
+/* =============================================== */
+.home-date-time-block {
+  width: 95%;
+  max-width: 700px;
+  margin: 0 auto 30px;
+  padding: 50px 35px; /* Augmenté pour donner de l'air */
+  text-align: center;
+  /* Superposition d'un dégradé sombre pour faire ressortir le texte blanc */
+  background-image: linear-gradient(rgba(10, 45, 32, 0.7), rgba(0, 0, 0, 0.8)),
+    url("../image/Fonds_vert.jpg");
+  background-size: cover;
+  background-position: center;
+  border-radius: 30px;
+  border: 1px solid rgba(176, 141, 87, 0.3);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.home-date-time-block .gregorian-date {
+  font-size: 1.1rem; /* Plus petit pour le prestige */
+  font-weight: 600;
+  color: var(--color-gold);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 5px;
+}
+
+.home-date-time-block .current-time {
+  font-size: 4.8rem; /* TAILLE MASSIVE POUR LA VISIBILITÉ */
+  font-weight: 900;
+  color: #ffffff; /* BLANC PUR pour le contraste */
+  line-height: 1;
+  margin: 15px 0;
+  letter-spacing: -1px;
+  /* Ombre portée double : une noire pour le contour, une dorée pour l'éclat */
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.8), 0 0 20px rgba(176, 141, 87, 0.4);
+}
+
+.home-date-time-block .hijri-date {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 30px;
+  color: #d4bc96; /* Or très clair */
+  opacity: 0.9;
+}
+
+.next-prayer-info {
+  width: 100%;
+  max-width: 500px;
+  padding: 25px;
+  border-radius: 20px;
+  /* Fond plus sombre pour détacher de l'heure */
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(176, 141, 87, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.next-prayer-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-gold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.next-prayer-countdown {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-top: 5px;
+}
+
+/* Styles de la barre de progression */
+.prayer-progress-container {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  margin-top: 20px;
+  overflow: hidden;
+}
+
+.prayer-progress-bar {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #d4bc96, var(--color-gold));
+  box-shadow: 0 0 15px rgba(176, 141, 87, 0.6);
+  border-radius: 10px;
+  transition: width 1s linear;
+}
+/* ======================================================== */
+/* 6. BLOC DE RAPPELS (VERSION MASTERPIECE)                 */
+/* ======================================================== */
+
+.daily-reminder-card {
+  max-width: 750px;
+  margin: 40px auto;
+  padding: 45px 35px;
+
+  /* Fond multicouche : Grain + Dégradé Abyssal */
+  background: radial-gradient(
+      circle at top right,
+      rgba(176, 141, 87, 0.08),
+      transparent
+    ),
+    linear-gradient(145deg, rgba(13, 22, 18, 0.98), rgba(4, 10, 8, 1));
+
+  backdrop-filter: blur(15px);
+  border-radius: 30px;
+
+  /* Bordure Gradient : Donne un aspect métallique */
+  border: 1px solid transparent;
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
+  background-image: linear-gradient(
+      145deg,
+      rgba(13, 22, 18, 0.98),
+      rgba(4, 10, 8, 1)
+    ),
+    linear-gradient(
+      135deg,
+      rgba(176, 141, 87, 0.4),
+      transparent,
+      rgba(176, 141, 87, 0.4)
+    );
+
+  text-align: center;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.4s ease;
+}
+
+/* Effet de brillance au survol */
+.daily-reminder-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Icône de citation stylisée */
+.daily-reminder-card i.fa-quote-left {
+  font-size: 1.8rem;
+  background: linear-gradient(180deg, #fff, var(--color-gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 20px;
+  opacity: 0.8;
+}
+
+/* Texte Arabe : Effet Profondeur */
+.quote-arabic {
+  font-size: 2.4rem;
+  font-weight: 500;
+  color: #f8f1e5;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 20px rgba(176, 141, 87, 0.2);
+}
+
+/* Séparateur Ornemental */
+.quote-separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin: 25px auto;
+}
+
+.quote-separator::before,
+.quote-separator::after {
+  content: "";
+  height: 1px;
+  width: 60px;
+  background: linear-gradient(
+    to var(--dir, right),
+    var(--color-gold),
+    transparent
+  );
+}
+.quote-separator::after {
+  --dir: left;
+}
+
+.sep-diamond {
+  width: 8px;
+  height: 8px;
+  background: var(--color-gold);
+  transform: rotate(45deg);
+  box-shadow: 0 0 10px var(--color-gold);
+}
+
+/* Texte Français : Épuré */
+.quote-french {
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.8;
+  max-width: 85%;
+  margin: 0 auto;
+}
+
+/* Nouveau : La Source (Hadith/Sourate) */
+.quote-source {
+  margin-top: 25px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  letter-spacing: 2px;
+  opacity: 0.6;
+}
+
+/* Responsive Mobile */
+@media (max-width: 600px) {
+  .daily-reminder-card {
+    margin: 20px 15px;
+    padding: 35px 20px;
+  }
+  .quote-arabic {
+    font-size: 1.9rem;
+  }
+  .quote-french {
+    font-size: 0.95rem;
+  }
+}
+
+/* ======================================================== */
+/* 7. MODULES (VERSION LUXE DARK BIJOUX - ÉPURÉE)           */
+/* ======================================================== */
+
+.modules-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 45px 20px;
+  padding: 40px 15px 60px;
+  justify-items: center;
+}
+
+.module-card {
+  position: relative;
+  background: transparent; /* Suppression totale des gros blocs */
+  border: none;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  transition: transform 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+/* --- LOGOS BIJOUX SOMBRES (AGRANDIS) --- */
+.module-icon {
+  width: 90px;
+  height: 90px;
+  font-size: 2rem;
+  margin-bottom: 18px;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff !important;
+  z-index: 2;
+  position: relative;
+
+  /* Sertissage : Bordure Or mat très fine */
+  border: 1px solid rgba(176, 141, 87, 0.3);
+
+  /* Profondeur : Ombre externe riche et ombre interne */
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+/* Reflet satiné sur le dessus de l'icône */
+.module-icon::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+  pointer-events: none;
+}
+
+.module-label {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 2px; /* Espacement premium */
+  z-index: 2;
+  opacity: 0.9;
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.9);
+}
+
+/* --- GRADIENS "DEEP PREMIUM" (SOMBRES & MATS) --- */
+.bg-icon-red {
+  background: linear-gradient(145deg, #1a0505, #4a0000);
+}
+.bg-icon-purple {
+  background: linear-gradient(145deg, #0f0514, #2a0a3d);
+}
+.bg-icon-blue {
+  background: linear-gradient(145deg, #050a14, #0a1d3d);
+}
+.bg-icon-green {
+  background: linear-gradient(145deg, #05140f, #0a2d20);
+}
+.bg-icon-gold {
+  background: linear-gradient(145deg, #141105, #3d300a);
+}
+.bg-icon-gray {
+  background: linear-gradient(145deg, #0a0a0a, #262626);
+}
+
+/* --- INTERACTION --- */
+.module-card:hover {
+  transform: translateY(-10px); /* Lévitation fluide */
+}
+
+.module-card:hover .module-icon {
+  /* Éclairage de la bordure au survol */
+  border-color: var(--color-gold, #b08d57);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9), 0 0 20px rgba(176, 141, 87, 0.15);
+}
+
+.module-card:hover .module-label {
+  opacity: 1;
+  color: var(--color-gold, #b08d57);
+}
+
+/* ======================================================== */
+/* 8. RESPONSIVE MOBILE AJUSTÉ                              */
+/* ======================================================== */
+
+@media (max-width: 480px) {
+  .modules-grid {
+    gap: 40px 15px;
+    padding: 30px 15px 40px;
+  }
+
+  .module-icon {
+    width: 75px;
+    height: 75px;
+    font-size: 1.6rem;
+    border-radius: 24px;
+  }
+
+  .module-label {
+    font-size: 0.8rem;
+    letter-spacing: 1.5px;
+  }
+}
+
+@media (max-width: 350px) {
+  .module-icon {
+    width: 65px;
+    height: 65px;
+  }
+}
+/* =============================================== */
+/* 8. FOOTER EMERAUDE PROFOND (OPTIMISÉ)           */
+/* =============================================== */
+.footer {
+  /* Correction : On utilise une seule déclaration pour le fond */
+  /* Mélange d'un vert émeraude riche et d'une opacité maîtrisée */
+  background: linear-gradient(
+    180deg,
+    rgba(12, 60, 42, 0.98) 0%,
+    /* Vert Émeraude Impérial (Visible) */ rgba(5, 33, 22, 1) 100%
+      /* Noir Émeraude profond en bas */
+  );
+
+  /* Structure et Espacement */
+  padding: 60px 25px 40px;
+  margin-top: 70px;
+
+  /* Bordures arrondies Premium */
+  border-radius: 50px 50px 0 0;
+
+  /* Liseré d'Or pour souligner le haut du footer */
+  border-top: 2px solid rgba(255, 193, 7, 0.3);
+
+  /* Effet de profondeur (Glassmorphism + Lueur interne) */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  /* Le secret pour faire ressortir le vert : lueur interne */
+  box-shadow: inset 0 1px 30px rgba(16, 95, 63, 0.4),
+    /* Lueur verte interne */ 0 -15px 40px rgba(0, 0, 0, 0.5); /* Ombre portée externe */
+
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+
+/* --- OPTIMISATION DES LIENS --- */
+.footer-links a {
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.footer-links a:hover {
+  color: var(--color-gold) !important;
+  opacity: 1;
+  transform: translateX(8px); /* Petit décalage élégant au survol */
+}
+
+/* --- SECTION FOOTER : AJUSTEMENT COMPLET --- */
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Titres des colonnes (Navigation, Réseaux, etc.) */
+.footer-section h4 {
+  color: var(--color-gold);
+  font-size: 0.95rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 25px;
+  opacity: 0.9;
+}
+
+/* --- BRANDING FOOTER (Logo + Nom) --- */
+
+.footer-brand { /* Utilisation de ta classe HTML existante */
+  display: flex;
+  align-items: center;
+  gap: 18px;            /* Espace légèrement augmenté pour laisser respirer l'aura */
+  margin-bottom: 22px;
+}
+
+.footer-logo {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  /* Bordure double effet : Or avec une lueur interne */
+  border: 2px solid var(--color-gold);
+  box-shadow: 0 0 20px rgba(176, 141, 87, 0.25), 
+              inset 0 0 10px rgba(176, 141, 87, 0.2);
+  flex-shrink: 0;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.footer-brand:hover .footer-logo {
+  transform: rotate(10deg) scale(1.05); /* Animation subtile au survol du groupe */
+}
+
+.footer-app-name {
+  font-family: "Amiri", serif;
+  font-size: 1.65rem;
+  font-weight: 800;
+  /* Blanc cassé avec un très léger dégradé vers le gris perle pour donner du relief */
+  background: linear-gradient(to bottom, #ffffff 0%, #d1d1d1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
+  letter-spacing: 0.8px;
+  line-height: 1;
+  cursor: pointer;
+  
+  /* Ajustement vertical précis */
+  transform: translateY(-2px); 
+  
+  transition: all 0.4s ease;
+  /* Lueur spirituelle signature */
+  filter: drop-shadow(0 0 5px rgba(176, 141, 87, 0.3));
+}
+
+.footer-brand:hover .footer-app-name {
+  filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.6));
+  letter-spacing: 1.2px; /* Léger écartement des lettres au survol */
+}
+
+.footer-desc {
+  font-size: 0.92rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.75); /* Blanc doux pour ne pas voler la vedette au nom */
+  line-height: 1.7;
+  max-width: 280px; /* Évite que la description ne s'étale trop */
+  border-left: 2px solid var(--color-gold); /* Rappel du thème sur le côté */
+  padding-left: 15px;
+  margin-top: 12px;
+}
+
+/* --- NAVIGATION & LIENS --- */
+
+.footer-links nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-links a,
+.social-links-vertical a {
+  color: #ffffff !important;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-links a:hover,
+.social-links-vertical a:hover {
+  color: var(--color-gold) !important;
+  transform: translateX(8px);
+}
+
+/* Icônes dans les liens */
+.footer-links a i,
+.social-links-vertical a i {
+  color: var(--color-gold);
+  width: 20px;
+  text-align: center;
+}
+
+/* --- LE SELECTEUR DE LANGUE AMÉLIORÉ --- */
+.footer-lang {
+  min-width: 200px;
+}
+
+.lang-selector-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.15); /* Fond blanc translucide */
+  border: 1.5px solid rgba(255, 193, 7, 0.4); /* Bordure or légère */
+  border-radius: 50px; /* Bordure totalement ronde */
+  padding: 8px 20px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.lang-selector-wrapper:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: var(--color-gold);
+  box-shadow: 0 0 15px rgba(255, 193, 7, 0.2);
+}
+
+.lang-icon-box {
+  color: var(--color-gold);
+  font-size: 1.2rem;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.lang-select {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 700;
+  width: 100%;
+  cursor: pointer;
+  outline: none;
+  appearance: none; /* Supprime le style par défaut du navigateur */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 20px;
+}
+
+/* Style des options (quand on clique) */
+.lang-select option {
+  background-color: #0f4f34; /* Ton vert de marque */
+  color: white;
+  padding: 15px;
+  font-weight: 600;
+}
+
+.lang-chevron {
+  position: absolute;
+  right: 20px;
+  color: var(--color-gold);
+  font-size: 0.8rem;
+  pointer-events: none; /* Laisse passer le clic vers le select */
+}
+
+/* Animation au focus */
+.lang-select:focus + .lang-chevron {
+  transform: rotate(180deg);
+  transition: 0.3s;
+}
+
+/* Copyright Section */
+.footer-bottom {
+  margin-top: 50px;
+  padding-top: 25px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+}
+
+.footer-bottom p {
+  font-size: 1rem;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================ */
+/* 9. EFFETS PREMIUM : REFLETS SATINÉS & INTERACTIONS DYNAMIQUES */
+/* Design : Luxe Emerald / Gold                                 */
+/* Effet : Balayage de lumière au survol (Shine Effect)         */
+/* ============================================================ */
+
+/* --- CONFIGURATION DES CONTENEURS ÉLIGIBLES --- */
+.module-card,
+.home-date-time-block,
+.ramadan-card {
+  position: relative;
+  overflow: hidden; /* Prépare le masque pour le reflet */
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* --- LE REFLET (GLOSS EFFECT) --- */
+.module-card::before,
+.home-date-time-block::before,
+.ramadan-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.12),
+    /* Éclat soyeux */ transparent
+  );
+  transform: skewX(-25deg);
+  pointer-events: none; /* Laisse passer les clics */
+  z-index: 1;
+}
+
+/* --- ANIMATION AU SURVOL (HOVER STATE) --- */
+.module-card:hover::before,
+.home-date-time-block:hover::before,
+.ramadan-card:hover::before {
+  left: 150%;
+  transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- RÉACTION DES CARTES --- */
+.module-card:hover,
+.ramadan-card:hover {
+  transform: translateY(-6px); /* Effet de lévitation */
+  border-color: var(--color-gold) !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 193, 7, 0.2);
+}
+/* ======================================================== */
+/* 10- SECTION RÉCITATEURS (PURE LUXE & SYMÉTRIE)           */
+/* ======================================================== */
+
+.reciters-section {
+  padding: 40px 0;
+  margin-bottom: 30px;
+  background: transparent;
+  position: relative;
+}
+
+/* --- TITRE ROYAL AVEC TRAITS DÉCORATIFS --- */
+.section-header-flex {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.section-title-premium {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  font-size: 1.7rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  position: relative;
+  padding-bottom: 15px;
+  background: linear-gradient(to right, #fff, var(--color-gold-light), #fff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  width: 100%;
+}
+
+.section-title-premium::before,
+.section-title-premium::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  max-width: 100px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-gold),
+    transparent
+  );
+}
+
+.title-decoration {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 1px;
+  background: var(--color-gold);
+}
+
+.view-all-link {
+  margin-top: 15px;
+  color: var(--color-gold-light);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-decoration: none;
+  padding: 6px 22px;
+  border-radius: 20px;
+  border: 1px solid rgba(176, 141, 87, 0.3);
+  transition: all 0.3s ease;
+}
+
+.view-all-link:hover {
+  background: var(--color-gold);
+  color: #05140f;
+  box-shadow: 0 0 15px rgba(176, 141, 87, 0.3);
+}
+
+/* --- LISTE DES RÉCITATEURS --- */
+.reciters-horizontal-list {
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+  gap: 40px;
+  padding: 20px 20px 40px;
+  scrollbar-width: none;
+  /* Correction pour éviter les sauts de scroll */
+  -webkit-overflow-scrolling: touch;
+}
+
+.reciters-horizontal-list::-webkit-scrollbar {
+  display: none;
+}
+
+/* --- CARTES ORBES (AGRANDIES) --- */
+.reciter-card-circle {
+  flex: 0 0 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  /* STABILISATION : On définit une zone de hit constante */
+  padding: 15px 0;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  /* On évite que le texte bouge tout le bloc */
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.reciter-image-wrapper {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  position: relative;
+  padding: 4px;
+  background: linear-gradient(
+    135deg,
+    var(--color-gold),
+    #5a462a,
+    var(--color-gold-light)
+  );
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+  margin-bottom: 15px;
+  /* Transition fluide pour le changement de gradient */
+  transition: transform 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
+}
+
+.reciter-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #05140f;
+  pointer-events: none; /* L'image ne doit pas bloquer l'event */
+}
+
+.reciter-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  opacity: 0.9;
+  white-space: nowrap;
+  transition: color 0.4s ease, transform 0.4s ease;
+}
+
+/* --- EFFET HOVER ÉPURÉ & STABILISÉ --- */
+/* On survole la CARTE, mais on anime les ÉLÉMENTS INTERNES pour éviter le bug de position */
+.reciter-card-circle:hover .reciter-image-wrapper {
+  transform: translateY(-10px) scale(1.08);
+  box-shadow: 0 20px 40px rgba(176, 141, 87, 0.3);
+  background: linear-gradient(
+    135deg,
+    var(--color-gold-light),
+    #fff,
+    var(--color-gold)
+  );
+}
+
+.reciter-card-circle:hover .reciter-label {
+  transform: translateY(-5px);
+  color: var(--color-gold-light);
+  opacity: 1;
+}
+
+/* --- RESPONSIVE : ADAPTATION PETITS ÉCRANS --- */
+@media (max-width: 768px) {
+  .section-title-premium {
+    font-size: 1.3rem;
+    letter-spacing: 3px;
+  }
+
+  .reciter-card-circle {
+    flex: 0 0 100px;
+  }
+
+  .reciter-image-wrapper {
+    width: 90px;
+    height: 90px;
+  }
+
+  .reciters-horizontal-list {
+    justify-content: flex-start;
+    gap: 25px;
+  }
+
+  .reciter-label {
+    font-size: 0.8rem;
+  }
+
+  .section-title-premium::before,
+  .section-title-premium::after {
+    max-width: 40px;
+  }
+}

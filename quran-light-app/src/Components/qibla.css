@@ -1,0 +1,85 @@
+/* ============================================================
+   STYLES SPÉCIFIQUES : DIRECTION DE LA QIBLA
+   ============================================================ */
+
+/* Conteneur principal de la boussole */
+.qibla-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2rem 0;
+}
+
+/* Zone de la boussole */
+.compass-area {
+    width: 300px;
+    height: 300px;
+    position: relative;
+    margin: 2rem auto;
+    border-radius: 50%;
+    /* Utilisation du Glassmorphism avancé pour la base de la boussole */
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--blur-val));
+    -webkit-backdrop-filter: blur(var(--blur-val));
+    border: var(--glass-border);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* Base de la boussole (Cercle intérieur) */
+.compass-base {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--bg-surface) 50%, rgba(5, 10, 8, 0.8) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* Aiguille (pointeur) de la Qibla */
+.qibla-arrow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    transition: transform 0.5s ease-out; /* Transition douce pour l'aiguille */
+    transform: rotate(0deg); /* L'angle sera mis à jour par JS */
+}
+
+/* Le marqueur de la Qibla (triangle ou icône) */
+.qibla-marker {
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 25px solid var(--color-gold); /* Pointe dorée */
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    filter: drop-shadow(0 0 8px rgba(255, 193, 7, 0.6));
+}
+
+/* Indicateur du Nord (pour la référence) */
+.north-marker {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1rem;
+    color: var(--text-muted);
+}
+
+/* Affichage des degrés */
+.degree-display {
+    margin-top: 1.5rem;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-gold);
+    background: var(--bg-surface);
+    padding: 5px 15px;
+    border-radius: 10px;
+}

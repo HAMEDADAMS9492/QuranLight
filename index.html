@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QuranLight - Accueil</title>
+
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/salat.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      /* --- OPTIMISATION DU PANNEAU DES SOURATES --- */
+      #surahPanel {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at top, #0d3a27 0%, #05140f 100%);
+        z-index: 2000;
+        display: none;
+        flex-direction: column;
+        animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(100%);
+        }
+        to {
+          transform: translateY(0);
+        }
+      }
+
+      .surah-search-wrapper {
+        padding: 15px 20px;
+        background: rgba(5, 20, 15, 0.6);
+        border-bottom: 1px solid rgba(176, 141, 87, 0.1);
+      }
+
+      .surah-list {
+        overflow-y: auto;
+        padding: 15px;
+        flex-grow: 1;
+        scrollbar-width: none;
+      }
+      .surah-list::-webkit-scrollbar {
+        display: none;
+      }
+
+      .surah-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 18px;
+        margin-bottom: 10px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(176, 141, 87, 0.1);
+        border-radius: 18px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .surah-item:hover {
+        background: rgba(176, 141, 87, 0.12);
+        border-color: var(--color-gold);
+        transform: scale(1.01);
+      }
+
+      .surah-item .number-box {
+        width: 38px;
+        height: 38px;
+        background: rgba(176, 141, 87, 0.15);
+        border: 1px solid rgba(176, 141, 87, 0.3);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-gold-light);
+        font-weight: 800;
+        font-size: 0.85rem;
+        margin-right: 15px;
+        flex-shrink: 0;
+      }
+
+      .surah-info-main {
+        flex-grow: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .surah-text-left {
+        display: flex;
+        flex-direction: column;
+      }
+      .surah-name-fr {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: 0.5px;
+      }
+      .surah-sub-info {
+        font-size: 0.75rem;
+        color: var(--color-gold-light);
+        opacity: 0.8;
+        text-transform: uppercase;
+      }
+      .surah-name-ar {
+        font-family: "Amiri", serif;
+        font-size: 1.3rem;
+        color: var(--color-gold-light);
+        text-align: right;
+      }
+
+      /* L'iframe ne fait que la taille de la boule par défaut */
+      iframe[src="chatbot.html"] {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        width: 110px !important; /* Taille de la boule + aura */
+        height: 110px !important;
+        border: none;
+        z-index: 9999;
+        transition: all 0.3s ease;
+        pointer-events: auto !important;
+      }
+
+      /* Classe ajoutée quand le chat est ouvert */
+      iframe.chat-opened {
+        width: 380px !important;
+        height: 550px !important;
+      }
+
+      /* 3. On utilise un sélecteur ultra-précis pour les cartes */
+      .reciters-horizontal-list {
+        position: relative;
+        z-index: 10; /* On fait passer les récitateurs au-dessus du vide de l'iframe */
+      }
+
+      .reciter-card-circle {
+        position: relative;
+        z-index: 11;
+        backface-visibility: hidden;
+        transform: translateZ(0);
+        pointer-events: auto !important; /* Force la détection de la souris */
+      }
+
+      /* --- ASTUCE POUR LE CHATBOT --- */
+      /* Pour que le chatbot marche, tu DOIS aller dans ton fichier chatbot.html
+         et mettre "pointer-events: auto;" sur ton bouton de bulle.
+         En attendant, pour tester si c'est l'iframe qui bloque, remplace temporairement 
+         le z-index de l'iframe par 1 au lieu de 99999. */
+    </style>
+  </head>
+  <body>
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <img
+          src="assets/image/Logo.jpg"
+          alt="Logo QuranLight"
+          class="app-logo-sidebar"
+        />
+      </div>
+      <nav class="sidebar-nav">
+        <a href="index.html" class="nav-item active">
+          <i class="fas fa-home"></i> Accueil
+        </a>
+        <a href="salat.html" class="nav-item">
+          <i class="fas fa-clock"></i> Horaires de Prières
+        </a>
+        <a href="quran.html" class="nav-item">
+          <i class="fas fa-quran"></i> Coran
+        </a>
+        <a href="hadiths.html" class="nav-item">
+          <i class="fas fa-book-open"></i> Collections de hadiths
+        </a>
+        <a href="qibla.html" class="nav-item">
+          <i class="fas fa-compass"></i> Direction de la Qibla
+        </a>
+        <a href="calendar.html" class="nav-item">
+          <i class="fas fa-calendar-alt"></i> Calendrier Musulman
+        </a>
+        <a href="ramadan.html" class="nav-item">
+          <i class="fas fa-moon"></i> Ramadan
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="parametre.html" class="nav-item">
+          <i class="fas fa-cog"></i> Paramètres
+        </a>
+        <a href="conditions.html" class="nav-item">
+          <i class="fas fa-info-circle"></i> À Propos
+        </a>
+      </div>
+    </aside>
+    <div id="sidebar-overlay"></div>
+
+    <header class="glass-panel">
+      <button id="menu-toggle" class="menu-toggle">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <div id="header-location">
+        <i class="fa-solid fa-location-dot"></i> Abuja - Nigeria
+      </div>
+
+      <button
+        id="sync-location-btn"
+        class="settings-icon"
+        style="background: none; border: none; color: inherit; cursor: pointer"
+      >
+        <i class="fas fa-sync-alt"></i>
+      </button>
+    </header>
+
+    <div class="main-container">
+      <div class="home-date-time-block">
+        <div class="gregorian-date" id="gregorian-date"></div>
+        <div class="current-time" id="current-time"></div>
+        <div class="hijri-date" id="hijri-date"></div>
+
+        <div class="next-prayer-info">
+          <div class="next-prayer-label">Prochaine prière :</div>
+          <div class="next-prayer-name" id="next-prayer-name">
+            Chargement...
+          </div>
+          <div class="next-prayer-countdown" id="next-prayer-countdown">
+            --:--:--
+          </div>
+
+          <div class="prayer-progress-container">
+            <div class="prayer-progress-bar" id="prayer-progress-bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="daily-reminder-card" id="daily-quote"></div>
+      <section class="modules-grid">
+        <a href="salat.html" class="module-card">
+          <div class="module-icon bg-icon-red">
+            <i class="fas fa-clock"></i>
+          </div>
+          <span class="module-label">Horaires de prières</span>
+        </a>
+
+        <a href="quran.html" class="module-card">
+          <div class="module-icon bg-icon-purple">
+            <i class="fas fa-quran"></i>
+          </div>
+          <span class="module-label">Coran</span>
+        </a>
+
+        <a href="qibla.html" class="module-card">
+          <div class="module-icon bg-icon-blue">
+            <i class="fas fa-compass"></i>
+          </div>
+          <span class="module-label">Direction de la qibla</span>
+        </a>
+
+        <a href="ramadan.html" class="module-card">
+          <div class="module-icon bg-icon-green">
+            <i class="fas fa-moon"></i>
+          </div>
+          <span class="module-label">Ramadan</span>
+        </a>
+
+        <a href="calendar.html" class="module-card">
+          <div class="module-icon bg-icon-gold">
+            <i class="fas fa-calendar-alt"></i>
+          </div>
+          <span class="module-label">Calendrier Musulman</span>
+        </a>
+
+        <a href="hadiths.html" class="module-card">
+          <div class="module-icon bg-icon-gray">
+            <i class="fas fa-book-open"></i>
+          </div>
+          <span class="module-label">Collection d'hadiths</span>
+        </a>
+      </section>
+    </div>
+
+    <section class="reciters-section">
+      <div class="section-header-flex">
+        <h3 class="section-title-premium">Récitateurs</h3>
+        <a href="reciters-library.html" class="view-all-link">Afficher plus</a>
+      </div>
+
+      <div class="reciters-horizontal-list">
+        <div
+          class="reciter-card-circle"
+          onclick="goToLibrary('ar.abdulbasitmurattal', 'Abd Al-Basit')"
+        >
+          <div class="reciter-image-wrapper">
+            <img src="assets/image/basit.jpg" alt="Abd Al-Basit" />
+          </div>
+          <span class="reciter-label">Abd Al-Basit</span>
+        </div>
+        <div
+          class="reciter-card-circle"
+          onclick="goToLibrary('ar.sudais', 'Abdurrahman Al-Sudais')"
+        >
+          <div class="reciter-image-wrapper">
+            <img src="assets/image/sudais.jpg" alt="Abdurrahman Al-Sudais" />
+          </div>
+          <span class="reciter-label">Al-Sudais</span>
+        </div>
+        <div
+          class="reciter-card-circle"
+          onclick="goToLibrary('ar.hanirifai', 'Hani Al-Rifai')"
+        >
+          <div class="reciter-image-wrapper">
+            <img src="assets/image/hani.jpg" alt="Hani Al-Rifai" />
+          </div>
+          <span class="reciter-label">Hani Al-Rifai</span>
+        </div>
+
+        <div
+          class="reciter-card-circle"
+          onclick="goToLibrary('ar.alafasy', 'Mishary Alafasy')"
+        >
+          <div class="reciter-image-wrapper">
+            <img src="assets/image/mishary.jpg" alt="Alafasy" />
+          </div>
+          <span class="reciter-label">Mishary Alafasy</span>
+        </div>
+
+        <div
+          class="reciter-card-circle"
+          onclick="goToLibrary('ar.basfar', 'Abdullah Basfar')"
+        >
+          <div class="reciter-image-wrapper">
+            <img src="assets/image/basfar.jpg" alt="Abdullah Basfar" />
+          </div>
+          <span class="reciter-label">Abdullah Basfar</span>
+        </div>
+
+        <div
+          class="reciter-card-circle"
+          onclick="goToLibrary('ar.shatri', 'Al-Shatri')"
+        >
+          <div class="reciter-image-wrapper">
+            <img src="assets/image/shatri.jpg" alt="Al-Shatri" />
+          </div>
+          <span class="reciter-label">Al-Shatri</span>
+        </div>
+      </div>
+    </section>
+
+    <div id="surahPanel">
+      <header
+        class="reciters-header"
+        style="
+          background: rgba(5, 20, 15, 0.9);
+          padding: 15px 20px;
+          border-bottom: 1px solid rgba(176, 141, 87, 0.2);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        "
+      >
+        <div
+          class="back-btn"
+          onclick="closeSurahPanel()"
+          style="cursor: pointer; color: var(--color-gold); font-size: 1.2rem"
+        >
+          <i class="fas fa-times"></i>
+        </div>
+        <div class="header-title">
+          <h1
+            id="panelReciterName"
+            style="
+              font-size: 1.1rem;
+              color: #fff;
+              text-transform: uppercase;
+              letter-spacing: 2px;
+            "
+          >
+            Chargement...
+          </h1>
+        </div>
+        <div style="width: 20px"></div>
+      </header>
+
+      <div class="surah-search-wrapper">
+        <div
+          class="search-box"
+          style="
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(176, 141, 87, 0.3);
+            border-radius: 50px;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+          "
+        >
+          <i
+            class="fas fa-search"
+            style="color: var(--color-gold); font-size: 0.8rem"
+          ></i>
+          <input
+            type="text"
+            id="surahSearchInput"
+            placeholder="Rechercher une sourate..."
+            onkeyup="filterSurahs()"
+            style="
+              background: transparent;
+              border: none;
+              color: #fff;
+              outline: none;
+              margin-left: 10px;
+              width: 100%;
+              font-size: 0.9rem;
+            "
+          />
+        </div>
+      </div>
+
+      <div class="surah-list" id="surahListContainer"></div>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-grid container">
+        <div class="footer-section footer-info">
+          <div class="footer-brand">
+            <img
+              src="assets/image/Logo.jpg"
+              alt="Logo QuranLight"
+              class="footer-logo"
+            />
+            <span class="footer-app-name">QuranLight</span>
+          </div>
+
+          <p class="footer-desc">
+            Votre guide spirituel quotidien pour la prière et le Coran.
+          </p>
+        </div>
+
+        <div class="footer-section footer-links">
+          <h4>Termes et Conditions</h4>
+          <nav>
+            <a href="confidentialite.html"
+              ><b>Politique de confidentialité</b></a
+            >
+            <a href="conditions.html"><b>Conditions générales</b></a>
+            <a href="cookies.html"><b>Politique des cookies</b></a>
+          </nav>
+        </div>
+
+        <div class="footer-section footer-lang">
+          <h4>Langue</h4>
+          <div class="lang-selector-wrapper">
+            <div class="lang-icon-box">
+              <i class="fas fa-globe-africa"></i>
+            </div>
+            <select class="lang-select" id="language-switcher">
+              <option value="fr">Français &nbsp;&nbsp; 🇫🇷</option>
+              <option value="ar">العربية &nbsp;&nbsp; 🇸🇦</option>
+              <option value="en">English &nbsp;&nbsp; 🇬🇧</option>
+            </select>
+            <div class="lang-chevron">
+              <i class="fas fa-chevron-down"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-section footer-social-group">
+          <h4>Suivez-nous</h4>
+          <div class="social-links-vertical">
+            <a href="#" target="_blank"
+              ><i class="fab fa-instagram"></i> <b>Instagram</b></a
+            >
+            <a href="#" target="_blank"
+              ><i class="fab fa-facebook"></i> <b>Facebook</b></a
+            >
+            <a href="#" target="_blank"
+              ><i class="fab fa-twitter"></i> <b>Twitter</b></a
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p><b>© 2025 QuranLight. Tous droits réservés.</b></p>
+      </div>
+    </footer>
+
+    <audio id="mainAudio" style="display: none"></audio>
+
+    <iframe
+      src="chatbot.html"
+      style="
+        border: none;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 400px;
+        height: 600px;
+        z-index: 99999;
+        background: transparent;
+      "
+      allowtransparency="true"
+    ></iframe>
+    <script src="assets/js/salat_logic.js"></script>
+    <script src="assets/js/script.js"></script>
+    <script src="assets/js/qibla_logic.js"></script>
+    <script src="assets/js/ramadan_logic.js"></script>
+    <script src="assets/js/calendar_logic.js"></script>
+    <script src="assets/js/quran_logic.js"></script>
+
+    <script>
+      let allSurahsData = [];
+
+      // 1. OUVERTURE DU PANNEAU AVEC APPEL API
+      async function goToLibrary(id, name) {
+        const panel = document.getElementById("surahPanel");
+        const listContainer = document.getElementById("surahListContainer");
+        document.getElementById("panelReciterName").innerText = name;
+        panel.style.display = "flex";
+        listContainer.innerHTML =
+          '<div style="text-align:center; padding:50px; color:var(--color-gold);"><i class="fas fa-spinner fa-spin fa-2x"></i></div>';
+
+        localStorage.setItem("tempReciterId", id);
+        localStorage.setItem("tempReciterName", name);
+
+        try {
+          const response = await fetch("https://api.alquran.cloud/v1/surah");
+          const data = await response.json();
+          allSurahsData = data.data;
+          renderSurahList(allSurahsData, id, name);
+        } catch (error) {
+          listContainer.innerHTML =
+            '<p style="text-align:center;">Erreur de chargement.</p>';
+        }
+      }
+
+      function closeSurahPanel() {
+        document.getElementById("surahPanel").style.display = "none";
+      }
+
+      function renderSurahList(surahs, reciterId, reciterName) {
+        const listContainer = document.getElementById("surahListContainer");
+        listContainer.innerHTML = surahs
+          .map(
+            (surah) => `
+                <div class="surah-item" onclick="handleSurahSelection('${reciterId}', ${
+              surah.number
+            }, '${reciterName}', '${surah.englishName.replace(/'/g, "\\'")}')">
+                    <div class="number-box">${surah.number}</div>
+                    <div class="surah-info-main">
+                        <div class="surah-text-left">
+                            <span class="surah-name-fr">${
+                              surah.englishName
+                            }</span>
+                            <span class="surah-sub-info">${
+                              surah.revelationType
+                            } • ${surah.numberOfAyahs} Versets</span>
+                        </div>
+                        <div class="surah-name-ar">${surah.name}</div>
+                    </div>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      function filterSurahs() {
+        const query = document
+          .getElementById("surahSearchInput")
+          .value.toLowerCase();
+        const filtered = allSurahsData.filter(
+          (s) =>
+            s.englishName.toLowerCase().includes(query) ||
+            s.number.toString().includes(query) ||
+            s.name.includes(query)
+        );
+        const id = localStorage.getItem("tempReciterId");
+        const name = localStorage.getItem("tempReciterName");
+        renderSurahList(filtered, id, name);
+      }
+
+      function handleSurahSelection(
+        reciterId,
+        surahNum,
+        reciterName,
+        surahName
+      ) {
+        localStorage.setItem("currentReciterId", reciterId);
+        localStorage.setItem("currentReciterName", reciterName);
+        localStorage.setItem("currentSurahNum", surahNum);
+
+        const padded = surahNum.toString().padStart(3, "0");
+        let audioUrl = "";
+        switch (reciterId) {
+          case "ar.abdulbasitmurattal":
+            audioUrl = `https://server7.mp3quran.net/basit/murattal/${padded}.mp3`;
+            break;
+          case "ar.sudais":
+            audioUrl = `https://server11.mp3quran.net/sds/${padded}.mp3`;
+            break;
+          case "ar.alafasy":
+            audioUrl = `https://server8.mp3quran.net/afs/${padded}.mp3`;
+            break;
+          case "ar.hanirifai":
+            audioUrl = `https://server8.mp3quran.net/hani/${padded}.mp3`;
+            break;
+          case "ar.shatri":
+            audioUrl = `https://server11.mp3quran.net/shatri/${padded}.mp3`;
+            break;
+          case "ar.basfar":
+            audioUrl = `https://server6.mp3quran.net/bsfr/${padded}.mp3`;
+            break;
+          default:
+            audioUrl = `https://cdn.islamic.network/quran/audio-surah/128/${reciterId}/${surahNum}.mp3`;
+        }
+
+        playSelectedAudio(audioUrl, surahName, reciterName);
+        closeSurahPanel();
+      }
+
+      function nextSurah() {
+        let currentNum = parseInt(
+          localStorage.getItem("currentSurahNum") || "0"
+        );
+        if (currentNum < 114) changeTrack(currentNum + 1);
+      }
+
+      function prevSurah() {
+        let currentNum = parseInt(
+          localStorage.getItem("currentSurahNum") || "0"
+        );
+        if (currentNum > 1) changeTrack(currentNum - 1);
+      }
+
+      function changeTrack(newSurahNum) {
+        const id = localStorage.getItem("currentReciterId");
+        const name = localStorage.getItem("currentReciterName");
+        if (id)
+          handleSurahSelection(id, newSurahNum, name, "Sourate " + newSurahNum);
+      }
+
+      function playSelectedAudio(url, title, artist) {
+        const audioPlayer = document.getElementById("mainAudio");
+        const playBtn = document.querySelector(".play-pause i");
+        if (audioPlayer) {
+          audioPlayer.src = url;
+          audioPlayer.load();
+
+          // Mise à jour de l'UI si les éléments existent
+          const titleEl = document.getElementById("playerTitle");
+          const artistEl = document.getElementById("playerArtist");
+          if (titleEl) titleEl.innerText = title;
+          if (artistEl) artistEl.innerText = artist;
+
+          audioPlayer
+            .play()
+            .then(() => {
+              if (playBtn) playBtn.className = "fas fa-pause";
+            })
+            .catch((e) =>
+              console.log("L'utilisateur doit interagir avec la page d'abord.")
+            );
+
+          audioPlayer.onended = () => {
+            nextSurah();
+          };
+        }
+      }
+
+      window.addEventListener("DOMContentLoaded", () => {
+        // Correction de la sélection des boutons
+        const btnNext =
+          document.querySelector(".fa-step-forward")?.closest("button") ||
+          document.querySelector(".fa-step-forward")?.parentElement;
+        const btnPrev =
+          document.querySelector(".fa-step-backward")?.closest("button") ||
+          document.querySelector(".fa-step-backward")?.parentElement;
+
+        if (btnNext)
+          btnNext.onclick = (e) => {
+            e.preventDefault();
+            nextSurah();
+          };
+        if (btnPrev)
+          btnPrev.onclick = (e) => {
+            e.preventDefault();
+            prevSurah();
+          };
+      });
+    </script>
+
+    <script>
+      // Ce script fait le pont entre l'iframe et votre page
+      window.addEventListener("message", function (event) {
+        const iframe = document.querySelector('iframe[src="chatbot.html"]');
+        if (iframe) {
+          // Sécurité : on vérifie que l'iframe existe
+          if (event.data === "openChat") {
+            iframe.classList.add("chat-opened");
+          } else if (event.data === "closeChat") {
+            iframe.classList.remove("chat-opened");
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pacte d'Utilisation - QuranLight</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+<style>
+  /* ======================================================== */
+  /* 1. CONFIGURATION DU THÈME PREMIUM (PLUS LUMINEUX)        */
+  /* ======================================================== */
+  :root {
+    /* Vert plus riche et moins "noir" */
+    --mp-green-bg: #0a1f16;         
+    --mp-green-surface: rgba(18, 38, 30, 0.95); 
+    --mp-gold: #c5a47e;             /* Or légèrement plus clair */
+    --mp-gold-bright: #f1d5a9;      /* Or plus éclatant */
+    --text-main: #ffffff;
+    --text-muted: rgba(255, 255, 255, 0.85); /* Texte plus blanc, moins gris */
+  }
+
+  body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    /* Dégradé plus contrasté pour donner de la profondeur */
+    background: radial-gradient(circle at center, #143025 0%, #060e0a 100%);
+    background-attachment: fixed;
+    color: var(--text-main);
+    line-height: 1.8;
+    padding: 20px;
+  }
+
+  /* ======================================================== */
+  /* 2. CONTAINER LEGAL (STYLE ÉCRIN LUMINEUX)                */
+  /* ======================================================== */
+  .legal-page-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 50px;
+    background: var(--mp-green-surface);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 30px; 
+    /* Bordure plus visible pour définir les contours */
+    border: 1px solid rgba(197, 164, 126, 0.3); 
+    box-shadow: 0 30px 100px rgba(0, 0, 0, 0.6);
+    animation: fadeInPage 0.8s ease-out;
+  }
+
+  /* ======================================================== */
+  /* 3. BOUTON RETOUR (MIEUX DÉFINI)                          */
+  /* ======================================================== */
+  .back-btn {
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 12px 25px;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.4s ease;
+    margin-bottom: 40px;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+  }
+
+  .back-btn:hover {
+    background: var(--mp-gold);
+    color: #0a1f16;
+    border-color: var(--mp-gold);
+    transform: translateX(-5px);
+  }
+
+  /* ======================================================== */
+  /* 4. HEADER ET TITRES (SOUS-TITRE CENTRÉ)                  */
+  /* ======================================================== */
+  .legal-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .legal-header i {
+    font-size: 3.5rem;
+    color: var(--mp-gold-bright);
+    /* Éclat plus prononcé sur l'icône */
+    filter: drop-shadow(0 0 20px rgba(197, 164, 126, 0.6));
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    margin: 10px 0;
+    background: linear-gradient(180deg, #ffffff 40%, var(--mp-gold-bright) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .header-sub {
+    display: block; /* S'assure qu'il prend toute la ligne */
+    text-align: center; /* Centrage explicite */
+    font-size: 1.15rem;
+    font-weight: 400;
+    color: var(--mp-gold-bright);
+    margin-top: 5px;
+    opacity: 1; /* Retrait de l'opacité pour plus de clarté */
+  }
+
+  /* ======================================================== */
+  /* 5. SECTIONS ET TEXTE (LISIBILITÉ ACCRUE)                 */
+  /* ======================================================== */
+  section {
+    margin-bottom: 45px;
+  }
+
+  h2 {
+    color: var(--mp-gold-bright);
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(197, 164, 126, 0.2);
+    padding-bottom: 12px;
+  }
+
+  h2 i {
+    font-size: 1.2rem;
+    color: #0a1f16;
+    background: var(--mp-gold-bright); /* Icônes plus lumineuses */
+    padding: 10px;
+    border-radius: 12px;
+  }
+
+  p {
+    font-size: 1.05rem;
+    font-weight: 400; /* Texte légèrement plus épais pour la lecture */
+    color: var(--text-muted);
+    text-align: justify; /* Pour un look "document officiel" propre */
+  }
+
+  b, strong {
+    color: #fff; /* Les mots importants en blanc pur */
+    font-weight: 700;
+    border-bottom: 1px dotted var(--mp-gold);
+  }
+
+  /* ======================================================== */
+  /* 6. FOOTER INTERNE ET ANIMATIONS                          */
+  /* ======================================================== */
+  .legal-footer-info {
+    text-align: center;
+    margin-top: 60px;
+    padding-top: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--mp-gold-bright);
+  }
+
+  @keyframes fadeInPage {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ADAPTABILITÉ MOBILE */
+  @media (max-width: 600px) {
+    .legal-page-container {
+      padding: 30px 20px;
+      margin: 10px;
+    }
+    h1 { font-size: 2rem; }
+    p { text-align: left; }
+  }
+</style>
+  </head>
+  <body>
+    <div class="legal-page-container">
+      <a href="index.html" class="back-btn"
+        ><i class="fas fa-chevron-left"></i>Accueil</a
+      >
+
+      <div class="legal-header">
+        <i class="fas fa-hand-holding-heart"></i>
+        <h1>Conditions d'Utilisation</h1>
+        <p class="header-sub">Engagement de bienfaisance et respect mutuel.</p>
+      </div>
+
+      <section>
+        <h2><i class="fas fa-mosque"></i> 1. Objet du Service</h2>
+        <p>
+          <b>QuranLight</b> est conçu comme un compagnon spirituel numérique.
+          Notre mission est d'offrir des outils précis (Horaires de prières,
+          Qibla, Saint Coran) pour faciliter votre pratique quotidienne. Ces
+          services sont offerts <b>gratuitement</b>, sans publicité, pour le
+          bien commun de la Oumma.
+        </p>
+      </section>
+
+      <section>
+        <h2><i class="fas fa-clock"></i> 2. Exactitude des Horaires</h2>
+        <p>
+          Nous utilisons les méthodes de calcul les plus rigoureuses (UOIF,
+          Ligue Islamique Mondiale). Toutefois, les conditions géographiques
+          peuvent varier. Nous vous encourageons à considérer ces horaires comme
+          des aides et à vous fier aux annonces de votre
+          <b>mosquée locale</b> pour les moments cruciaux du jeûne ou des
+          prières communautaires.
+        </p>
+      </section>
+
+      <section>
+        <h2><i class="fas fa-book-open"></i> 3. Respect du Contenu</h2>
+        <p>
+          Le contenu sacré du <b>Saint Coran</b> présent dans cette application
+          doit être traité avec le respect qui lui est dû. Toute tentative
+          d'extraction massive de données, de modification malveillante ou
+          d'exploitation commerciale du code source est strictement interdite
+          par ce pacte.
+        </p>
+      </section>
+
+      <section>
+        <h2><i class="fas fa-shield-alt"></i> 4. Responsabilité</h2>
+        <p>
+          <b>QuranLight</b> s'efforce de garantir une disponibilité totale de
+          ses services. Toutefois, nous ne saurions être tenus responsables des
+          interruptions de service dues à des facteurs externes ou à des mises à
+          jour nécessaires à l'amélioration de votre expérience.
+        </p>
+      </section>
+
+      <div class="legal-footer-info">
+        © 2025 QuranLight. Tous droits réservés.
+      </div>
+    </div>
+  </body>
+</html>

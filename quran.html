@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Le Coran - QuranLight</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/quran.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body class="quran-theme">
+    <a href="index.html" class="back-btn" id="btn-to-home">
+      <i class="fas fa-home"></i> Accueil
+    </a>
+
+    <a
+      href="quran.html"
+      class="back-btn"
+      id="btn-to-list"
+      style="display: none"
+    >
+      <i class="fas fa-arrow-left"></i> Retour
+    </a>
+
+    <header class="glass-panel main-header">
+      <a href="index.html" id="back-button" class="icon-circle">
+        <i class="fas fa-arrow-left"></i>
+      </a>
+      <div class="header-center">
+        <span id="header-title">Le Saint Coran</span>
+        <small id="header-subtitle">Al-Qur'an al-Karim</small>
+      </div>
+      <div class="header-actions">
+        <button class="icon-circle active-gold" title="Favoris">
+          <i class="fas fa-bookmark"></i>
+        </button>
+        <button class="icon-circle" title="Paramètres">
+          <i class="fas fa-sliders-h"></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="quran-brand-header" id="brand-header">
+      <div class="brand-logo-container">
+        <img
+          src="assets/image/Qibla_img2.webp"
+          alt="QuranLight Logo"
+          class="main-logo-gold"
+        />
+      </div>
+      <h2 class="brand-name">Le Noble Coran</h2>
+      <p class="brand-tagline">
+        Une guidance lumineuse, une lecture apaisante, une étude profonde
+      </p>
+    </div>
+
+    <main class="quran-container" id="quran-list-view">
+      <div class="search-section">
+        <div class="search-bar-premium">
+          <i class="fas fa-search"></i>
+          <input
+            type="text"
+            placeholder="Numéro ou nom de sourate..."
+            id="surah-search"
+          />
+        </div>
+      </div>
+
+      <div class="surah-list-grid" id="surah-list"></div>
+    </main>
+
+    <main class="quran-reader" id="quran-reader-view" style="display: none">
+      <div class="surah-header-card">
+        <div class="ornament-top">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Floral_ornament_v2.svg"
+            alt=""
+            class="floral-svg"
+          />
+        </div>
+
+        <div class="surah-info-content">
+          <span id="surah-number-name" class="surah-meta">SOURATE 001</span>
+          <h1 id="surah-arabic-name" class="arabic-title">الفاتحة</h1>
+        </div>
+
+        <div class="bismillah-container" id="bismillah-area">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Basmala.svg/512px-Basmala.svg.png"
+            alt="Bismillah"
+            class="bismillah-img"
+          />
+        </div>
+
+        <div class="ornament-bottom">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Floral_ornament_v2.svg"
+            alt=""
+            class="floral-svg rotated"
+          />
+        </div>
+      </div>
+
+      <div id="ayat-display" class="ayat-container"></div>
+
+      <div class="reader-footer-spacer"></div>
+    </main>
+
+    <footer
+      class="quran-controls-floating"
+      id="quran-controls-bar"
+      style="display: none"
+    >
+      <div class="nav-controls">
+        <button class="control-btn prev-surah" title="Sourate Précédente">
+          <i class="fas fa-step-backward"></i>
+        </button>
+
+        <button class="control-btn prev-ayah" title="Verset Précédent">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <button class="play-main-btn listen-button">
+          <div class="play-icon-bg">
+            <i class="fas fa-play"></i>
+          </div>
+          <span>ÉCOUTER</span>
+        </button>
+
+        <button class="control-btn next-ayah" title="Verset Suivant">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+
+        <button class="control-btn next-surah" title="Sourate Suivante">
+          <i class="fas fa-step-forward"></i>
+        </button>
+      </div>
+    </footer>
+
+    <script src="assets/js/quran_logic.js"></script>
+    <script src="assets/js/script.js"></script>
+  </body>
+</html>

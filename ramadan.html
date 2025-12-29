@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ramadan - Horaires Imsak & Iftar</title>
+
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/ramadan.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body class="ramadan-page">
+    <div class="main-container">
+      <div class="navigation-top">
+        <a href="index.html" class="floating-back-btn">
+          <i class="fas fa-home"></i> Accueil
+        </a>
+      </div>
+
+      <div class="hero-intro-section">
+        <i class="fas fa-moon moon-logo"></i>
+        <h1 class="hero-main-title">Ramadan</h1>
+      </div>
+
+      <div class="hero-intro-section-footer">
+        <span class="arabic-text">رمضان مبارك</span>
+        <p class="french-translation">Mois sacré de jeûne et de piété</p>
+      </div>
+
+      <div class="events-section">
+        <div class="section-header">
+          <h2 class="section-title">Calendrier Musulman</h2>
+          <div class="header-divider"></div>
+          <p class="header-sub">Imsak & Iftar avec précision</p>
+        </div>
+
+        <div id="ramadan-info" class="info-highlight-box">
+          <div class="info-item">
+            <span>Année Hijri</span>
+            <b
+              ><i class="fas fa-calendar-star"></i>
+              <span id="hijri-ramadan-year">--</span></b
+            >
+          </div>
+
+          <div class="info-item">
+            <span>Ville actuelle</span>
+            <b
+              ><i class="fas fa-map-marker-alt"></i>
+              <span id="location-display">--</span></b
+            >
+          </div>
+        </div>
+
+        <div id="monthly-events-list">
+          <div class="loading-state">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Récupération des horaires en cours...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="assets/js/ramadan_logic.js"></script>
+  </body>
+</html>

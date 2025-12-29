@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendrier Hégirien - QuranLight</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/calendar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body class="ramadan-page">
+
+<header class="navigation-top">
+    <a href="index.html" class="floating-back-btn">
+        <i class="fas fa-arrow-left"></i> <span>Accueil</span>
+    </a>
+
+    <div class="hero-intro-section">
+        <h1 class="hero-main-title">Calendrier</h1>
+        <div class="moon-logo"><i class="fas fa-calendar-alt"></i></div>
+    </div>
+</header>
+
+<div class="header-subtext">
+    <p class="arabic-text">التقويم الهجري</p>
+    <p class="french-translation">"Le temps est une bénédiction, organisons-le avec foi"</p>
+</div>
+
+    <div class="calendar-container">
+        <div class="current-date-info">
+            <p id="gregorian-date-display" class="date-gregorian">Aujourd’hui : 26 Décembre 2025</p>
+            <h2 id="hijri-date-display" class="date-hijri">6 Rajab 1447 AH</h2>
+        </div>
+
+        <div class="calendar-header">
+            <button id="prev-month" class="nav-button"><i class="fas fa-chevron-left"></i></button>
+            <div class="month-wrapper"><h3 id="calendar-month-year">Décembre 2025</h3></div>
+            <button id="next-month" class="nav-button"><i class="fas fa-chevron-right"></i></button>
+        </div>
+
+        <div class="weekdays">
+            <div class="day-name"><span class="main-txt">Dim</span><span class="arabic-txt">Ahad</span></div>
+            <div class="day-name"><span class="main-txt">Lun</span><span class="arabic-txt">Ithnayn</span></div>
+            <div class="day-name"><span class="main-txt">Mar</span><span class="arabic-txt">Thulatha</span></div>
+            <div class="day-name"><span class="main-txt">Mer</span><span class="arabic-txt">Arba’a</span></div>
+            <div class="day-name"><span class="main-txt">Jeu</span><span class="arabic-txt">Khamees</span></div>
+            <div class="day-name"><span class="main-txt">Ven</span><span class="arabic-txt">Jumu‘ah</span></div>
+            <div class="day-name"><span class="main-txt">Sam</span><span class="arabic-txt">Sabt</span></div>
+        </div>
+
+        <div id="calendar-grid" class="calendar-grid"></div>
+    </div>
+
+    <div class="events-section">
+        <div class="section-header">
+            <h4 class="section-title">Événements du Mois</h4>
+            <div class="header-divider"></div>
+        </div>
+        <div id="monthly-events-list">
+            <p class="text-muted" style="text-align: center; opacity: 0.5;">Aucun événement spécial ce mois-ci.</p>
+        </div>
+    </div>
+</div>
+
+<script src="assets/js/calendar_logic.js"></script>
+<script src="assets/js/script.js"></script>
+</body>
+</html>

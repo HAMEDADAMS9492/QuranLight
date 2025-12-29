@@ -1,0 +1,432 @@
+/* ============================================================ */
+/* CALENDRIER HEGIRIEN - THEME QURANLIGHT PREMIUM (STYLE HADITHS) */
+/* ============================================================ */
+
+:root {
+  --gold: #b08d57;
+  --gold-bright: #d4bc96;
+  --gold-glow: rgba(176, 141, 87, 0.3);
+  --emerald-dark: #05140f;
+  --emerald-mid: #0a2d20;
+  --glass: rgba(255, 255, 255, 0.04);
+}
+
+/* --- BARRE DE NAVIGATION (BOUTON + TITRE + LOGO SUR UNE LIGNE) --- */
+.navigation-top {
+  display: flex;
+  align-items: center;
+  padding: 20px 25px;
+  position: relative; /* Nécessaire pour le centrage absolu du titre */
+  z-index: 10;
+  min-height: 60px;
+}
+
+.floating-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  background: rgba(10, 45, 32, 0.6);
+  border: 1px solid var(--gold);
+  border-radius: 8px; /* STYLE HADITH */
+  color: var(--gold);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.floating-back-btn:hover {
+  background: var(--gold);
+  color: #05140f;
+  box-shadow: 0 5px 15px var(--gold-glow);
+}
+
+/* --- SECTION HERO (TITRE & LOGO ALIGNÉS ET CENTRÉS) --- */
+.hero-intro-section {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%); /* Centrage horizontal parfait */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.hero-main-title {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin: 0;
+}
+
+.moon-logo {
+  font-size: 2.2rem;
+  color: var(--gold);
+  margin: 0;
+  filter: drop-shadow(0 0 15px var(--gold-glow));
+}
+
+/* --- TEXTES SECONDAIRES (PARFAITEMENT CENTRÉS EN DESSOUS) --- */
+.header-subtext {
+  text-align: center;
+  margin-top: 15px; /* Espace après la ligne du titre */
+  margin-bottom: 25px;
+  width: 100%;
+}
+
+.arabic-text {
+  font-size: 1.8rem;
+  color: var(--gold-bright);
+  font-weight: bold;
+  margin: 0;
+  display: block;
+}
+
+.french-translation {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+  margin-top: 5px;
+  display: block;
+}
+
+/* --- CONTENEUR CALENDRIER (STYLE HADITHS : BORDS CARRÉS) --- */
+.calendar-container {
+  max-width: 700px;
+  margin: 0 auto 20px auto;
+  padding: 25px 30px;
+  background: radial-gradient(
+    circle at top left,
+    var(--emerald-mid),
+    var(--emerald-dark)
+  );
+  border-radius: 12px; /* STYLE HADITH */
+  border: 1px solid rgba(176, 141, 87, 0.2);
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8),
+    inset 0 1px 20px rgba(176, 141, 87, 0.05);
+}
+
+/* Affichage de la date courante */
+.current-date-info {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.date-gregorian {
+  font-size: 0.8rem;
+  color: var(--gold-bright);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  opacity: 0.7;
+}
+
+.date-hijri {
+  font-size: 2rem;
+  background: linear-gradient(to bottom, #fff 30%, var(--gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-top: 5px;
+  font-weight: 900;
+}
+
+/* Navigation Mois */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 18px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+#calendar-month-year {
+  font-size: 1.1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.nav-button {
+  background: rgba(176, 141, 87, 0.1);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  width: 35px;
+  height: 35px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-button:hover {
+  background: var(--gold);
+  color: #05140f;
+}
+
+/* --- JOURS DE LA SEMAINE --- */
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(176, 141, 87, 0.2);
+}
+
+.day-name {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+}
+
+.main-txt {
+  color: var(--gold);
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.arabic-txt {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.55rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+/* Grille des jours */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.day {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  transition: 0.3s ease;
+  cursor: pointer;
+  color: #fff;
+}
+
+.day:hover:not(.empty-day) {
+  background: rgba(176, 141, 87, 0.1);
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.gregorian-num {
+  font-size: 1rem;
+  font-weight: 700;
+}
+.hijri-num {
+  font-size: 0.65rem;
+  color: var(--gold-bright);
+  opacity: 0.8;
+}
+
+/* JOUR ACTUEL */
+.day.current-day {
+  background: var(--gold) !important;
+  box-shadow: 0 0 20px var(--gold-glow);
+  border: none;
+  transform: scale(1.05);
+  border-radius: 8px;
+}
+
+.day.current-day .gregorian-num,
+.day.current-day .hijri-num {
+  color: #05140f !important;
+  font-weight: 900;
+}
+
+.empty-day {
+  opacity: 0;
+  cursor: default;
+}
+
+/* --- SECTION EVENEMENTS --- */
+.events-section {
+  max-width: 700px;
+  margin: 20px auto 40px;
+  padding: 25px;
+  background: rgba(6, 26, 18, 0.6);
+  border-radius: 12px;
+  border: 1px solid rgba(176, 141, 87, 0.15);
+}
+
+.section-header {
+  text-align: center;
+}
+
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #fff;
+  margin: 0;
+}
+
+.header-divider {
+  width: 35px;
+  height: 2px;
+  background: var(--gold);
+  margin: 8px auto 20px;
+  border-radius: 5px;
+}
+
+/* ============================================================ */
+/* RESPONSIVE AJUSTÉ – NAVIGATION & CALENDRIER MOBILE           */
+/* ============================================================ */
+
+@media (max-width: 480px) {
+
+  /* ================= NAVIGATION ================= */
+
+  .navigation-top {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    padding: 10px 12px;
+    min-height: 55px;
+  }
+
+  .floating-back-btn {
+    grid-column: 1;
+    width: 32px !important;
+    height: 32px !important;
+    padding: 0 !important;
+    border-radius: 6px;
+    justify-content: center;
+    flex-shrink: 0;
+    z-index: 10;
+  }
+
+  .floating-back-btn span {
+    display: none;
+  }
+
+  .floating-back-btn i {
+    font-size: 1rem;
+  }
+
+  .hero-intro-section {
+    grid-column: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+    margin-left: 150px;
+  }
+
+  .hero-main-title {
+    font-size: 1rem !important;
+    letter-spacing: 1px;
+  }
+
+  .moon-logo {
+    font-size: 1rem !important;
+  }
+
+  .navigation-top::after {
+    content: "";
+    grid-column: 3;
+    width: 32px;
+  }
+
+  /* ================= TEXTES ================= */
+
+  .arabic-text {
+    font-size: 1.15rem;
+  }
+
+  .french-translation {
+    font-size: 0.72rem;
+    padding: 0 18px;
+  }
+
+  /* ================= CALENDRIER ================= */
+
+  .calendar-container {
+    width: 90%;
+    max-width: 320px;          /* 🔽 réduit */
+    padding: 10px 8px;         /* 🔽 compact */
+    margin: 0 8px 18px auto;   /* ➜ poussé à droite */
+  }
+
+  .date-hijri {
+    font-size: 1.15rem;        /* 🔽 */
+    text-align: center;
+  }
+
+  .calendar-grid {
+    gap: 3px;                  /* 🔽 */
+  }
+
+  .day {
+    border-radius: 4px;
+    padding: 3px 2px;          /* 🔽 */
+  }
+
+  .gregorian-num {
+    font-size: 0.7rem;
+  }
+
+  .hijri-num {
+    font-size: 0.45rem;
+  }
+
+  .main-txt {
+    font-size: 0.5rem;
+  }
+
+  .arabic-txt {
+    display: none;
+  }
+}
+
+/* ============================================================ */
+/* ULTRA PETITS ÉCRANS (moins de 340px)                          */
+/* ============================================================ */
+
+@media (max-width: 340px) {
+
+  .hero-main-title {
+    font-size: 0.1rem !important;
+  }
+
+  .navigation-top {
+    padding: 8px;
+  }
+
+  .calendar-container {
+    max-width: 280px;          /* encore plus petit */
+    margin-right: 6px;
+  }
+
+  .arabic-text {
+    font-size: 1.05rem;
+  }
+}

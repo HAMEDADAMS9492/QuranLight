@@ -1,0 +1,97 @@
+/* ============================================================
+   STYLES SPÉCIFIQUES : CALENDRIER - FLUIDIFIÉ
+   ============================================================ */
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+.calendar-header h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.nav-month-btn {
+    color: var(--color-gold);
+    font-size: 1.5rem;
+    padding: 10px;
+    border-radius: 12px; /* Coins arrondis modernes */
+    background-color: var(--bg-surface);
+    transition: transform var(--transition-speed);
+}
+.nav-month-btn:active {
+    transform: scale(0.95);
+    background-color: var(--color-green-brand);
+}
+
+/* Grille principale du calendrier */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    gap: 2px; /* Gap réduit pour un aspect plus compact */
+}
+
+/* Noms des jours de la semaine */
+.day-name {
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    padding: 10px 0;
+}
+
+/* Cellule de jour */
+.day-cell {
+    position: relative;
+    padding: 10px 0;
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 55px;
+    border-radius: 16px; /* Arrondi léger */
+    transition: all var(--transition-speed);
+    cursor: pointer;
+}
+
+.day-cell:active {
+    transform: scale(0.95);
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.day-number-greg {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.day-number-hijri {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* Mise en évidence du jour actif (aujourd'hui) */
+.day-cell.today {
+    background-color: var(--color-green-brand);
+    color: var(--text-main);
+    box-shadow: 0 4px 15px rgba(31, 78, 67, 0.5);
+}
+
+/* Mise en évidence des événements */
+.day-cell.event-day {
+    background-color: rgba(255, 193, 7, 0.15); /* Fond or très léger */
+    border: 1px solid var(--color-gold);
+}
+
+.event-marker {
+    position: absolute;
+    bottom: 3px;
+    width: 4px;
+    height: 4px;
+    background-color: var(--color-gold);
+    border-radius: 50%;
+}

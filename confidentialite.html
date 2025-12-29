@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mentions Légales - QuranLight</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      /* ======================================================== */
+      /* 1. CONFIGURATION DU THÈME PREMIUM (LUMINOSITÉ ÉQUILIBRÉE) */
+      /* ======================================================== */
+      :root {
+        --mp-green-bg: #0a1f16; /* Fond vert émeraude profond */
+        --mp-green-surface: rgba(18, 38, 30, 0.96); /* Surface plus riche */
+        --mp-gold: #c5a47e; /* Or mat prestige */
+        --mp-gold-bright: #f1d5a9; /* Or éclatant pour titres */
+        --text-main: #ffffff;
+        --text-muted: rgba(
+          255,
+          255,
+          255,
+          0.9
+        ); /* Texte plus blanc pour lisibilité */
+      }
+
+      body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        /* Dégradé radial pour éviter l'aspect trop sombre/plat */
+        background: radial-gradient(circle at center, #143025 0%, #060e0a 100%);
+        background-attachment: fixed;
+        color: var(--text-main);
+        line-height: 1.8;
+        padding: 20px;
+      }
+
+      /* ======================================================== */
+      /* 2. CONTAINER GLASSMORPHISM (ÉCRIN PREMIUM)               */
+      /* ======================================================== */
+      .legal-page-container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 50px;
+        background: var(--mp-green-surface);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 40px;
+        /* Bordure or subtile */
+        border: 1px solid rgba(197, 164, 126, 0.3);
+        box-shadow: 0 30px 100px rgba(0, 0, 0, 0.7);
+        animation: fadeInPage 0.8s ease-out;
+      }
+
+      /* ======================================================== */
+      /* 3. BOUTON RETOUR PILL                                    */
+      /* ======================================================== */
+      .back-btn {
+        color: var(--text-main);
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.08);
+        padding: 10px 22px;
+        border-radius: 50px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.4s ease;
+        margin-bottom: 40px;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+      }
+
+      .back-btn:hover {
+        background: var(--mp-gold);
+        color: #0a1f16;
+        border-color: var(--mp-gold);
+        transform: translateX(-5px);
+      }
+
+      /* ======================================================== */
+      /* 4. HEADER (CENTRE & LUMINEUX)                            */
+      /* ======================================================== */
+      .legal-header {
+        text-align: center;
+        margin-bottom: 60px;
+      }
+
+      .legal-header i {
+        font-size: 4rem;
+        color: var(--mp-gold-bright);
+        filter: drop-shadow(0 0 20px rgba(197, 164, 126, 0.5));
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        font-size: 2.8rem;
+        font-weight: 900;
+        margin: 10px 0;
+        background: linear-gradient(
+          180deg,
+          #ffffff 30%,
+          var(--mp-gold-bright) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .header-sub {
+        display: block; /* Force le bloc */
+        text-align: center; /* Centrage horizontal */
+        font-size: 1.15rem;
+        font-weight: 500;
+        color: var(--mp-gold-bright);
+        opacity: 1; /* Pleine visibilité */
+        margin-top: 10px;
+      }
+
+      /* ======================================================== */
+      /* 5. SECTIONS ET CONTENU                                   */
+      /* ======================================================== */
+      section {
+        margin-bottom: 45px;
+      }
+
+      h2 {
+        color: var(--mp-gold-bright);
+        font-size: 1.5rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 18px;
+        border-bottom: 1px solid rgba(197, 164, 126, 0.2);
+        padding-bottom: 12px;
+      }
+
+      h2 i {
+        font-size: 1.2rem;
+        color: #0a1f16;
+        background: var(--mp-gold-bright);
+        padding: 10px;
+        border-radius: 12px;
+      }
+
+      p {
+        font-size: 1.05rem;
+        font-weight: 400; /* Poids standard pour la lecture */
+        color: var(--text-muted);
+        margin-bottom: 15px;
+        text-align: justify;
+      }
+
+      /* Style spécifique pour les mises en avant */
+      .highlight {
+        color: var(--mp-gold-bright);
+        font-weight: 700;
+        text-shadow: 0 0 5px rgba(241, 213, 169, 0.2);
+      }
+
+      /* ======================================================== */
+      /* 6. FOOTER INTERNE ET ANIMATIONS                          */
+      /* ======================================================== */
+      .legal-footer-info {
+        text-align: center;
+        margin-top: 60px;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        font-weight: 600;
+        color: var(--mp-gold-bright);
+        letter-spacing: 1px;
+      }
+
+      @keyframes fadeInPage {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ADAPTABILITÉ MOBILE */
+      @media (max-width: 600px) {
+        .legal-page-container {
+          padding: 30px 20px;
+          margin: 10px;
+        }
+        h1 {
+          font-size: 2rem;
+        }
+        p {
+          text-align: left;
+        }
+        .back-btn {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="legal-page-container">
+      <a href="index.html" class="back-btn">
+        <i class="fas fa-chevron-left"></i> Accueil
+      </a>
+
+      <div class="legal-header">
+        <i class="fas fa-balance-scale"></i>
+        <h1>Mentions Légales et Confidentialité</h1>
+        <p class="header-sub">Transparence et Intégrité du projet QuranLight</p>
+      </div>
+
+      <section>
+        <h2><i class="fas fa-user-tie"></i> Éditeur de l'Application</h2>
+        <p>
+          L'application <span class="highlight">QuranLight</span> est une
+          plateforme dédiée à la pratique religieuse, développée avec excellence
+          par :
+        </p>
+        <p>
+          <strong>Équipe QuranLight Development</strong><br />
+          Contact : <span class="highlight">contact@quranlight.app</span><br />
+          Directeur de la publication : Le Responsable de l'équipe QuranLight Mr Hamed Adams
+        </p>
+      </section>
+
+      <section>
+        <h2><i class="fas fa-server"></i> Hébergement</h2>
+        <p>
+          Le site et les services web de QuranLight sont propulsés par des
+          serveurs haute performance chez :
+        </p>
+        <p>
+          <strong>Vercel Inc.</strong><br />
+          440 N Barranca Ave #4133<br />
+          Covina, CA 91723, USA<br />
+          Plateforme : <span class="highlight">www.vercel.com</span>
+        </p>
+      </section>
+
+      <section>
+        <h2><i class="fas fa-copyright"></i> Propriété Intellectuelle</h2>
+        <p>
+          L'ensemble du design, des icônes et des textes créatifs sont la
+          propriété exclusive de <span class="highlight">QuranLight</span>.
+        </p>
+        <p>
+          Les textes sacrés du <b>Saint Coran</b> ainsi que les algorithmes de
+          calcul des horaires de prières sont issus de bases de données
+          <b>Open Source</b>, utilisés ici pour le bénéfice et l'élévation de la
+          communauté mondiale.
+        </p>
+      </section>
+
+      <section>
+        <h2><i class="fas fa-envelope-open-text"></i> Contact & Support</h2>
+        <p>
+          Pour toute question relative au fonctionnement de l'application ou
+          pour signaler une amélioration technique, notre équipe est à votre
+          écoute via l'adresse email mentionnée ci-dessus.
+        </p>
+      </section>
+
+      <div class="legal-footer-info">
+        © 2025 QuranLight. Tous droits réservés.
+      </div>
+    </div>
+  </body>
+</html>

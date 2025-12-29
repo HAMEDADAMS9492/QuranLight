@@ -1,0 +1,78 @@
+/* ============================================================
+   STYLES SPÉCIFIQUES : RAMADAN - FLUIDIFIÉ
+   ============================================================ */
+
+.ramadan-header {
+    text-align: center;
+    padding: 1.5rem 0;
+}
+
+.ramadan-header h1 {
+    font-size: 2.5rem; /* Titre plus grand */
+    color: var(--color-gold);
+    font-weight: 900;
+}
+
+/* Carte de suivi principale */
+.fasting-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2.5rem 1.5rem; /* Padding augmenté */
+    border-radius: 24px;
+    
+    /* Fond uni Vert Émeraude avec un dégradé subtil */
+    background: linear-gradient(135deg, var(--color-green-brand) 0%, #15362c 100%);
+    border: 2px solid rgba(255, 255, 255, 0.1); /* Bordure légère */
+    
+    /* Ombre profonde pour le relief */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+.fasting-status {
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+.fasting-time {
+    font-family: var(--font-ui);
+    font-size: 4rem; /* Temps très visible */
+    font-weight: 300;
+    color: var(--color-gold);
+    line-height: 1.1;
+    letter-spacing: -2px;
+}
+
+.time-label {
+    font-size: 0.9rem;
+    margin-top: 10px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Indicateurs de progression */
+.progress-list {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-top: 2rem;
+}
+
+.progress-item {
+    text-align: center;
+    padding: 0 5px;
+}
+
+.progress-item h3 {
+    font-size: 2rem;
+    color: var(--color-gold);
+    font-weight: 700;
+}
+
+.progress-item p {
+    font-size: 0.75rem;
+    color: var(--text-main);
+    opacity: 0.8;
+}

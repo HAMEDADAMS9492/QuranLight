@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hadiths - QuranLight</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Amiri&family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="assets/css/hadiths.css" />
+  </head>
+  <body>
+    <div class="legal-page-container">
+      <a href="index.html" class="back-btn">
+        <i class="fas fa-chevron-left"></i>Accueil
+      </a>
+
+      <div class="legal-header">
+        <i class="fas fa-book-open"></i>
+        <h1>Collection d'Hadiths</h1>
+        <span class="header-sub">Paroles et enseignements prophétiques</span>
+      </div>
+
+      <div class="search-section">
+        <div class="search-bar">
+          <i class="fas fa-search"></i>
+          <input
+            type="text"
+            id="hadith-search"
+            placeholder="Rechercher par mot-clé (ex: Savoir, Paix)..."
+          />
+        </div>
+
+        <div class="filter-tabs" id="filter-tabs">
+          <button class="tab-btn active" data-cat="all">Tous</button>
+          <button class="tab-btn" data-cat="bukhari">Al-Bukhari</button>
+          <button class="tab-btn" data-cat="muslim">Muslim</button>
+          <button class="tab-btn" data-cat="nawawi">40 Nawawi</button>
+        </div>
+      </div>
+
+      <div id="hadiths-display" class="hadiths-grid"></div>
+
+      <div class="legal-footer-info">
+        © 2025 QuranLight - Source : Sahih Bukhari & Muslim
+      </div>
+    </div>
+
+    <script src="assets/js/hadiths_logic.js"></script>
+  </body>
+</html>
