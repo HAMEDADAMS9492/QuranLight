@@ -512,15 +512,19 @@
     <script>
       let allSurahsData = [];
 
-      // 1. OUVERTURE DU PANNEAU AVEC APPEL API
+      // 1. OUVERTURE DU PANNEAU ET CHARGEMENT DES SOURATES
       async function goToLibrary(id, name) {
         const panel = document.getElementById("surahPanel");
         const listContainer = document.getElementById("surahListContainer");
+
         document.getElementById("panelReciterName").innerText = name;
         panel.style.display = "flex";
+
+        // Feedback visuel pendant le chargement
         listContainer.innerHTML =
           '<div style="text-align:center; padding:50px; color:var(--color-gold);"><i class="fas fa-spinner fa-spin fa-2x"></i></div>';
 
+        // Stockage temporaire pour savoir quel récitateur est sélectionné
         localStorage.setItem("tempReciterId", id);
         localStorage.setItem("tempReciterName", name);
 
@@ -531,40 +535,41 @@
           renderSurahList(allSurahsData, id, name);
         } catch (error) {
           listContainer.innerHTML =
-            '<p style="text-align:center;">Erreur de chargement.</p>';
+            '<p style="text-align:center; color:white;">Erreur de connexion à l\'API.</p>';
         }
       }
 
+      // 2. FERMETURE DU PANNEAU
       function closeSurahPanel() {
         document.getElementById("surahPanel").style.display = "none";
       }
 
+      // 3. AFFICHAGE DE LA LISTE DANS LE PANNEAU
       function renderSurahList(surahs, reciterId, reciterName) {
         const listContainer = document.getElementById("surahListContainer");
         listContainer.innerHTML = surahs
           .map(
             (surah) => `
-                <div class="surah-item" onclick="handleSurahSelection('${reciterId}', ${
+            <div class="surah-item" onclick="handleSurahSelection('${reciterId}', ${
               surah.number
             }, '${reciterName}', '${surah.englishName.replace(/'/g, "\\'")}')">
-                    <div class="number-box">${surah.number}</div>
-                    <div class="surah-info-main">
-                        <div class="surah-text-left">
-                            <span class="surah-name-fr">${
-                              surah.englishName
-                            }</span>
-                            <span class="surah-sub-info">${
-                              surah.revelationType
-                            } • ${surah.numberOfAyahs} Versets</span>
-                        </div>
-                        <div class="surah-name-ar">${surah.name}</div>
+                <div class="number-box">${surah.number}</div>
+                <div class="surah-info-main">
+                    <div class="surah-text-left">
+                        <span class="surah-name-fr">${surah.englishName}</span>
+                        <span class="surah-sub-info">${
+                          surah.revelationType
+                        } • ${surah.numberOfAyahs} AYATS</span>
                     </div>
+                    <div class="surah-name-ar">${surah.name}</div>
                 </div>
-            `
+            </div>
+        `
           )
           .join("");
       }
 
+      // 4. FILTRE DE RECHERCHE
       function filterSurahs() {
         const query = document
           .getElementById("surahSearchInput")
@@ -580,21 +585,20 @@
         renderSurahList(filtered, id, name);
       }
 
+      // 5. SELECTION ET REDIRECTION VERS PLAYER.HTML
       function handleSurahSelection(
         reciterId,
         surahNum,
         reciterName,
         surahName
       ) {
-        localStorage.setItem("currentReciterId", reciterId);
-        localStorage.setItem("currentReciterName", reciterName);
-        localStorage.setItem("currentSurahNum", surahNum);
-
         const padded = surahNum.toString().padStart(3, "0");
         let audioUrl = "";
+
+        // Logique des serveurs MP3 selon le récitateur
         switch (reciterId) {
           case "ar.abdulbasitmurattal":
-            audioUrl = `https://server7.mp3quran.net/basit/murattal/${padded}.mp3`;
+            audioUrl = `https://cdn.islamic.network/quran/audio-surah/128/ar.abdulbasitmurattal/${surahNum}.mp3`;
             break;
           case "ar.sudais":
             audioUrl = `https://server11.mp3quran.net/sds/${padded}.mp3`;
@@ -615,87 +619,39 @@
             audioUrl = `https://cdn.islamic.network/quran/audio-surah/128/${reciterId}/${surahNum}.mp3`;
         }
 
-        playSelectedAudio(audioUrl, surahName, reciterName);
-        closeSurahPanel();
+        // Récupération dynamique de l'image du récitateur sur la page
+        const reciterCards = document.querySelectorAll(".reciter-card-circle");
+        let reciterImg = "assets/image/Logo.jpg"; // Image par défaut
+
+        reciterCards.forEach((card) => {
+          if (
+            card.getAttribute("onclick") &&
+            card.getAttribute("onclick").includes(reciterId)
+          ) {
+            const imgTag = card.querySelector("img");
+            if (imgTag) reciterImg = imgTag.src;
+          }
+        });
+
+        // SAUVEGARDE DES DONNÉES POUR LE PLAYER
+        localStorage.setItem("player_url", audioUrl);
+        localStorage.setItem("player_title", surahName);
+        localStorage.setItem("player_artist", reciterName);
+        localStorage.setItem("player_img", reciterImg);
+
+        // Données techniques pour la navigation Suivant/Précédent dans player.html
+        localStorage.setItem("currentReciterId", reciterId);
+        localStorage.setItem("currentReciterName", reciterName);
+        localStorage.setItem("currentSurahNum", surahNum);
+
+        // REDIRECTION
+        window.location.href = "player.html";
       }
 
-      function nextSurah() {
-        let currentNum = parseInt(
-          localStorage.getItem("currentSurahNum") || "0"
-        );
-        if (currentNum < 114) changeTrack(currentNum + 1);
-      }
-
-      function prevSurah() {
-        let currentNum = parseInt(
-          localStorage.getItem("currentSurahNum") || "0"
-        );
-        if (currentNum > 1) changeTrack(currentNum - 1);
-      }
-
-      function changeTrack(newSurahNum) {
-        const id = localStorage.getItem("currentReciterId");
-        const name = localStorage.getItem("currentReciterName");
-        if (id)
-          handleSurahSelection(id, newSurahNum, name, "Sourate " + newSurahNum);
-      }
-
-      function playSelectedAudio(url, title, artist) {
-        const audioPlayer = document.getElementById("mainAudio");
-        const playBtn = document.querySelector(".play-pause i");
-        if (audioPlayer) {
-          audioPlayer.src = url;
-          audioPlayer.load();
-
-          // Mise à jour de l'UI si les éléments existent
-          const titleEl = document.getElementById("playerTitle");
-          const artistEl = document.getElementById("playerArtist");
-          if (titleEl) titleEl.innerText = title;
-          if (artistEl) artistEl.innerText = artist;
-
-          audioPlayer
-            .play()
-            .then(() => {
-              if (playBtn) playBtn.className = "fas fa-pause";
-            })
-            .catch((e) =>
-              console.log("L'utilisateur doit interagir avec la page d'abord.")
-            );
-
-          audioPlayer.onended = () => {
-            nextSurah();
-          };
-        }
-      }
-
-      window.addEventListener("DOMContentLoaded", () => {
-        // Correction de la sélection des boutons
-        const btnNext =
-          document.querySelector(".fa-step-forward")?.closest("button") ||
-          document.querySelector(".fa-step-forward")?.parentElement;
-        const btnPrev =
-          document.querySelector(".fa-step-backward")?.closest("button") ||
-          document.querySelector(".fa-step-backward")?.parentElement;
-
-        if (btnNext)
-          btnNext.onclick = (e) => {
-            e.preventDefault();
-            nextSurah();
-          };
-        if (btnPrev)
-          btnPrev.onclick = (e) => {
-            e.preventDefault();
-            prevSurah();
-          };
-      });
-    </script>
-
-    <script>
-      // Ce script fait le pont entre l'iframe et votre page
+      // 6. GESTION DU CHATBOT (IFRAME)
       window.addEventListener("message", function (event) {
         const iframe = document.querySelector('iframe[src="chatbot.html"]');
         if (iframe) {
-          // Sécurité : on vérifie que l'iframe existe
           if (event.data === "openChat") {
             iframe.classList.add("chat-opened");
           } else if (event.data === "closeChat") {

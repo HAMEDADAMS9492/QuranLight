@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lecture Premium | Al-Quran</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --gold: #b08d57;
+        --emerald-deep: #05140f;
+        --emerald-light: #0d3a27;
+      }
+
+      * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        margin: 0;
+        background: linear-gradient(
+          to bottom,
+          #0d3a27 0%,
+          #05140f 40%,
+          #000 100%
+        );
+        color: white;
+        font-family: "Inter", sans-serif;
+        height: 100dvh;
+        display: flex;
+        justify-content: center;
+        align-items: center; /* Centre le lecteur verticalement sur grand écran */
+        overflow: hidden;
+      }
+
+      /* --- CONTAINER PRINCIPAL --- */
+      .player-container {
+        width: 100%;
+        max-width: 420px; /* Largeur type smartphone même sur PC */
+        height: 95vh; /* Prend presque toute la hauteur */
+        display: flex;
+        flex-direction: column;
+        padding: 0 25px;
+        justify-content: space-between;
+      }
+
+      /* --- HEADER --- */
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 0;
+        flex-shrink: 0;
+      }
+      .header i {
+        font-size: 1.2rem;
+        color: #ccc;
+        cursor: pointer;
+      }
+      .header span {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #eee;
+      }
+
+      /* --- ALBUM ART (Zone qui s'adapte) --- */
+      .art-wrapper {
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 0; /* Permet à la zone de réduire si besoin */
+      }
+      .album-art {
+        width: 100%;
+        max-width: 320px;
+        max-height: 40vh; /* L'image ne dépassera jamais 40% de la hauteur de l'écran */
+        aspect-ratio: 1/1;
+        border-radius: 12px;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
+        object-fit: cover;
+        animation: scaleIn 0.8s ease;
+      }
+
+      /* --- INFO ZONE --- */
+      .info-container {
+        padding: 20px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+      }
+      .info-text h1 {
+        font-size: 1.5rem;
+        margin: 0;
+        font-weight: 800;
+      }
+      .info-text p {
+        margin: 5px 0 0;
+        color: #b3b3b3;
+        font-size: 1rem;
+      }
+      .like-btn {
+        font-size: 1.4rem;
+        color: #1ed760;
+      }
+
+      /* --- CONTROLS --- */
+      .controls-wrapper {
+        flex-shrink: 0;
+      }
+
+      .progress-container {
+        width: 100%;
+        margin-bottom: 5px;
+      }
+
+      #progress-range {
+        width: 100%;
+        -webkit-appearance: none;
+        background: rgba(255, 255, 255, 0.2);
+        height: 4px;
+        border-radius: 2px;
+        outline: none;
+        cursor: pointer;
+      }
+
+      #progress-range::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 12px;
+        height: 12px;
+        background: white;
+        border-radius: 50%;
+      }
+
+      .time {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.75rem;
+        color: #b3b3b3;
+        margin-top: 8px;
+      }
+
+      .main-btns {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 0 30px;
+      }
+      .secondary-btn {
+        font-size: 1.2rem;
+        color: #b3b3b3;
+        cursor: pointer;
+      }
+      .step-btn {
+        font-size: 2rem;
+        color: white;
+        cursor: pointer;
+      }
+
+      .play-circle {
+        width: 65px;
+        height: 65px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: black;
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+
+      /* --- COPYRIGHT --- */
+      .copyright-zone {
+        text-align: center;
+        padding-bottom: 20px;
+        font-size: 0.6rem;
+        color: rgba(255, 255, 255, 0.3);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        font-weight: 600;
+        flex-shrink: 0;
+      }
+
+      @keyframes scaleIn {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="player-container">
+      <header class="header">
+        <i class="fas fa-chevron-down" onclick="handleBack()"></i>
+        <span>Bibliotheque de lecture</span>
+        <i class="fas fa-ellipsis-h"></i>
+      </header>
+
+      <div class="art-wrapper">
+        <img src="" id="art" class="album-art" alt="Récitateur" />
+      </div>
+
+      <div class="info-container">
+        <div class="info-text">
+          <h1 id="surah-title">Chargement...</h1>
+          <p id="reciter-name">Récitateur</p>
+        </div>
+        <i class="fas fa-check-circle like-btn"></i>
+      </div>
+
+      <div class="controls-wrapper">
+        <div class="progress-container">
+          <input
+            type="range"
+            id="progress-range"
+            value="0"
+            min="0"
+            max="100"
+            step="0.1"
+          />
+          <div class="time">
+            <span id="current">0:00</span>
+            <span id="duration">0:00</span>
+          </div>
+        </div>
+
+        <div class="main-btns">
+          <i class="fas fa-random secondary-btn"></i>
+          <i class="fas fa-step-backward step-btn" id="prev-btn"></i>
+          <div class="play-circle" id="play-btn">
+            <i class="fas fa-play" id="play-icon"></i>
+          </div>
+          <i class="fas fa-step-forward step-btn" id="next-btn"></i>
+          <i class="fas fa-redo-alt secondary-btn"></i>
+        </div>
+      </div>
+
+      <div class="copyright-zone">&copy; QuranLight</div>
+    </div>
+
+    <audio id="main-audio"></audio>
+
+    <script>
+      const audio = document.getElementById("main-audio");
+      const playBtn = document.getElementById("play-btn");
+      const playIcon = document.getElementById("play-icon");
+      const progress = document.getElementById("progress-range");
+      const currentTimeEl = document.getElementById("current");
+      const durationTimeEl = document.getElementById("duration");
+      const nextBtn = document.getElementById("next-btn");
+      const prevBtn = document.getElementById("prev-btn");
+
+      const surahNames = [
+        "Al-Fatihah",
+        "Al-Baqarah",
+        "Al-Imran",
+        "An-Nisa",
+        "Al-Ma'idah",
+        "Al-An'am",
+        "Al-A'raf",
+        "Al-Anfal",
+        "At-Tawbah",
+        "Yunus",
+        "Hud",
+        "Yusuf",
+        "Ar-Ra'd",
+        "Ibrahim",
+        "Al-Hijr",
+        "An-Nahl",
+        "Al-Isra",
+        "Al-Kahf",
+        "Maryam",
+        "Ta-Ha",
+        "Al-Anbiya",
+        "Al-Hajj",
+        "Al-Mu'minun",
+        "An-Nur",
+        "Al-Furqan",
+        "Ash-Shu'ara",
+        "An-Naml",
+        "Al-Qasas",
+        "Al-Ankabut",
+        "Ar-Rum",
+        "Luqman",
+        "As-Sajdah",
+        "Al-Ahzab",
+        "Saba",
+        "Fatir",
+        "Ya-Sin",
+        "As-Saffat",
+        "Sad",
+        "Az-Zumar",
+        "Ghafir",
+        "Fussilat",
+        "Ash-Shura",
+        "Az-Zukhruf",
+        "Ad-Dukhan",
+        "Al-Jathiyah",
+        "Al-Ahqaf",
+        "Muhammad",
+        "Al-Fath",
+        "Al-Hujurat",
+        "Qaf",
+        "Adh-Dhariyat",
+        "At-Tur",
+        "An-Najm",
+        "Al-Qamar",
+        "Ar-Rahman",
+        "Al-Waqi'ah",
+        "Al-Hadid",
+        "Al-Mujadilah",
+        "Al-Hashr",
+        "Al-Mumtahanah",
+        "As-Saff",
+        "Al-Jumu'ah",
+        "Al-Munafiqun",
+        "At-Taghabun",
+        "At-Talaq",
+        "At-Tahrim",
+        "Al-Mulk",
+        "Al-Qalam",
+        "Al-Haqqah",
+        "Al-Ma'arij",
+        "Nuh",
+        "Al-Jinn",
+        "Al-Muzzammil",
+        "Al-Muddaththir",
+        "Al-Qiyamah",
+        "Al-Insan",
+        "Al-Mursalat",
+        "An-Naba",
+        "An-Nazi'at",
+        "Abasa",
+        "At-Takwir",
+        "Al-Infitar",
+        "Al-Mutaffifin",
+        "Al-Inshiqaq",
+        "Al-Buruj",
+        "At-Tariq",
+        "Al-A'la",
+        "Al-Ghashiyah",
+        "Al-Fajr",
+        "Al-Balad",
+        "Ash-Shams",
+        "Al-Layl",
+        "Ad-Duha",
+        "Ash-Sharh",
+        "At-Tin",
+        "Al-Alaq",
+        "Al-Qadr",
+        "Al-Bayyinah",
+        "Az-Zalzalah",
+        "Al-Adiyat",
+        "Al-Qari'ah",
+        "At-Takathur",
+        "Al-Asr",
+        "Al-Humazah",
+        "Al-Fil",
+        "Quraysh",
+        "Al-Ma'un",
+        "Al-Kawthar",
+        "Al-Kafirun",
+        "An-Nasr",
+        "Al-Masad",
+        "Al-Ikhlas",
+        "Al-Falaq",
+        "An-Nas",
+      ];
+
+      window.onload = () => {
+        loadTrack();
+      };
+
+      function loadTrack() {
+        const url = localStorage.getItem("player_url");
+        const artist = localStorage.getItem("player_artist");
+        const img = localStorage.getItem("player_img");
+        const num = parseInt(localStorage.getItem("currentSurahNum") || "1");
+
+        if (url) {
+          document.getElementById("surah-title").innerText = `${num}. ${
+            surahNames[num - 1]
+          }`;
+          document.getElementById("reciter-name").innerText = artist;
+          document.getElementById("art").src =
+            img || "assets/image/default-quran.jpg";
+          audio.src = url;
+          audio.play().catch((e) => console.log("Lecture auto bloquée"));
+          updateUI();
+        }
+      }
+
+      playBtn.addEventListener("click", () => {
+        audio.paused ? audio.play() : audio.pause();
+        updateUI();
+      });
+
+      function updateUI() {
+        if (audio.paused) {
+          playIcon.className = "fas fa-play";
+          playIcon.style.transform = "translateX(2px)";
+        } else {
+          playIcon.className = "fas fa-pause";
+          playIcon.style.transform = "translateX(0px)";
+        }
+      }
+
+      audio.addEventListener("timeupdate", () => {
+        if (!isNaN(audio.duration)) {
+          const percent = (audio.currentTime / audio.duration) * 100;
+          progress.value = percent;
+          progress.style.background = `linear-gradient(to right, white ${percent}%, rgba(255,255,255,0.2) ${percent}%)`;
+          currentTimeEl.innerText = formatTime(audio.currentTime);
+          durationTimeEl.innerText = formatTime(audio.duration);
+        }
+      });
+
+      progress.addEventListener("input", () => {
+        const seekTime = (progress.value / 100) * audio.duration;
+        audio.currentTime = seekTime;
+      });
+
+      function formatTime(seconds) {
+        const min = Math.floor(seconds / 60);
+        const sec = Math.floor(seconds % 60);
+        return `${min}:${sec < 10 ? "0" + sec : sec}`;
+      }
+
+      nextBtn.onclick = () => changeSurah(1);
+      prevBtn.onclick = () => changeSurah(-1);
+
+      function changeSurah(dir) {
+        let currentNum = parseInt(
+          localStorage.getItem("currentSurahNum") || "1"
+        );
+        let reciterId = localStorage.getItem("currentReciterId");
+        let newNum = currentNum + dir;
+
+        if (newNum >= 1 && newNum <= 114) {
+          const padded = newNum.toString().padStart(3, "0");
+          let newUrl = "";
+
+          if (reciterId === "ar.abdulbasitmurattal")
+            newUrl = `https://server7.mp3quran.net/basit/murattal/${padded}.mp3`;
+          else if (reciterId === "ar.sudais")
+            newUrl = `https://server11.mp3quran.net/sds/${padded}.mp3`;
+          else if (reciterId === "ar.alafasy")
+            newUrl = `https://server8.mp3quran.net/afs/${padded}.mp3`;
+          else if (reciterId === "ar.hanirifai")
+            newUrl = `https://server8.mp3quran.net/hani/${padded}.mp3`;
+          else if (reciterId === "ar.shatri")
+            newUrl = `https://server11.mp3quran.net/shatri/${padded}.mp3`;
+          else
+            newUrl = `https://cdn.islamic.network/quran/audio-surah/128/${reciterId}/${newNum}.mp3`;
+
+          localStorage.setItem("player_url", newUrl);
+          localStorage.setItem("currentSurahNum", newNum);
+          loadTrack();
+        }
+      }
+
+      audio.onended = () => changeSurah(1);
+
+      function handleBack() {
+        document.body.style.opacity = "0";
+        setTimeout(() => window.history.back(), 300);
+      }
+    </script>
+  </body>
+</html>

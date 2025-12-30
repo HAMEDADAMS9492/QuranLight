@@ -19,12 +19,40 @@ let currentDisplayDate = new Date();
 // ============================================================
 // 1. GESTION DES COORDONNÉES ET PRÉFÉRENCES
 // ============================================================
+
 function getCoords() {
   const stored = localStorage.getItem("userLocation");
   if (stored) {
-    return JSON.parse(stored);
+    try {
+      return JSON.parse(stored);
+    } catch (e) {
+      console.error("Erreur de lecture du cache localisation", e);
+      return null;
+    }
   }
-  return { lat: 9.0765, lng: 7.3986, city: "Abuja, Nigeria" };
+  return null;
+}
+
+function saveAndInitLocation(data) {
+  if (data && data.lat && data.lng) {
+    localStorage.setItem("userLocation", JSON.stringify(data));
+    updateLocationUI(data.city);
+
+    if (typeof updateSalatUI === "function") {
+      updateSalatUI();
+    }
+
+    if (
+      document.getElementById("next-prayer-name") &&
+      typeof updateHomePrayerMini === "function"
+    ) {
+      updateHomePrayerMini(data);
+    }
+  }
+}
+
+function isUserLocated() {
+  return localStorage.getItem("userLocation") !== null;
 }
 
 // ============================================================
@@ -32,12 +60,20 @@ function getCoords() {
 // ============================================================
 async function getPrayerTimes(date) {
   const coords = getCoords();
+
+  // Si pas de coordonnées, on utilise simulateTimes en attendant la détection
+  if (!coords) return simulateTimes(date);
+
+  // Utilisation du timestamp pour la date spécifique
   const timestamp = Math.floor(date.getTime() / 1000);
+  // Ajout de &iso8601=true pour un parsing plus simple si besoin, mais on reste sur ton format
   const url = `https://api.aladhan.com/v1/timings/${timestamp}?latitude=${coords.lat}&longitude=${coords.lng}&method=3`;
 
   try {
     const response = await fetch(url);
     const resData = await response.json();
+    if (!resData.data) throw new Error("Format API invalide");
+
     const t = resData.data.timings;
 
     return [
@@ -49,7 +85,7 @@ async function getPrayerTimes(date) {
       parseTimeToDate(t.Isha, date),
     ];
   } catch (error) {
-    console.error("Erreur API", error);
+    console.error("Erreur API Aladhan, bascule sur simulation:", error);
     return simulateTimes(date);
   }
 }
@@ -67,7 +103,6 @@ function parseTimeToDate(timeStr, baseDate) {
 function findNextPrayer(times) {
   const now = new Date();
   for (let i = 0; i < times.length; i++) {
-    // On ignore Sunrise (index 1) pour la prochaine prière
     if (i !== 1 && times[i] > now) {
       return {
         name: PRAYER_NAMES_FR[i],
@@ -77,7 +112,6 @@ function findNextPrayer(times) {
       };
     }
   }
-  // Si aucune trouvée, c'est le Fajr du lendemain
   const tomorrowFajr = new Date(times[0]);
   tomorrowFajr.setDate(tomorrowFajr.getDate() + 1);
   return {
@@ -102,22 +136,33 @@ function findCurrentPrayer(times) {
 // ============================================================
 async function updateSalatUI() {
   const coords = getCoords();
-  const times = await getPrayerTimes(currentDisplayDate);
-  const isToday =
-    currentDisplayDate.toDateString() === new Date().toDateString();
 
+  // 1. Si pas de coordonnées, on lance la détection et on stoppe
+  if (!coords) {
+    initLocation();
+    return;
+  }
+
+  // 2. Récupération des horaires et vérification du jour
+  const times = await getPrayerTimes(currentDisplayDate);
+  const now = new Date();
+  const isToday = currentDisplayDate.toDateString() === now.toDateString();
+
+  // 3. Mise à jour du Header (Ville et Dates)
   const cityEl = document.getElementById("header-location");
   if (cityEl) {
     cityEl.innerHTML = `<i class="fa-solid fa-location-dot"></i> ${coords.city}`;
   }
 
-  document.getElementById("gregorian-date").textContent =
-    currentDisplayDate.toLocaleDateString("fr-FR", {
+  const gregDateEl = document.getElementById("gregorian-date");
+  if (gregDateEl) {
+    gregDateEl.textContent = currentDisplayDate.toLocaleDateString("fr-FR", {
       weekday: "short",
       day: "numeric",
       month: "long",
       year: "numeric",
     });
+  }
 
   const hijriSmall = document.getElementById("hijri-date-small");
   if (hijriSmall) {
@@ -128,46 +173,52 @@ async function updateSalatUI() {
     }).format(currentDisplayDate);
   }
 
-  // LISTE DES PRIÈRES
+  // 4. Génération de la liste des prières
   const listContainer = document.getElementById("prayer-list-container");
   if (listContainer) {
     listContainer.innerHTML = "";
+    // On ne cherche la prière actuelle que si on regarde la date d'aujourd'hui
     const curr = isToday ? findCurrentPrayer(times) : { index: -1 };
 
     PRAYER_NAMES_FR.forEach((name, i) => {
       const wrapper = document.createElement("div");
       wrapper.className = "prayer-full-row";
-      const showAlarm = i !== 1;
+
+      const isCurrent = isToday && i === curr.index;
+      const showAlarm = i !== 1; // Pas d'alarme pour Chourouk (Sunrise)
 
       wrapper.innerHTML = `
-                <li class="prayer-row ${
-                  isToday && i === curr.index ? "current-prayer" : ""
-                }">
-                    <div class="prayer-name-wrapper">
-                        <i class="${PRAYER_ICONS[i]}"></i>
-                        <span class="prayer-name-text">${name}</span>
-                    </div>
-                    <span class="prayer-time-value">${times[
-                      i
-                    ].toLocaleTimeString("fr-FR", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}</span>
-                </li>
-                ${
-                  showAlarm
-                    ? `<button class="notification-btn active"><i class="fas fa-bell"></i></button>`
-                    : `<div style="width:40px"></div>`
-                }
-            `;
+        <li class="prayer-row ${isCurrent ? "current-prayer" : ""}">
+            <div class="prayer-name-wrapper">
+                <i class="${PRAYER_ICONS[i]}"></i>
+                <span class="prayer-name-text">${name}</span>
+            </div>
+            <span class="prayer-time-value">${times[i].toLocaleTimeString(
+              "fr-FR",
+              {
+                hour: "2-digit",
+                minute: "2-digit",
+              }
+            )}</span>
+        </li>
+        ${
+          showAlarm
+            ? `<button class="notification-btn active"><i class="fas fa-bell"></i></button>`
+            : `<div style="width:40px"></div>`
+        }
+      `;
       listContainer.appendChild(wrapper);
     });
   }
+
+  // 5. Logique spécifique à "AUJOURD'HUI" (Compte à rebours et détails)
+  const timerEl = document.getElementById("countdown-timer");
 
   if (isToday) {
     const next = findNextPrayer(times);
     const curr = findCurrentPrayer(times);
 
+    // Mise à jour des textes de résumé
     const currNameEl = document.getElementById("current-prayer-name");
     const nextNameEl = document.getElementById("next-prayer-name-detail");
     const nextTimeEl = document.getElementById("next-prayer-time-detail");
@@ -181,11 +232,17 @@ async function updateSalatUI() {
       });
     }
 
+    // Lancement du compte à rebours et du carrousel
     updateCountdown(next.time);
-    generatePrayerCarousel(times, next.index);
+    if (typeof generatePrayerCarousel === "function") {
+      generatePrayerCarousel(times, next.index);
+    }
   } else {
-    const timerEl = document.getElementById("countdown-timer");
+    // Si on regarde un autre jour, on stoppe le timer
+    if (window.countdownInterval) clearInterval(window.countdownInterval);
     if (timerEl) timerEl.textContent = "--:--:--";
+
+    // On peut aussi vider ou masquer le carrousel ici si nécessaire
   }
 }
 
@@ -244,10 +301,9 @@ function generatePrayerCarousel(times, nextIdx) {
 }
 
 // ============================================================
-// 5. INITIALISATION ET GESTION SIDEBAR
+// 5. INITIALISATION ET GESTION SIDEBAR (PAGE SALAT)
 // ============================================================
 document.addEventListener("DOMContentLoaded", () => {
-  // Navigation jours
   const prevBtn = document.getElementById("prev-day-btn");
   const nextBtn = document.getElementById("next-day-btn");
 
@@ -264,20 +320,17 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  // Sync / Refresh Localisation
   const syncBtn = document.getElementById("sync-location-btn");
   if (syncBtn) {
     syncBtn.addEventListener("click", () => {
-      // Option A : Si tu veux juste rafraîchir la page actuelle
-      window.location.reload(); 
-
-      // Option B : Si tu veux réinitialiser la position ET rester sur salat.html
-      // localStorage.removeItem("userLocation");
-      // window.location.reload();
+      localStorage.removeItem("userLocation");
+      syncBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     });
   }
 
-  // AJOUT : Gestion de la sidebar pour cette page
   const sidebar = document.getElementById("sidebar");
   const menuToggle = document.getElementById("menu-toggle");
   const overlay = document.getElementById("sidebar-overlay");
@@ -293,17 +346,36 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  updateSalatUI();
-});
+  // --- LANCEMENT INITIAL ---
 
+  const coordsExist = getCoords();
+
+  if (coordsExist) {
+    // CAS 1 : On a déjà la ville en mémoire.
+    // On peut afficher les horaires tout de suite.
+    updateSalatUI();
+  } else {
+    // CAS 2 : On ne sait pas où est l'utilisateur.
+    // On lance la détection.
+    // IMPORTANT : C'est initLocation qui appellera updateSalatUI
+    // une fois qu'il aura fini de trouver la ville.
+    initLocation();
+  }
+});
 function simulateTimes(date) {
-  const d = new Date(date);
+  // On crée une base propre pour éviter que les heures s'accumulent
+  const b = (h, m) => {
+    const d = new Date(date);
+    d.setHours(h, m, 0, 0);
+    return d;
+  };
+
   return [
-    new Date(d.setHours(5, 30)),
-    new Date(d.setHours(6, 45)),
-    new Date(d.setHours(12, 30)),
-    new Date(d.setHours(15, 45)),
-    new Date(d.setHours(18, 20)),
-    new Date(d.setHours(19, 45)),
+    b(5, 30), // Fajr
+    b(6, 45), // Chourouk
+    b(12, 30), // Dohr
+    b(15, 45), // Asr
+    b(18, 20), // Maghreb
+    b(19, 45), // Icha
   ];
 }

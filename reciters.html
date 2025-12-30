@@ -316,17 +316,17 @@
         container.innerHTML = list
           .map(
             (r) => `
-                <div class="reciter-card-premium" onclick="openSurahs('${r.id}', '${r.name}')">
-                    <div class="reciter-avatar-box">
-                        <img src="${r.img}" alt="${r.name}" onerror="this.src='https://ui-avatars.com/api/?name=${r.name}&background=0d3a27&color=b08d57'">
-                    </div>
-                    <div class="reciter-meta">
-                        <span class="name-fr">${r.name}</span>
-                        <span class="name-ar">${r.ar}</span>
-                    </div>
-                    <i class="fas fa-chevron-right" style="color: var(--color-gold); opacity: 0.5;"></i>
+            <div class="reciter-card-premium" onclick="openSurahs('${r.id}', '${r.name}')">
+                <div class="reciter-avatar-box">
+                    <img src="${r.img}" alt="${r.name}" onerror="this.src='https://ui-avatars.com/api/?name=${r.name}&background=0d3a27&color=b08d57'">
                 </div>
-            `
+                <div class="reciter-meta">
+                    <span class="name-fr">${r.name}</span>
+                    <span class="name-ar">${r.ar}</span>
+                </div>
+                <i class="fas fa-chevron-right" style="color: var(--color-gold); opacity: 0.5;"></i>
+            </div>
+        `
           )
           .join("");
       }
@@ -358,14 +358,19 @@
         content.innerHTML = list
           .map(
             (s) => `
-                <div class="surah-item" onclick="selectAudio('${currentReciter.id}', ${s.number}, '${currentReciter.name}', '${s.englishName}')">
-                    <div style="display:flex; align-items:center;">
-                        <div class="surah-num">${s.number}</div>
-                        <span class="surah-name-en">${s.englishName}</span>
-                    </div>
-                    <span class="surah-name-ar">${s.name}</span>
+            <div class="surah-item" onclick="selectAudio('${
+              currentReciter.id
+            }', ${s.number}, '${currentReciter.name}', '${s.englishName.replace(
+              /'/g,
+              "\\'"
+            )}')">
+                <div style="display:flex; align-items:center;">
+                    <div class="surah-num">${s.number}</div>
+                    <span class="surah-name-en">${s.englishName}</span>
                 </div>
-            `
+                <span class="surah-name-ar">${s.name}</span>
+            </div>
+        `
           )
           .join("");
       }
@@ -392,12 +397,13 @@
         displaySurahs(filtered);
       }
 
+      // --- LOGIQUE DE LECTURE VERS PLAYER.HTML ---
       function selectAudio(reciterId, surahNum, reciterName, surahName) {
         const padded = surahNum.toString().padStart(3, "0");
-
-        // Logique d'URL optimisée
         let audioUrl = "";
-        const mp3QuranServers = {
+
+        // Même logique de serveur que sur l'index
+        const servers = {
           "ar.abdulbasitmurattal":
             "https://server7.mp3quran.net/basit/murattal",
           "ar.sudais": "https://server11.mp3quran.net/sds",
@@ -407,22 +413,30 @@
           "ar.basfar": "https://server6.mp3quran.net/bsfr",
         };
 
-        if (mp3QuranServers[reciterId]) {
-          audioUrl = `${mp3QuranServers[reciterId]}/${padded}.mp3`;
+        if (servers[reciterId]) {
+          audioUrl = `${servers[reciterId]}/${padded}.mp3`;
         } else {
           audioUrl = `https://cdn.islamic.network/quran/audio-surah/128/${reciterId}/${surahNum}.mp3`;
         }
 
-        // Stockage pour le lecteur sur index.html
-        localStorage.setItem("pendingAudioUrl", audioUrl);
-        localStorage.setItem("pendingSurahName", surahName);
-        localStorage.setItem("pendingReciterName", reciterName);
-        localStorage.setItem("currentSurahNum", surahNum);
-        localStorage.setItem("currentReciterId", reciterId);
+        // Trouver l'image du récitateur
+        const reciterInfo = recitersData.find((r) => r.id === reciterId);
+        const reciterImg = reciterInfo
+          ? reciterInfo.img
+          : "assets/image/default-quran.jpg";
 
-        // Lecture directe via ton script.js
-        playSelectedAudio(audioUrl, surahName, reciterName);
-        closePanel(); // ferme le panel des sourates
+        // Stockage des infos pour player.html
+        localStorage.setItem("player_url", audioUrl);
+        localStorage.setItem("player_title", surahName);
+        localStorage.setItem("player_artist", reciterName);
+        localStorage.setItem("player_img", reciterImg);
+
+        localStorage.setItem("currentReciterId", reciterId);
+        localStorage.setItem("currentReciterName", reciterName);
+        localStorage.setItem("currentSurahNum", surahNum);
+
+        // Redirection directe
+        window.location.href = "player.html";
       }
 
       function closePanel() {

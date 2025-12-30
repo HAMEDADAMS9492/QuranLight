@@ -297,7 +297,7 @@ a {
   text-align: center;
   /* Superposition d'un dégradé sombre pour faire ressortir le texte blanc */
   background-image: linear-gradient(rgba(10, 45, 32, 0.7), rgba(0, 0, 0, 0.8)),
-    url("../image/Fonds_vert.jpg");
+    url("../image/fonds_vert.jpg");
   background-size: cover;
   background-position: center;
   border-radius: 30px;

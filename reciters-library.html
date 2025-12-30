@@ -856,17 +856,18 @@
       ];
       const recitersData = [
         {
-          id: "ar.sudais",
-          name: "Abdurrahman Al-Sudais",
-          ar: "عبد الرحمن السديس",
-          img: "assets/image/sudais.jpg",
-        },
-        {
           id: "ar.abdulbasitmurattal",
           name: "Abd Al-Basit",
           ar: "عبد الباسط عبد الصمد",
           img: "assets/image/basit.jpg",
         },
+        {
+          id: "ar.sudais",
+          name: "Abdurrahman Al-Sudais",
+          ar: "عبد الرحمن السديس",
+          img: "assets/image/sudais.jpg",
+        },
+
         {
           id: "ar.alafasy",
           name: "Mishary Alafasy",
@@ -892,81 +893,147 @@
 
       window.onload = () => {
         renderReciters();
+        loadSurahsData(); // Charger les données de l'API dès le départ
       };
 
+      // 1. CHARGEMENT INITIAL DES DONNÉES API
+      async function loadSurahsData() {
+        try {
+          const res = await fetch("https://api.alquran.cloud/v1/surah");
+          const data = await res.json();
+
+          allSurahs = data.data.map((s) => ({
+            n: s.number,
+            en: s.englishName,
+            ar: s.name,
+            t: s.revelationType === "Meccan" ? "Mecquoise" : "Médinoise",
+            v: s.numberOfAyahs,
+          }));
+
+          // Optionnel : Si le panneau est déjà ouvert avant la fin du fetch
+          if (document.getElementById("surahPanel").style.display === "flex") {
+            renderSurahList(allSurahs);
+          }
+        } catch (e) {
+          console.error("Erreur API:", e);
+        }
+      }
+
+      // Appeler le chargement immédiatement au lancement
+      loadSurahsData();
+
+      // 2. AFFICHAGE DES RÉCITATEURS
       function renderReciters() {
         const container = document.getElementById("reciterList");
+        if (!container) return;
+
         container.innerHTML = recitersData
           .map(
             (r) => `
-                <div class="item-card" onclick="openSurahs('${
-                  r.id
-                }', '${r.name.toUpperCase()}')">
-                    <img src="${
-                      r.img
-                    }" class="reciter-avatar-sm" onerror="this.src='https://ui-avatars.com/api/?name=${
+            <div class="item-card" onclick="openSurahs('${
+              r.id
+            }', '${r.name.replace(/'/g, "\\'")}')">
+                <img src="${
+                  r.img
+                }" class="reciter-avatar-sm" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(
               r.name
-            }&background=0D3A27&color=fff'">
-                    <div class="info-zone">
-                        <span class="title-fr">${r.name}</span>
-                        <span class="sub-meta">${r.ar}</span>
-                    </div>
-                    <i class="fas fa-chevron-right" style="color: var(--color-gold); font-size: 0.8rem;"></i>
+            )}&background=0D3A27&color=fff'">
+                <div class="info-zone">
+                    <span class="title-fr">${r.name}</span>
+                    <span class="sub-meta">${r.ar}</span>
                 </div>
-            `
+                <i class="fas fa-chevron-right" style="color: var(--color-gold); font-size: 0.8rem;"></i>
+            </div>
+        `
           )
           .join("");
       }
 
+      // 3. OUVERTURE DU PANNEAU DES SOURATES
       function openSurahs(id, name) {
         currentReciterId = id;
         currentReciterName = name;
-        document.getElementById("activeReciterName").innerText = name;
-        document.getElementById("surahPanel").style.display = "flex";
+
+        const nameDisplay = document.getElementById("activeReciterName");
+        const panel = document.getElementById("surahPanel");
+
+        if (nameDisplay) nameDisplay.innerText = name;
+        if (panel) panel.style.display = "flex";
+
         renderSurahList(allSurahs);
       }
 
+      // 4. AFFICHAGE DE LA LISTE DES SOURATES
       function renderSurahList(list) {
-        document.getElementById("surahContent").innerHTML = list
+        const content = document.getElementById("surahContent");
+        if (!content) return;
+
+        if (list.length === 0) {
+          content.innerHTML =
+            '<p style="text-align:center; padding:20px; color:white;">Chargement des sourates ou aucun résultat...</p>';
+          return;
+        }
+
+        content.innerHTML = list
           .map(
             (s) => `
-                <div class="item-card" onclick="selectAudio('${currentReciterId}', ${s.n}, '${currentReciterName}', '${s.en}')">
-                    <div class="num-badge">${s.n}</div>
-                    <div class="info-zone">
-                        <span class="title-fr">${s.en}</span>
-                        <span class="sub-meta">${s.t} • ${s.v} VERSETS</span>
-                    </div>
-                    <div class="title-ar">${s.ar}</div>
+            <div class="item-card" onclick="selectAudio('${currentReciterId}', ${
+              s.n
+            }, '${currentReciterName.replace(/'/g, "\\'")}', '${s.en.replace(
+              /'/g,
+              "\\'"
+            )}')">
+                <div class="num-badge">${s.n}</div>
+                <div class="info-zone">
+                    <span class="title-fr">${s.en}</span>
+                    <span class="sub-meta">${s.t} • ${s.v} VERSETS</span>
                 </div>
-            `
+                <div class="title-ar">${s.ar}</div>
+            </div>
+        `
           )
           .join("");
       }
 
+      // 5. SELECTION ET REDIRECTION VERS LE PLAYER
       function selectAudio(reciterId, surahNum, reciterName, surahName) {
         const padded = surahNum.toString().padStart(3, "0");
         let url = "";
 
-        // Logique Serveurs
+        // LOGIQUE SERVEURS CORRIGÉE
         if (reciterId === "ar.sudais")
           url = `https://server11.mp3quran.net/sds/${padded}.mp3`;
         else if (reciterId === "ar.abdulbasitmurattal")
-          url = `https://server7.mp3quran.net/basit/murattal/${padded}.mp3`;
+          // Correction ici : Abdul Basit Murattal sur Server7 n'utilise pas le sous-dossier /murattal/
+          url = `https://server7.mp3quran.net/basit/${padded}.mp3`;
         else if (reciterId === "ar.alafasy")
           url = `https://server8.mp3quran.net/afs/${padded}.mp3`;
+        else if (reciterId === "ar.hanirifai")
+          url = `https://server8.mp3quran.net/hani/${padded}.mp3`;
+        else if (reciterId === "ar.shatri")
+          url = `https://server11.mp3quran.net/shatri/${padded}.mp3`;
         else
           url = `https://cdn.islamic.network/quran/audio-surah/128/${reciterId}/${surahNum}.mp3`;
 
-        localStorage.setItem("autoPlayUrl", url);
-        localStorage.setItem("autoPlayTitle", surahName);
-        localStorage.setItem("autoPlayArtist", reciterName);
-        // Lecture directe
-        playSelectedAudio(url, surahName, reciterName);
+        // Récupérer l'image du récitateur
+        const reciter = recitersData.find((r) => r.id === reciterId);
+        const imgPath = reciter ? reciter.img : "assets/image/Logo.jpg";
 
-        // Optionnel : fermer le panneau des sourates
-        closeSurahs();
+        // Stockage pour player.html
+        localStorage.setItem("player_url", url);
+        localStorage.setItem("player_title", surahName);
+        localStorage.setItem("player_artist", reciterName);
+        localStorage.setItem("player_img", imgPath);
+
+        // Stockage pour la navigation
+        localStorage.setItem("currentReciterId", reciterId);
+        localStorage.setItem("currentReciterName", reciterName);
+        localStorage.setItem("currentSurahNum", surahNum);
+
+        window.location.href = "player.html";
       }
 
+      // 6. FILTRES DE RECHERCHE
       function filterList() {
         const val = document.getElementById("searchInput").value.toLowerCase();
         document.querySelectorAll("#reciterList .item-card").forEach((card) => {
@@ -981,7 +1048,10 @@
           .getElementById("surahSearchInput")
           .value.toLowerCase();
         const filtered = allSurahs.filter(
-          (s) => s.en.toLowerCase().includes(q) || s.n.toString().includes(q)
+          (s) =>
+            s.en.toLowerCase().includes(q) ||
+            s.n.toString().includes(q) ||
+            s.ar.includes(q)
         );
         renderSurahList(filtered);
       }

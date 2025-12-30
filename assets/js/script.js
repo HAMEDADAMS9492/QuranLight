@@ -89,56 +89,123 @@ function setupSidebarToggle() {
 }
 
 // ============================================================
-// 3. LOCALISATION (GPS PRIORITAIRE + CACHE)
+// 3. LOCALISATION (GPS -> NOM DE VILLE -> IP -> FAILSAFE)
 // ============================================================
 function initLocation() {
   const cached = localStorage.getItem("userLocation");
 
   if (cached) {
-    const data = JSON.parse(cached);
-    updateLocationUI(data.city);
-    if (document.getElementById("next-prayer-name")) updateHomePrayerMini(data);
-    return;
+    try {
+      const data = JSON.parse(cached);
+      updateLocationUI(data.city);
+      if (document.getElementById("next-prayer-name"))
+        updateHomePrayerMini(data);
+      return;
+    } catch (e) {
+      localStorage.removeItem("userLocation");
+    }
   }
 
   if (navigator.geolocation) {
+    // On demande une haute précision (enableHighAccuracy: true)
+    updateLocationUI("Position GPS...");
+
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        const locationData = {
-          city: "Ma Position",
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude,
-        };
-        saveAndInitLocation(locationData);
-      },
-      () => {
-        fetch("https://ipapi.co/json/")
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+
+        // Appel Nominatim
+        fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10`
+        )
           .then((res) => res.json())
-          .then((data) => {
-            const locationData = {
-              city: `${data.city}, ${data.country_code}`,
-              lat: data.latitude,
-              lng: data.longitude,
-            };
-            saveAndInitLocation(locationData);
+          .then((geoData) => {
+            const a = geoData.address;
+
+            // On cherche le nom de la ville ou de l'état
+            let cityName =
+              a.city ||
+              a.town ||
+              a.village ||
+              a.city_district ||
+              a.state ||
+              "Ma Position";
+
+            // Nettoyage spécifique
+            const trashTerms = [
+              "Municipal Area Council",
+              "Area Council",
+              "Arrondissement",
+              "Municipality",
+            ];
+            trashTerms.forEach((term) => {
+              if (cityName.includes(term))
+                cityName = cityName.replace(term, "").trim();
+            });
+
+            const countryName = a.country || "";
+
+            saveAndInitLocation({
+              city: countryName ? `${cityName}, ${countryName}` : cityName,
+              lat: lat,
+              lng: lng,
+            });
           })
-          .catch(() => updateLocationUI("Abuja, NG"));
+          .catch(() => fetchLocationByIP());
+      },
+      (err) => {
+        console.warn("GPS échoué, bascule IP...", err.message);
+        fetchLocationByIP();
+      },
+      {
+        enableHighAccuracy: true, // Force le vrai GPS au lieu de l'IP
+        timeout: 15000, // On laisse 15 secondes au lieu de 8
+        maximumAge: 0, // Ne pas utiliser de vieille position
       }
     );
+  } else {
+    fetchLocationByIP();
   }
 }
 
+/**
+ * Sauvegarde les données et déclenche la mise à jour des calculs de prière
+ */
 function saveAndInitLocation(data) {
+  // SÉCURITÉ : On vérifie que les données sont valides avant de continuer
+  if (!data || !data.lat || !data.lng) {
+    console.error("Erreur : Données de localisation incomplètes.");
+    return;
+  }
+
+  // 1. Sauvegarde dans le stockage local du navigateur
   localStorage.setItem("userLocation", JSON.stringify(data));
+
+  // 2. Mise à jour immédiate du nom de la ville dans le Header
   updateLocationUI(data.city);
-  if (document.getElementById("next-prayer-name")) updateHomePrayerMini(data);
+
+  // 3. Rafraîchissement des horaires (Page Salat)
+  // On vérifie si la fonction existe pour éviter les erreurs JS
+  if (typeof updateSalatUI === "function") {
+    updateSalatUI();
+  }
+
+  // 4. Rafraîchissement du mini-widget (Page Accueil)
+  const miniWidget = document.getElementById("next-prayer-name");
+  if (miniWidget && typeof updateHomePrayerMini === "function") {
+    updateHomePrayerMini(data);
+  }
+
+  console.log("Localisation sauvegardée et interface mise à jour :", data.city);
 }
 
 function updateLocationUI(cityName) {
   const el = document.getElementById("header-location");
-  if (el) el.innerHTML = `<i class="fa-solid fa-location-dot"></i> ${cityName}`;
+  if (el) {
+    el.innerHTML = `<i class="fa-solid fa-location-dot"></i> ${cityName}`;
+  }
 }
-
 // ============================================================
 // 4. LOGIQUE MINI-SALAT + NOTIFS DATA
 // ============================================================
@@ -467,11 +534,41 @@ document.addEventListener("DOMContentLoaded", () => {
   initDefaultReciter();
 
   const syncBtn = document.getElementById("sync-location-btn");
+
   if (syncBtn) {
     syncBtn.onclick = () => {
+      // 1. Effacer le cache
       localStorage.removeItem("userLocation");
+
+      // 2. Feedback visuel immédiat (On fait tourner l'icône)
+      const originalIcon = '<i class="fas fa-sync-alt"></i>';
       syncBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-      setTimeout(() => window.location.reload(), 800);
+
+      // 3. Relancer la détection
+      if (typeof initLocation === "function") {
+        // On appelle initLocation
+        initLocation();
+
+        // Astuce : On surveille quand le localStorage est mis à jour
+        // pour remettre l'icône originale au bon moment
+        const checkUpdate = setInterval(() => {
+          if (localStorage.getItem("userLocation")) {
+            syncBtn.innerHTML = originalIcon;
+            clearInterval(checkUpdate); // On arrête de surveiller
+          }
+        }, 500);
+
+        // Sécurité : Si après 10s rien ne se passe, on remet l'icône
+        setTimeout(() => {
+          if (syncBtn.innerHTML.includes("fa-spin")) {
+            syncBtn.innerHTML = originalIcon;
+            clearInterval(checkUpdate);
+          }
+        }, 10000);
+      } else {
+        // Fallback si la fonction n'existe pas
+        window.location.reload();
+      }
     };
   }
 });
