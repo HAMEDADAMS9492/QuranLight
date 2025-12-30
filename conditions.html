@@ -8,180 +8,220 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
-<style>
-  /* ======================================================== */
-  /* 1. CONFIGURATION DU THÈME PREMIUM (PLUS LUMINEUX)        */
-  /* ======================================================== */
-  :root {
-    /* Vert plus riche et moins "noir" */
-    --mp-green-bg: #0a1f16;         
-    --mp-green-surface: rgba(18, 38, 30, 0.95); 
-    --mp-gold: #c5a47e;             /* Or légèrement plus clair */
-    --mp-gold-bright: #f1d5a9;      /* Or plus éclatant */
-    --text-main: #ffffff;
-    --text-muted: rgba(255, 255, 255, 0.85); /* Texte plus blanc, moins gris */
-  }
+    <style>
+      /* ======================================================== */
+      /* 1. CONFIGURATION DU THÈME PREMIUM (PLUS LUMINEUX)        */
+      /* ======================================================== */
+      :root {
+        --mp-green-bg: #0a1f16;
+        --mp-green-surface: rgba(18, 38, 30, 0.95);
+        --mp-gold: #c5a47e;
+        --mp-gold-bright: #f1d5a9;
+        --text-main: #ffffff;
+        --text-muted: rgba(255, 255, 255, 0.85);
+      }
 
-  body {
-    margin: 0;
-    font-family: "Poppins", sans-serif;
-    /* Dégradé plus contrasté pour donner de la profondeur */
-    background: radial-gradient(circle at center, #143025 0%, #060e0a 100%);
-    background-attachment: fixed;
-    color: var(--text-main);
-    line-height: 1.8;
-    padding: 20px;
-  }
+      body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        background: radial-gradient(circle at center, #143025 0%, #060e0a 100%);
+        background-attachment: fixed;
+        color: var(--text-main);
+        line-height: 1.8;
+        /* On utilise une marge adaptative */
+        padding: 10px;
+      }
 
-  /* ======================================================== */
-  /* 2. CONTAINER LEGAL (STYLE ÉCRIN LUMINEUX)                */
-  /* ======================================================== */
-  .legal-page-container {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 50px;
-    background: var(--mp-green-surface);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border-radius: 30px; 
-    /* Bordure plus visible pour définir les contours */
-    border: 1px solid rgba(197, 164, 126, 0.3); 
-    box-shadow: 0 30px 100px rgba(0, 0, 0, 0.6);
-    animation: fadeInPage 0.8s ease-out;
-  }
+      /* ======================================================== */
+      /* 2. CONTAINER LEGAL (STYLE ÉCRIN LUMINEUX)                */
+      /* ======================================================== */
+      .legal-page-container {
+        width: 100%;
+        max-width: 900px;
+        margin: 20px auto;
+        padding: 50px 40px; /* Moins de padding latéral par défaut */
+        box-sizing: border-box;
+        background: var(--mp-green-surface);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border-radius: 30px;
+        border: 1px solid rgba(197, 164, 126, 0.3);
+        box-shadow: 0 30px 100px rgba(0, 0, 0, 0.6);
+        animation: fadeInPage 0.8s ease-out;
+      }
 
-  /* ======================================================== */
-  /* 3. BOUTON RETOUR (MIEUX DÉFINI)                          */
-  /* ======================================================== */
-  .back-btn {
-    color: var(--text-main);
-    text-decoration: none;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(255, 255, 255, 0.08);
-    padding: 12px 25px;
-    border-radius: 50px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.4s ease;
-    margin-bottom: 40px;
-    font-size: 0.85rem;
-    letter-spacing: 1px;
-  }
+      /* ======================================================== */
+      /* 3. BOUTON RETOUR (MIEUX DÉFINI)                          */
+      /* ======================================================== */
+      .back-btn {
+        color: var(--text-main);
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.08);
+        padding: 12px 25px;
+        border-radius: 50px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.4s ease;
+        margin-bottom: 40px;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+      }
 
-  .back-btn:hover {
-    background: var(--mp-gold);
-    color: #0a1f16;
-    border-color: var(--mp-gold);
-    transform: translateX(-5px);
-  }
+      .back-btn:hover {
+        background: var(--mp-gold);
+        color: #0a1f16;
+        border-color: var(--mp-gold);
+        transform: translateX(-5px);
+      }
 
-  /* ======================================================== */
-  /* 4. HEADER ET TITRES (SOUS-TITRE CENTRÉ)                  */
-  /* ======================================================== */
-  .legal-header {
-    text-align: center;
-    margin-bottom: 60px;
-  }
+      /* ======================================================== */
+      /* 4. HEADER ET TITRES                                      */
+      /* ======================================================== */
+      .legal-header {
+        text-align: center;
+        margin-bottom: 60px;
+      }
 
-  .legal-header i {
-    font-size: 3.5rem;
-    color: var(--mp-gold-bright);
-    /* Éclat plus prononcé sur l'icône */
-    filter: drop-shadow(0 0 20px rgba(197, 164, 126, 0.6));
-    margin-bottom: 20px;
-  }
+      .legal-header i {
+        font-size: 3.5rem;
+        color: var(--mp-gold-bright);
+        filter: drop-shadow(0 0 20px rgba(197, 164, 126, 0.6));
+        margin-bottom: 20px;
+      }
 
-  h1 {
-    font-size: 2.8rem;
-    font-weight: 800;
-    margin: 10px 0;
-    background: linear-gradient(180deg, #ffffff 40%, var(--mp-gold-bright) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-  }
+      h1 {
+        font-size: clamp(1.8rem, 5vw, 2.8rem); /* Taille adaptative */
+        font-weight: 800;
+        margin: 10px 0;
+        background: linear-gradient(
+          180deg,
+          #ffffff 40%,
+          var(--mp-gold-bright) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
 
-  .header-sub {
-    display: block; /* S'assure qu'il prend toute la ligne */
-    text-align: center; /* Centrage explicite */
-    font-size: 1.15rem;
-    font-weight: 400;
-    color: var(--mp-gold-bright);
-    margin-top: 5px;
-    opacity: 1; /* Retrait de l'opacité pour plus de clarté */
-  }
+      .header-sub {
+        display: block;
+        text-align: center;
+        font-size: clamp(0.9rem, 3vw, 1.15rem);
+        font-weight: 400;
+        color: var(--mp-gold-bright);
+        margin-top: 5px;
+      }
 
-  /* ======================================================== */
-  /* 5. SECTIONS ET TEXTE (LISIBILITÉ ACCRUE)                 */
-  /* ======================================================== */
-  section {
-    margin-bottom: 45px;
-  }
+      /* ======================================================== */
+      /* 5. SECTIONS ET TEXTE                                     */
+      /* ======================================================== */
+      section {
+        margin-bottom: 45px;
+      }
 
-  h2 {
-    color: var(--mp-gold-bright);
-    font-size: 1.5rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 20px;
-    border-bottom: 1px solid rgba(197, 164, 126, 0.2);
-    padding-bottom: 12px;
-  }
+      h2 {
+        color: var(--mp-gold-bright);
+        font-size: clamp(1.2rem, 4vw, 1.5rem);
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid rgba(197, 164, 126, 0.2);
+        padding-bottom: 12px;
+      }
 
-  h2 i {
-    font-size: 1.2rem;
-    color: #0a1f16;
-    background: var(--mp-gold-bright); /* Icônes plus lumineuses */
-    padding: 10px;
-    border-radius: 12px;
-  }
+      h2 i {
+        font-size: 1.1rem;
+        color: #0a1f16;
+        background: var(--mp-gold-bright);
+        padding: 8px;
+        border-radius: 10px;
+        flex-shrink: 0; /* Évite que l'icône s'écrase */
+      }
 
-  p {
-    font-size: 1.05rem;
-    font-weight: 400; /* Texte légèrement plus épais pour la lecture */
-    color: var(--text-muted);
-    text-align: justify; /* Pour un look "document officiel" propre */
-  }
+      p {
+        font-size: 1.05rem;
+        color: var(--text-muted);
+        text-align: justify;
+        word-wrap: break-word; /* Évite les débordements de texte */
+      }
 
-  b, strong {
-    color: #fff; /* Les mots importants en blanc pur */
-    font-weight: 700;
-    border-bottom: 1px dotted var(--mp-gold);
-  }
+      b,
+      strong {
+        color: #fff;
+        font-weight: 700;
+        border-bottom: 1px dotted var(--mp-gold);
+      }
 
-  /* ======================================================== */
-  /* 6. FOOTER INTERNE ET ANIMATIONS                          */
-  /* ======================================================== */
-  .legal-footer-info {
-    text-align: center;
-    margin-top: 60px;
-    padding-top: 30px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    font-weight: 500;
-    font-size: 0.9rem;
-    color: var(--mp-gold-bright);
-  }
+      /* ======================================================== */
+      /* 6. FOOTER INTERNE ET ANIMATIONS                          */
+      /* ======================================================== */
+      .legal-footer-info {
+        text-align: center;
+        margin-top: 60px;
+        padding-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        font-weight: 500;
+        font-size: 0.9rem;
+        color: var(--mp-gold-bright);
+      }
 
-  @keyframes fadeInPage {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+      @keyframes fadeInPage {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-  /* ADAPTABILITÉ MOBILE */
-  @media (max-width: 600px) {
-    .legal-page-container {
-      padding: 30px 20px;
-      margin: 10px;
-    }
-    h1 { font-size: 2rem; }
-    p { text-align: left; }
-  }
-</style>
+      /* ======================================================== */
+      /* 7. MEDIA QUERIES (OPTIMISATION SMARTPHONE)               */
+      /* ======================================================== */
+      @media (max-width: 768px) {
+        .legal-page-container {
+          margin: 10px auto;
+          padding: 35px 20px;
+          border-radius: 20px; /* Moins d'arrondi sur mobile */
+        }
+
+        .legal-header {
+          margin-bottom: 40px;
+        }
+
+        .legal-header i {
+          font-size: 2.8rem;
+        }
+
+        p {
+          text-align: left; /* Meilleure lisibilité sur petit écran */
+          font-size: 1rem;
+        }
+
+        h2 {
+          gap: 10px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .back-btn {
+          width: 100%;
+          justify-content: center;
+          box-sizing: border-box;
+        }
+
+        h1 {
+          letter-spacing: 1px;
+        }
+      }
+    </style>
   </head>
   <body>
     <div class="legal-page-container">

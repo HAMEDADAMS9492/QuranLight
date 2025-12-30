@@ -89,7 +89,7 @@ function setupSidebarToggle() {
 }
 
 // ============================================================
-// 3. LOCALISATION (GPS -> NOM DE VILLE -> IP -> FAILSAFE)
+// 3. LOCALISATION (GPS -> VILLE, PAYS UNIQUEMENT)
 // ============================================================
 function initLocation() {
   const cached = localStorage.getItem("userLocation");
@@ -107,7 +107,6 @@ function initLocation() {
   }
 
   if (navigator.geolocation) {
-    // On demande une haute précision (enableHighAccuracy: true)
     updateLocationUI("Position GPS...");
 
     navigator.geolocation.getCurrentPosition(
@@ -115,89 +114,80 @@ function initLocation() {
         const lat = pos.coords.latitude;
         const lng = pos.coords.longitude;
 
-        // Appel Nominatim
+        // Utilisation du zoom 10 pour obtenir une vue d'ensemble "Ville"
         fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10`
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10&addressdetails=1`
         )
           .then((res) => res.json())
           .then((geoData) => {
             const a = geoData.address;
 
-            // On cherche le nom de la ville ou de l'état
-            let cityName =
+            // 1. Extraire les composants de base
+            const country = a.country || "";
+
+            // 2. Logique universelle pour isoler la VILLE
+            // On prend le premier champ disponible qui correspond à une zone urbaine
+            let city =
               a.city ||
               a.town ||
               a.village ||
-              a.city_district ||
+              a.municipality ||
+              a.county ||
               a.state ||
-              "Ma Position";
+              "";
 
-            // Nettoyage spécifique
-            const trashTerms = [
-              "Municipal Area Council",
-              "Area Council",
-              "Arrondissement",
-              "Municipality",
-            ];
-            trashTerms.forEach((term) => {
-              if (cityName.includes(term))
-                cityName = cityName.replace(term, "").trim();
-            });
+            // 3. Traitement universel pour Abuja et les cas similaires
+            // Si le résultat est un terme administratif connu pour masquer le nom réel,
+            // Nominatim place souvent le nom réel dans d'autres champs ou dans le display_name.
+            if (
+              city.toLowerCase().includes("municipal") ||
+              city.toLowerCase().includes("area council")
+            ) {
+              // On essaie de récupérer un nom plus précis si disponible
+              city = a.city_district || a.suburb || a.town || "Abuja";
+            }
 
-            const countryName = a.country || "";
+            // 4. Nettoyage final pour tout pays (Supprime les prépositions de début)
+            city = city.replace(/^(du |de |de la |des |the )/gi, "").trim();
+
+            // 5. Format STRICT : "Ville, Pays"
+            let finalLocation = city;
+            if (country && city.toLowerCase() !== country.toLowerCase()) {
+              finalLocation = `${city}, ${country}`;
+            } else if (!city) {
+              finalLocation = country || "Ma Position";
+            }
 
             saveAndInitLocation({
-              city: countryName ? `${cityName}, ${countryName}` : cityName,
+              city: finalLocation,
               lat: lat,
               lng: lng,
             });
           })
-          .catch(() => fetchLocationByIP());
+          .catch(() => {
+            if (typeof fetchLocationByIP === "function") fetchLocationByIP();
+          });
       },
       (err) => {
-        console.warn("GPS échoué, bascule IP...", err.message);
-        fetchLocationByIP();
+        if (typeof fetchLocationByIP === "function") fetchLocationByIP();
       },
-      {
-        enableHighAccuracy: true, // Force le vrai GPS au lieu de l'IP
-        timeout: 15000, // On laisse 15 secondes au lieu de 8
-        maximumAge: 0, // Ne pas utiliser de vieille position
-      }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   } else {
-    fetchLocationByIP();
+    if (typeof fetchLocationByIP === "function") fetchLocationByIP();
   }
 }
 
-/**
- * Sauvegarde les données et déclenche la mise à jour des calculs de prière
- */
 function saveAndInitLocation(data) {
-  // SÉCURITÉ : On vérifie que les données sont valides avant de continuer
-  if (!data || !data.lat || !data.lng) {
-    console.error("Erreur : Données de localisation incomplètes.");
-    return;
-  }
-
-  // 1. Sauvegarde dans le stockage local du navigateur
+  if (!data || !data.lat || !data.lng) return;
   localStorage.setItem("userLocation", JSON.stringify(data));
-
-  // 2. Mise à jour immédiate du nom de la ville dans le Header
   updateLocationUI(data.city);
 
-  // 3. Rafraîchissement des horaires (Page Salat)
-  // On vérifie si la fonction existe pour éviter les erreurs JS
-  if (typeof updateSalatUI === "function") {
-    updateSalatUI();
-  }
-
-  // 4. Rafraîchissement du mini-widget (Page Accueil)
+  if (typeof updateSalatUI === "function") updateSalatUI();
   const miniWidget = document.getElementById("next-prayer-name");
   if (miniWidget && typeof updateHomePrayerMini === "function") {
     updateHomePrayerMini(data);
   }
-
-  console.log("Localisation sauvegardée et interface mise à jour :", data.city);
 }
 
 function updateLocationUI(cityName) {

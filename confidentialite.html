@@ -13,45 +13,42 @@
       /* 1. CONFIGURATION DU THÈME PREMIUM (LUMINOSITÉ ÉQUILIBRÉE) */
       /* ======================================================== */
       :root {
-        --mp-green-bg: #0a1f16; /* Fond vert émeraude profond */
-        --mp-green-surface: rgba(18, 38, 30, 0.96); /* Surface plus riche */
-        --mp-gold: #c5a47e; /* Or mat prestige */
-        --mp-gold-bright: #f1d5a9; /* Or éclatant pour titres */
+        --mp-green-bg: #0a1f16;
+        --mp-green-surface: rgba(18, 38, 30, 0.96);
+        --mp-gold: #c5a47e;
+        --mp-gold-bright: #f1d5a9;
         --text-main: #ffffff;
-        --text-muted: rgba(
-          255,
-          255,
-          255,
-          0.9
-        ); /* Texte plus blanc pour lisibilité */
+        --text-muted: rgba(255, 255, 255, 0.9);
       }
 
       body {
         margin: 0;
         font-family: "Poppins", sans-serif;
-        /* Dégradé radial pour éviter l'aspect trop sombre/plat */
         background: radial-gradient(circle at center, #143025 0%, #060e0a 100%);
         background-attachment: fixed;
         color: var(--text-main);
         line-height: 1.8;
-        padding: 20px;
+        padding: 10px; /* Réduit pour mobile par défaut */
+        box-sizing: border-box;
       }
 
       /* ======================================================== */
       /* 2. CONTAINER GLASSMORPHISM (ÉCRIN PREMIUM)               */
       /* ======================================================== */
       .legal-page-container {
+        width: 100%;
         max-width: 900px;
-        margin: 40px auto;
-        padding: 50px;
+        margin: 20px auto; /* Margin réduit sur mobile */
+        padding: clamp(25px, 5vw, 50px); /* Padding fluide */
         background: var(--mp-green-surface);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        border-radius: 40px;
-        /* Bordure or subtile */
+        border-radius: clamp(20px, 4vw, 40px); /* Coins arrondis fluides */
         border: 1px solid rgba(197, 164, 126, 0.3);
         box-shadow: 0 30px 100px rgba(0, 0, 0, 0.7);
         animation: fadeInPage 0.8s ease-out;
+        box-sizing: border-box;
+        overflow-x: hidden; /* Sécurité anti-débordement */
       }
 
       /* ======================================================== */
@@ -69,9 +66,10 @@
         border-radius: 50px;
         border: 1px solid rgba(255, 255, 255, 0.2);
         transition: all 0.4s ease;
-        margin-bottom: 40px;
+        margin-bottom: clamp(20px, 5vw, 40px);
         font-size: 0.85rem;
         letter-spacing: 1px;
+        white-space: nowrap;
       }
 
       .back-btn:hover {
@@ -86,18 +84,18 @@
       /* ======================================================== */
       .legal-header {
         text-align: center;
-        margin-bottom: 60px;
+        margin-bottom: clamp(30px, 8vw, 60px);
       }
 
       .legal-header i {
-        font-size: 4rem;
+        font-size: clamp(2.5rem, 8vw, 4rem);
         color: var(--mp-gold-bright);
         filter: drop-shadow(0 0 20px rgba(197, 164, 126, 0.5));
-        margin-bottom: 20px;
+        margin-bottom: 15px;
       }
 
       h1 {
-        font-size: 2.8rem;
+        font-size: clamp(1.6rem, 6vw, 2.8rem); /* Taille adaptative */
         font-weight: 900;
         margin: 10px 0;
         background: linear-gradient(
@@ -109,15 +107,15 @@
         -webkit-text-fill-color: transparent;
         text-transform: uppercase;
         letter-spacing: 1px;
+        line-height: 1.2;
       }
 
       .header-sub {
-        display: block; /* Force le bloc */
-        text-align: center; /* Centrage horizontal */
-        font-size: 1.15rem;
+        display: block;
+        text-align: center;
+        font-size: clamp(0.9rem, 3vw, 1.15rem);
         font-weight: 500;
         color: var(--mp-gold-bright);
-        opacity: 1; /* Pleine visibilité */
         margin-top: 10px;
       }
 
@@ -125,38 +123,39 @@
       /* 5. SECTIONS ET CONTENU                                   */
       /* ======================================================== */
       section {
-        margin-bottom: 45px;
+        margin-bottom: clamp(30px, 6vw, 45px);
       }
 
       h2 {
         color: var(--mp-gold-bright);
-        font-size: 1.5rem;
+        font-size: clamp(1.1rem, 4vw, 1.5rem);
         font-weight: 800;
         display: flex;
         align-items: center;
-        gap: 15px;
+        gap: clamp(10px, 3vw, 15px);
         margin-bottom: 18px;
         border-bottom: 1px solid rgba(197, 164, 126, 0.2);
         padding-bottom: 12px;
       }
 
       h2 i {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         color: #0a1f16;
         background: var(--mp-gold-bright);
-        padding: 10px;
-        border-radius: 12px;
+        padding: clamp(6px, 2vw, 10px);
+        border-radius: clamp(8px, 2vw, 12px);
+        flex-shrink: 0; /* Empêche l'icône de s'écraser */
       }
 
       p {
-        font-size: 1.05rem;
-        font-weight: 400; /* Poids standard pour la lecture */
+        font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+        font-weight: 400;
         color: var(--text-muted);
         margin-bottom: 15px;
         text-align: justify;
+        hyphens: auto; /* Coupe les mots proprement si besoin */
       }
 
-      /* Style spécifique pour les mises en avant */
       .highlight {
         color: var(--mp-gold-bright);
         font-weight: 700;
@@ -168,18 +167,19 @@
       /* ======================================================== */
       .legal-footer-info {
         text-align: center;
-        margin-top: 60px;
+        margin-top: clamp(40px, 8vw, 60px);
         padding-top: 30px;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
         font-weight: 600;
         color: var(--mp-gold-bright);
         letter-spacing: 1px;
+        font-size: 0.9rem;
       }
 
       @keyframes fadeInPage {
         from {
           opacity: 0;
-          transform: translateY(30px);
+          transform: translateY(20px);
         }
         to {
           opacity: 1;
@@ -187,21 +187,39 @@
         }
       }
 
-      /* ADAPTABILITÉ MOBILE */
-      @media (max-width: 600px) {
+      /* ======================================================== */
+      /* 7. AJUSTEMENTS SPÉCIFIQUES MOBILE                        */
+      /* ======================================================== */
+      @media (max-width: 768px) {
+        body {
+          padding: 10px;
+        }
+
         .legal-page-container {
-          padding: 30px 20px;
-          margin: 10px;
+          margin: 10px auto;
+          border-radius: 25px;
         }
-        h1 {
-          font-size: 2rem;
-        }
+
         p {
-          text-align: left;
+          text-align: left; /* Justifié est illisible sur petit écran */
+          line-height: 1.6;
         }
+
+        h2 {
+          line-height: 1.3;
+        }
+      }
+
+      @media (max-width: 480px) {
         .back-btn {
           width: 100%;
           justify-content: center;
+          padding: 12px;
+          box-sizing: border-box;
+        }
+
+        .legal-header i {
+          margin-bottom: 10px;
         }
       }
     </style>
@@ -228,7 +246,8 @@
         <p>
           <strong>Équipe QuranLight Development</strong><br />
           Contact : <span class="highlight">contact@quranlight.app</span><br />
-          Directeur de la publication : Le Responsable de l'équipe QuranLight Mr Hamed Adams
+          Directeur de la publication : Le Responsable de l'équipe QuranLight Mr
+          Hamed Adams
         </p>
       </section>
 

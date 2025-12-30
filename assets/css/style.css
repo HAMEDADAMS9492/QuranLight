@@ -725,10 +725,11 @@ a {
 
 /* --- BRANDING FOOTER (Logo + Nom) --- */
 
-.footer-brand { /* Utilisation de ta classe HTML existante */
+.footer-brand {
+  /* Utilisation de ta classe HTML existante */
   display: flex;
   align-items: center;
-  gap: 18px;            /* Espace légèrement augmenté pour laisser respirer l'aura */
+  gap: 18px; /* Espace légèrement augmenté pour laisser respirer l'aura */
   margin-bottom: 22px;
 }
 
@@ -738,8 +739,8 @@ a {
   border-radius: 50%;
   /* Bordure double effet : Or avec une lueur interne */
   border: 2px solid var(--color-gold);
-  box-shadow: 0 0 20px rgba(176, 141, 87, 0.25), 
-              inset 0 0 10px rgba(176, 141, 87, 0.2);
+  box-shadow: 0 0 20px rgba(176, 141, 87, 0.25),
+    inset 0 0 10px rgba(176, 141, 87, 0.2);
   flex-shrink: 0;
   object-fit: cover;
   transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -757,14 +758,14 @@ a {
   background: linear-gradient(to bottom, #ffffff 0%, #d1d1d1 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  
+
   letter-spacing: 0.8px;
   line-height: 1;
   cursor: pointer;
-  
+
   /* Ajustement vertical précis */
-  transform: translateY(-2px); 
-  
+  transform: translateY(-2px);
+
   transition: all 0.4s ease;
   /* Lueur spirituelle signature */
   filter: drop-shadow(0 0 5px rgba(176, 141, 87, 0.3));
@@ -778,7 +779,12 @@ a {
 .footer-desc {
   font-size: 0.92rem;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.75); /* Blanc doux pour ne pas voler la vedette au nom */
+  color: rgba(
+    255,
+    255,
+    255,
+    0.75
+  ); /* Blanc doux pour ne pas voler la vedette au nom */
   line-height: 1.7;
   max-width: 280px; /* Évite que la description ne s'étale trop */
   border-left: 2px solid var(--color-gold); /* Rappel du thème sur le côté */
@@ -1124,33 +1130,181 @@ a {
   opacity: 1;
 }
 
-/* --- RESPONSIVE : ADAPTATION PETITS ÉCRANS --- */
+/* ============================================================ */
+/* 11. RESPONSIVE MASTER : OPTIMISATION MOBILE PREMIUM         */
+/* ============================================================ */
+
 @media (max-width: 768px) {
-  .section-title-premium {
-    font-size: 1.3rem;
-    letter-spacing: 3px;
+  /* --- STRUCTURE GLOBALE --- */
+  .main-container {
+    padding-top: calc(var(--header-height) + 10px) !important;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  /* --- SIDEBAR : Ajustement largeur sur tablettes --- */
+  :root {
+    --sidebar-width: 260px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* --- HEADER : Plus compact --- */
+  .glass-panel {
+    height: 60px;
+    padding: 0 10px;
+  }
+
+  #header-location {
+    font-size: 0.9rem;
+  }
+
+  /* --- BLOC ACCUEIL (TIME BLOCK) --- */
+  .home-date-time-block {
+    width: 100%;
+    padding: 30px 15px;
+    border-radius: 25px;
+    margin-bottom: 20px;
+  }
+
+  .home-date-time-block .current-time {
+    font-size: 3.2rem !important; /* Évite le débordement */
+    margin: 10px 0;
+  }
+
+  .home-date-time-block .gregorian-date {
+    font-size: 0.8rem;
+    letter-spacing: 1.5px;
+  }
+
+  .next-prayer-info {
+    padding: 15px;
+    border-radius: 18px;
+  }
+
+  .next-prayer-name {
+    font-size: 1.1rem;
+  }
+  .next-prayer-countdown {
+    font-size: 1.4rem;
+  }
+
+  /* --- MODULES (BIJOUX) : Grille parfaite --- */
+  .modules-grid {
+    gap: 30px 15px;
+    padding: 20px 5px 40px;
+  }
+
+  .module-icon {
+    width: 72px !important;
+    height: 72px !important;
+    font-size: 1.5rem !important;
+    border-radius: 22px !important;
+    margin-bottom: 12px;
+  }
+
+  .module-label {
+    font-size: 0.75rem !important;
+    letter-spacing: 1px !important;
+  }
+
+  /* --- RAPPEL QUOTIDIEN --- */
+  .daily-reminder-card {
+    padding: 30px 20px;
+    margin: 30px 0;
+  }
+
+  .quote-arabic {
+    font-size: 1.6rem !important;
+  }
+
+  .quote-french {
+    font-size: 0.85rem !important;
+    max-width: 100%;
+  }
+
+  /* --- RÉCITATEURS : Scroll fluide --- */
+  .reciters-horizontal-list {
+    justify-content: flex-start;
+    gap: 20px;
+    padding-bottom: 20px;
   }
 
   .reciter-card-circle {
-    flex: 0 0 100px;
+    flex: 0 0 85px;
   }
 
   .reciter-image-wrapper {
-    width: 90px;
-    height: 90px;
+    width: 75px !important;
+    height: 75px !important;
   }
 
-  .reciters-horizontal-list {
-    justify-content: flex-start;
-    gap: 25px;
+  /* --- FOOTER : RÉALIGNEMENT TOTAL --- */
+  .footer {
+    padding: 40px 20px 30px;
+    border-radius: 40px 40px 0 0;
+    margin-top: 40px;
   }
 
-  .reciter-label {
+  .footer-grid {
+    grid-template-columns: 1fr; /* Une seule colonne centrée */
+    gap: 40px;
+    text-align: center;
+  }
+
+  .footer-brand {
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .footer-desc {
+    margin: 15px auto 0;
+    border-left: none;
+    border-top: 1px solid rgba(176, 141, 87, 0.3);
+    padding: 15px 0 0 0;
+    max-width: 100%;
+  }
+
+  .footer-links nav {
+    align-items: center;
+  }
+
+  .footer-links a {
+    justify-content: center;
+  }
+
+  .lang-selector-wrapper {
+    margin: 0 auto;
+    max-width: 240px;
+  }
+
+  .footer-bottom p {
     font-size: 0.8rem;
   }
+}
 
-  .section-title-premium::before,
-  .section-title-premium::after {
-    max-width: 40px;
+/* --- OPTIMISATION ÉCRANS TRÈS ÉTROITS (320px) --- */
+@media (max-width: 340px) {
+  .home-date-time-block .current-time {
+    font-size: 2.6rem !important;
   }
+
+  .module-icon {
+    width: 62px !important;
+    height: 62px !important;
+  }
+
+  .section-title-premium {
+    font-size: 1.1rem !important;
+    letter-spacing: 2px;
+  }
+}
+
+/* --- CORRECTIF ANTI-SCROLL HORIZONTAL --- */
+html,
+body {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
 }

@@ -13,10 +13,14 @@
       rel="stylesheet"
     />
     <style>
+      /* ======================================================== */
+      /* 1. CONFIGURATION DU THÈME & RESET                        */
+      /* ======================================================== */
       :root {
         --gold: #b08d57;
         --emerald-deep: #05140f;
         --emerald-light: #0d3a27;
+        --text-muted: #b3b3b3;
       }
 
       * {
@@ -32,113 +36,144 @@
           #05140f 40%,
           #000 100%
         );
+        background-attachment: fixed;
         color: white;
         font-family: "Inter", sans-serif;
         height: 100dvh;
         display: flex;
         justify-content: center;
-        align-items: center; /* Centre le lecteur verticalement sur grand écran */
+        align-items: center;
         overflow: hidden;
       }
 
-      /* --- CONTAINER PRINCIPAL --- */
+      /* ======================================================== */
+      /* 2. CONTAINER PRINCIPAL                                   */
+      /* ======================================================== */
       .player-container {
         width: 100%;
-        max-width: 420px; /* Largeur type smartphone même sur PC */
-        height: 95vh; /* Prend presque toute la hauteur */
+        max-width: 420px;
+        height: 100dvh;
         display: flex;
         flex-direction: column;
         padding: 0 25px;
         justify-content: space-between;
       }
 
-      /* --- HEADER --- */
+      /* ======================================================== */
+      /* 3. HEADER                                                */
+      /* ======================================================== */
       .header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 20px 0;
+        padding: clamp(10px, 3dvh, 25px) 0;
         flex-shrink: 0;
       }
+
       .header i {
         font-size: 1.2rem;
         color: #ccc;
         cursor: pointer;
+        padding: 5px;
       }
+
       .header span {
         font-size: 0.7rem;
         font-weight: 700;
-        letter-spacing: 1px;
+        letter-spacing: 1.5px;
         text-transform: uppercase;
         color: #eee;
       }
 
-      /* --- ALBUM ART (Zone qui s'adapte) --- */
+      /* ======================================================== */
+      /* 4. ALBUM ART (AGRANDI VERTICALEMENT)                     */
+      /* ======================================================== */
       .art-wrapper {
         flex-grow: 1;
         display: flex;
         justify-content: center;
         align-items: center;
-        min-height: 0; /* Permet à la zone de réduire si besoin */
-      }
-      .album-art {
-        width: 100%;
-        max-width: 320px;
-        max-height: 40vh; /* L'image ne dépassera jamais 40% de la hauteur de l'écran */
-        aspect-ratio: 1/1;
-        border-radius: 12px;
-        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
-        object-fit: cover;
-        animation: scaleIn 0.8s ease;
+        min-height: 0;
+        padding: 10px 0; /* Ajoute un peu d'espace pour que l'image ne touche pas le header */
       }
 
-      /* --- INFO ZONE --- */
+      .album-art {
+        width: 100%;
+        max-width: clamp(250px, 90vw, 380px); /* Plus large */
+
+        /* MODIFICATIONS CLÉS ICI : */
+        height: auto;
+        max-height: 80dvh; /* Augmente la hauteur maximale à 50% de l'écran */
+        aspect-ratio: auto; /* Supprime le format carré pour laisser l'image monter */
+
+        border-radius: 20px;
+        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9);
+        object-fit: cover; /* Garde les proportions de l'image sans la déformer */
+        animation: scaleIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      /* ======================================================== */
+      /* 5. INFO ZONE                                             */
+      /* ======================================================== */
       .info-container {
-        padding: 20px 0;
+        padding: 12px 0; /* Légèrement réduit pour gagner de l'espace */
         display: flex;
         justify-content: space-between;
         align-items: center;
         flex-shrink: 0;
       }
+
+      .info-text {
+        flex: 1;
+        overflow: hidden;
+        padding-right: 15px;
+      }
+
       .info-text h1 {
-        font-size: 1.5rem;
+        font-size: clamp(1.3rem, 5.5vw, 1.7rem);
         margin: 0;
         font-weight: 800;
-      }
-      .info-text p {
-        margin: 5px 0 0;
-        color: #b3b3b3;
-        font-size: 1rem;
-      }
-      .like-btn {
-        font-size: 1.4rem;
-        color: #1ed760;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
-      /* --- CONTROLS --- */
+      .info-text p {
+        margin: 3px 0 0;
+        color: var(--text-muted);
+        font-size: clamp(0.95rem, 4vw, 1.1rem);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .like-btn {
+        font-size: 1.6rem;
+        color: #1ed760;
+        cursor: pointer;
+      }
+
+      /* ======================================================== */
+      /* 6. CONTROLS                                              */
+      /* ======================================================== */
       .controls-wrapper {
         flex-shrink: 0;
-      }
-
-      .progress-container {
         width: 100%;
-        margin-bottom: 5px;
       }
 
       #progress-range {
         width: 100%;
         -webkit-appearance: none;
-        background: rgba(255, 255, 255, 0.2);
-        height: 4px;
-        border-radius: 2px;
+        background: rgba(255, 255, 255, 0.15);
+        height: 5px;
+        border-radius: 10px;
         outline: none;
         cursor: pointer;
       }
 
       #progress-range::-webkit-slider-thumb {
         -webkit-appearance: none;
-        width: 12px;
-        height: 12px;
+        width: 14px;
+        height: 14px;
         background: white;
         border-radius: 50%;
       }
@@ -147,60 +182,81 @@
         display: flex;
         justify-content: space-between;
         font-size: 0.75rem;
-        color: #b3b3b3;
+        color: var(--text-muted);
         margin-top: 8px;
+        font-weight: 500;
       }
 
       .main-btns {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 20px 0 30px;
+        padding: clamp(10px, 2.5dvh, 25px) 0 clamp(15px, 3.5dvh, 35px);
       }
+
       .secondary-btn {
-        font-size: 1.2rem;
-        color: #b3b3b3;
-        cursor: pointer;
+        font-size: 1.3rem;
+        color: var(--text-muted);
+        padding: 10px;
       }
+
       .step-btn {
-        font-size: 2rem;
+        font-size: 2.2rem;
         color: white;
-        cursor: pointer;
+        padding: 10px;
       }
 
       .play-circle {
-        width: 65px;
-        height: 65px;
+        width: clamp(65px, 18vw, 80px); /* Cercle play légèrement plus grand */
+        height: clamp(65px, 18vw, 80px);
         background: white;
         border-radius: 50%;
         display: flex;
         justify-content: center;
         align-items: center;
         color: black;
-        font-size: 1.5rem;
-        cursor: pointer;
+        font-size: 1.7rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s;
       }
 
-      /* --- COPYRIGHT --- */
+      .play-circle:active {
+        transform: scale(0.92);
+      }
+
+      /* ======================================================== */
+      /* 7. COPYRIGHT                                             */
+      /* ======================================================== */
       .copyright-zone {
         text-align: center;
-        padding-bottom: 20px;
+        padding-bottom: clamp(8px, 2dvh, 20px);
         font-size: 0.6rem;
-        color: rgba(255, 255, 255, 0.3);
+        color: rgba(255, 255, 255, 0.25);
         letter-spacing: 2px;
         text-transform: uppercase;
-        font-weight: 600;
         flex-shrink: 0;
       }
 
+      /* ======================================================== */
+      /* 8. ANIMATIONS & RESPONSIVE                               */
+      /* ======================================================== */
       @keyframes scaleIn {
         from {
           opacity: 0;
-          transform: scale(0.95);
+          transform: scale(0.9);
         }
         to {
           opacity: 1;
           transform: scale(1);
+        }
+      }
+
+      @media (max-height: 700px) {
+        .album-art {
+          max-height: 30dvh;
+        }
+        .main-btns {
+          padding: 10px 0 15px;
         }
       }
     </style>

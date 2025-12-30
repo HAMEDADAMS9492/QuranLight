@@ -363,57 +363,119 @@
 }
 
 /* ============================================================ */
-/* RESPONSIVE MOBILE : ALIGNEMENT COMPACT HAUT DE PAGE          */
+/* RÉPARATION RAMADAN : HEADER & DASHBOARD COMPACT (PERFECTION) */
 /* ============================================================ */
 
 @media (max-width: 480px) {
-  /* Réduction de l'espace en haut */
-  .ramadan-page .main-container {
-    padding-top: 5px !important;
-  }
-
-  /* Force l'alignement horizontal du bouton et du titre */
+  /* --- 1. HEADER : TITRE DESCENDU --- */
   .header-top-bar {
-    flex-direction: row !important; /* Maintient la ligne */
-    justify-content: space-between;
+    flex-direction: column !important;
     align-items: center;
-    padding: 0 10px;
-    gap: 10px;
-    margin-bottom: 20px;
+    padding: 5px 10px;
+    gap: 12px;
+    margin-bottom: 5px;
   }
 
-  /* Bouton Accueil plus petit */
   .navigation-top {
-    flex: 0 1 auto; /* Ne prend que la place nécessaire */
+    align-self: flex-start;
+    flex: none;
+    margin-bottom: -5px;
   }
 
-  .floating-back-btn {
-    padding: 6px 12px;
-    font-size: 0.7rem;
-    gap: 6px;
-    border-radius: 8px; /* Carré arrondi plus serré */
-  }
-
-  /* Titre et Logo plus petits et alignés */
   .hero-intro-section {
-    flex: 1;
-    justify-content: flex-end; /* Aligne le titre à droite ou au centre */
-    gap: 8px;
-  }
-
-  .moon-logo {
-    font-size: 1.4rem !important; /* Logo réduit */
-    filter: drop-shadow(0 0 5px var(--gold-glow));
+    position: relative;
+    width: 100%;
+    justify-content: center;
+    gap: 10px;
   }
 
   .hero-main-title {
-    font-size: 1.5rem !important; /* Titre réduit */
+    font-size: 1.6rem !important;
     letter-spacing: 2px;
   }
 
-  /* Ajustement des textes secondaires sous le header */
+  .moon-logo {
+    font-size: 1.6rem !important;
+  }
+
+  /* --- 2. DASHBOARD COMPACT (Imsak/Iftar du jour) --- */
+  .info-highlight-box {
+    grid-template-columns: 1fr 1fr; /* On repasse en 2 colonnes mais très serrées */
+    gap: 10px;
+    padding: 15px 10px; /* Padding réduit au minimum */
+    border-radius: 18px;
+    margin-bottom: 25px; /* Plus d'espace avec la liste */
+  }
+
+  .info-item {
+    padding: 5px;
+  }
+
+  .info-item:first-child::after {
+    /* On garde la séparation mais discrète */
+    display: block;
+    right: -5px;
+    height: 50%;
+    top: 25%;
+  }
+
+  .info-item span {
+    font-size: 0.6rem !important; /* Texte "IMSAK" / "IFTAR" très petit */
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  .info-item b {
+    font-size: 1rem !important; /* Heure plus petite pour tenir sur une ligne */
+    gap: 6px;
+  }
+
+  .info-item i {
+    font-size: 0.9rem !important; /* Icônes lune/soleil discrètes */
+  }
+
+  /* --- 3. LISTE DES CARTES --- */
+  .events-section {
+    padding: 12px 8px;
+    border-radius: 20px;
+  }
+
+  .ramadan-card {
+    padding: 10px;
+    border-radius: 15px;
+    gap: 8px;
+  }
+
+  .h-day {
+    font-size: 1.6rem;
+    min-width: 45px;
+  }
+
+  .g-day {
+    font-size: 0.95rem;
+  }
+
+  .card-times {
+    padding: 8px 5px;
+    border-radius: 12px;
+    gap: 5px;
+  }
+
+  .time-item {
+    min-width: 50px;
+  }
+
+  .time-value {
+    font-size: 1rem;
+  }
+
+  .time-label {
+    font-size: 0.55rem;
+  }
+
+  /* --- 4. TEXTES SECONDAIRES --- */
   .hero-intro-section-footer {
-    margin-top: -15px;
+    margin-bottom: 20px;
   }
 
   .arabic-text {
@@ -421,41 +483,19 @@
   }
 
   .french-translation {
-    font-size: 0.8rem;
-  }
-
-  /* --- Ajustement Tableau/Cartes pour Mobile --- */
-  .events-section {
-    padding: 20px 10px;
-    border-radius: 20px;
-  }
-
-  .ramadan-card {
-    padding: 12px;
-    min-height: auto;
-    flex-direction: row; /* Garde l'alignement horizontal si possible */
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .card-times {
-    width: 100%;
-    margin-top: 10px;
-    padding: 8px;
-    gap: 10px;
-  }
-
-  .time-value {
-    font-size: 1.1rem;
+    font-size: 0.75rem;
   }
 }
 
-/* Ajustement pour écrans ultra-étroits (iPhone SE, etc.) */
-@media (max-width: 350px) {
-  .hero-main-title {
-    font-size: 1.2rem !important;
+/* --- AJUSTEMENT ÉCRANS CRITIQUES (320px) --- */
+@media (max-width: 330px) {
+  .info-item b {
+    font-size: 0.9rem !important;
   }
   .floating-back-btn span {
-    display: none; /* Ne garde que l'icône si trop étroit */
+    display: none;
+  }
+  .hero-main-title {
+    font-size: 1.3rem !important;
   }
 }

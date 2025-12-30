@@ -297,136 +297,76 @@
 }
 
 /* ============================================================ */
-/* RESPONSIVE AJUSTÉ – NAVIGATION & CALENDRIER MOBILE           */
+/* RÉPARATION STRUCTURELLE : TITRE DESCENDU (ZÉRO CHEVAUCHEMENT) */
 /* ============================================================ */
 
 @media (max-width: 480px) {
-
-  /* ================= NAVIGATION ================= */
-
+  /* 1. On donne de la hauteur au header pour accueillir deux lignes */
   .navigation-top {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    padding: 10px 12px;
-    min-height: 55px;
-  }
-
-  .floating-back-btn {
-    grid-column: 1;
-    width: 32px !important;
-    height: 32px !important;
-    padding: 0 !important;
-    border-radius: 6px;
-    justify-content: center;
-    flex-shrink: 0;
-    z-index: 10;
-  }
-
-  .floating-back-btn span {
-    display: none;
-  }
-
-  .floating-back-btn i {
-    font-size: 1rem;
-  }
-
-  .hero-intro-section {
-    grid-column: 2;
     display: flex;
-    align-items: center;
+    flex-direction: column; /* Force le titre à aller SOUS le bouton */
+    align-items: center; /* Centre tout horizontalement */
+    padding: 15px 10px !important;
+    min-height: 120px; /* Augmente l'espace vertical */
+    gap: 15px;
+  }
+
+  /* 2. Le bouton retour reste en haut à gauche */
+  .floating-back-btn {
+    align-self: flex-start; /* Aligne le bouton à gauche uniquement */
+    position: relative;
+    top: 0;
+    left: 0;
+    margin-bottom: 5px;
+  }
+
+  /* 3. Le titre descend et prend sa place au centre */
+  .hero-intro-section {
+    position: static; /* Plus de position absolue */
+    transform: none; /* Plus de décalage manuel */
+    display: flex;
+    flex-direction: row; /* Garde le logo et le texte côte à côte */
     justify-content: center;
-    gap: 6px;
-    white-space: nowrap;
-    margin-left: 150px;
+    width: 100%;
+    margin: 0 auto;
   }
 
   .hero-main-title {
-    font-size: 1rem !important;
-    letter-spacing: 1px;
-  }
-
-  .moon-logo {
-    font-size: 1rem !important;
-  }
-
-  .navigation-top::after {
-    content: "";
-    grid-column: 3;
-    width: 32px;
-  }
-
-  /* ================= TEXTES ================= */
-
-  .arabic-text {
-    font-size: 1.15rem;
-  }
-
-  .french-translation {
-    font-size: 0.72rem;
-    padding: 0 18px;
-  }
-
-  /* ================= CALENDRIER ================= */
-
-  .calendar-container {
-    width: 90%;
-    max-width: 320px;          /* 🔽 réduit */
-    padding: 10px 8px;         /* 🔽 compact */
-    margin: 0 8px 18px auto;   /* ➜ poussé à droite */
-  }
-
-  .date-hijri {
-    font-size: 1.15rem;        /* 🔽 */
+    font-size: 1.6rem !important; /* On peut le ré-agrandir un peu puisqu'il est seul */
+    letter-spacing: 2px;
     text-align: center;
   }
 
-  .calendar-grid {
-    gap: 3px;                  /* 🔽 */
+  .moon-logo {
+    font-size: 1.6rem !important;
   }
 
-  .day {
-    border-radius: 4px;
-    padding: 3px 2px;          /* 🔽 */
+  /* 4. Ajustement du texte arabe pour qu'il ne colle pas au titre */
+  .header-subtext {
+    margin-top: 10px;
   }
 
-  .gregorian-num {
-    font-size: 0.7rem;
+  /* 5. Sécurité pour le bloc de navigation du mois */
+  .calendar-header {
+    flex-direction: column !important; /* Empile aussi les infos du mois */
+    gap: 10px;
+    padding: 15px !important;
   }
 
-  .hijri-num {
-    font-size: 0.45rem;
+  #calendar-month-year {
+    order: -1; /* Met le nom du mois au-dessus des flèches */
+    font-size: 0.9rem !important;
+    width: 100%;
   }
 
-  .main-txt {
-    font-size: 0.5rem;
-  }
-
-  .arabic-txt {
-    display: none;
+  .month-divider {
+    display: none; /* Cache la barre verticale inutile en colonne */
   }
 }
 
-/* ============================================================ */
-/* ULTRA PETITS ÉCRANS (moins de 340px)                          */
-/* ============================================================ */
-
+/* --- OPTIMISATION TRÈS PETIT ÉCRAN --- */
 @media (max-width: 340px) {
-
   .hero-main-title {
-    font-size: 0.1rem !important;
-  }
-
-  .navigation-top {
-    padding: 8px;
-  }
-
-  .calendar-container {
-    max-width: 280px;          /* encore plus petit */
-    margin-right: 6px;
-  }
-
-  .arabic-text {
-    font-size: 1.05rem;
+    font-size: 1.3rem !important;
   }
 }
