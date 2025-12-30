@@ -297,76 +297,109 @@
 }
 
 /* ============================================================ */
-/* RÉPARATION STRUCTURELLE : TITRE DESCENDU (ZÉRO CHEVAUCHEMENT) */
+/* RÉPARATION STRUCTURELLE : NAVIGATION & CALENDRIER PREMIUM    */
 /* ============================================================ */
 
 @media (max-width: 480px) {
-  /* 1. On donne de la hauteur au header pour accueillir deux lignes */
+  /* 1. HEADER : Empilement Titre sous Bouton Retour */
   .navigation-top {
     display: flex;
-    flex-direction: column; /* Force le titre à aller SOUS le bouton */
-    align-items: center; /* Centre tout horizontalement */
+    flex-direction: column;
+    align-items: center;
     padding: 15px 10px !important;
-    min-height: 120px; /* Augmente l'espace vertical */
-    gap: 15px;
+    min-height: 110px;
+    gap: 12px;
   }
 
-  /* 2. Le bouton retour reste en haut à gauche */
   .floating-back-btn {
-    align-self: flex-start; /* Aligne le bouton à gauche uniquement */
+    align-self: flex-start;
     position: relative;
-    top: 0;
-    left: 0;
-    margin-bottom: 5px;
+    margin-bottom: 0;
   }
 
-  /* 3. Le titre descend et prend sa place au centre */
+  /* 2. TITRE : Logo et Texte bien centrés */
   .hero-intro-section {
-    position: static; /* Plus de position absolue */
-    transform: none; /* Plus de décalage manuel */
+    position: static;
+    transform: none;
     display: flex;
-    flex-direction: row; /* Garde le logo et le texte côte à côte */
+    flex-direction: row;
     justify-content: center;
+    align-items: center;
     width: 100%;
-    margin: 0 auto;
+    gap: 10px;
   }
 
   .hero-main-title {
-    font-size: 1.6rem !important; /* On peut le ré-agrandir un peu puisqu'il est seul */
+    font-size: 1.5rem !important;
     letter-spacing: 2px;
-    text-align: center;
+    margin: 0;
   }
 
   .moon-logo {
-    font-size: 1.6rem !important;
+    font-size: 1.5rem !important;
   }
 
-  /* 4. Ajustement du texte arabe pour qu'il ne colle pas au titre */
-  .header-subtext {
-    margin-top: 10px;
-  }
-
-  /* 5. Sécurité pour le bloc de navigation du mois */
+  /* 3. CALENDRIER : Navigation "Comme sur Bureau" mais adaptée */
   .calendar-header {
-    flex-direction: column !important; /* Empile aussi les infos du mois */
-    gap: 10px;
-    padding: 15px !important;
+    display: flex !important;
+    flex-direction: row !important; /* RESTE EN LIGNE */
+    justify-content: space-between !important; /* Écarte les éléments */
+    align-items: center !important;
+    padding: 12px 15px !important;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    gap: 5px;
   }
 
+  /* Le bloc contenant "Mois Année" */
   #calendar-month-year {
-    order: -1; /* Met le nom du mois au-dessus des flèches */
-    font-size: 0.9rem !important;
-    width: 100%;
+    font-size: 0.85rem !important;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    flex: 1; /* Prend l'espace disponible */
+    text-align: left;
+    white-space: nowrap;
   }
 
+  /* Les flèches de navigation */
+  .calendar-nav-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .nav-btn {
+    width: 35px !important;
+    height: 35px !important;
+    font-size: 0.8rem !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* On garde le séparateur mais plus fin ou on le gère en marge */
   .month-divider {
-    display: none; /* Cache la barre verticale inutile en colonne */
+    height: 15px;
+    width: 1px;
+    background: rgba(176, 141, 87, 0.3);
+    margin: 0 10px;
+    display: inline-block; /* On le garde pour le style premium */
   }
 }
 
-/* --- OPTIMISATION TRÈS PETIT ÉCRAN --- */
+/* --- OPTIMISATION TRÈS PETIT ÉCRAN (340px) --- */
 @media (max-width: 340px) {
   .hero-main-title {
-    font-size: 1.3rem !important;
+    font-size: 1.2rem !important;
+  }
+
+  #calendar-month-year {
+    font-size: 0.75rem !important;
+  }
+
+  .nav-btn {
+    width: 30px !important;
+    height: 30px !important;
   }
 }

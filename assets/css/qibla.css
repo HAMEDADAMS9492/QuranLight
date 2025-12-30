@@ -425,19 +425,19 @@
   color: var(--color-gold, #b08d57);
 }
 
-/* ============================================================
-   RESPONSIVE UNIFIÉ ET OPTIMISÉ (MOBILE & DESKTOP)
-   ============================================================ */
+/* ============================================================ */
+/* 11. RESPONSIVE UNIFIÉ ET OPTIMISÉ : QIBLA PREMIUM           */
+/* ============================================================ */
 
-/* --- 1. AJUSTEMENTS POUR GRANDS ÉCRANS (TABLETTES & PC) --- */
+/* --- 1. GRANDS ÉCRANS (DESKTOP) --- */
 @media (min-width: 1024px) {
   .qibla-content-wrapper {
-    max-width: 600px; /* On élargit légèrement pour le confort visuel */
+    max-width: 600px;
     gap: 32px;
   }
 
   #qibla-display {
-    width: 380px; /* Boussole plus majestueuse sur PC */
+    width: 380px;
     height: 380px;
   }
 
@@ -447,119 +447,138 @@
   }
 
   .hero-main-title {
-    font-size: 3.5rem; /* Titre plus imposant */
+    font-size: 3.5rem;
   }
 }
 
-/* --- 2. AJUSTEMENTS POUR ÉCRANS INTERMÉDIAIRES (MOBILES LARGES) --- */
-@media (max-width: 600px) {
+/* --- 2. SMARTPHONES (STANDARD) : ALIGNEMENT RÉPARÉ --- */
+@media (max-width: 480px) {
+  /* REPRODUCTION DE LA STRUCTURE CALENDRIER */
   .navigation-top {
-    padding-top: 60px; /* Plus d'espace pour le bouton flottant */
+    display: flex;
+    flex-direction: column; /* Bouton en haut, Titre en dessous */
+    align-items: center;
+    padding: 15px 10px !important;
+    min-height: 110px;
+    gap: 12px;
+  }
+
+  /* Bouton Accueil / Retour */
+  .floating-back-btn {
+    align-self: flex-start; /* Aligné à gauche */
+    position: relative;
+    top: 0;
+    left: 0;
+    width: auto; /* Permet de garder le texte "Accueil" si présent */
+    padding: 8px 12px;
+    border-radius: 12px;
+  }
+
+  .floating-back-btn span {
+    display: inline-block; /* On garde le texte pour le côté Premium */
+    font-size: 0.8rem;
+  }
+
+  /* Section Titre Qibla */
+  .hero-intro-section {
+    position: static;
+    transform: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
   }
 
   .hero-main-title {
-    font-size: clamp(2rem, 8vw, 2.5rem);
+    font-size: 1.5rem !important;
+    letter-spacing: 2px;
+    margin: 0;
   }
 
   .moon-logo {
-    font-size: 2.2rem;
-  }
-}
-
-/* --- 3. OPTIMISATION MOBILE CRITIQUE (SMARTPHONES STANDARD) --- */
-@media (max-width: 480px) {
-  /* Bouton retour compact pour ne pas gêner la lecture */
-  .floating-back-btn {
-    top: 12px;
-    left: 12px;
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    border-radius: 10px;
-  }
-  .floating-back-btn span {
-    display: none; /* On ne garde que l'icône sur petit mobile */
+    font-size: 1.5rem !important;
   }
 
-  /* Réduction de la grille d'info pour éviter l'étouffement */
-  .qibla-info-grid {
-    padding: 15px;
-    border-radius: 20px;
-  }
-
-  .card-data .value {
-    font-size: clamp(1.8rem, 10vw, 2.2rem);
-  }
-
-  .card-icon {
-    font-size: 1.1rem;
-  }
-
-  /* La Boussole : équilibre entre visibilité et espace */
+  /* LA BOUSSOLE : Taille optimisée pour mobile */
   #qibla-display {
-    width: clamp(260px, 80vw, 300px);
-    height: clamp(260px, 80vw, 300px);
-    border-width: 6px; /* Bordure un peu plus fine */
+    width: 280px;
+    height: 280px;
+    border-width: 6px;
   }
 
   .compass-section::after {
-    width: 300px;
-    height: 300px;
+    width: 310px;
+    height: 310px;
   }
 
-  /* Textes secondaires */
-  .arabic-text {
-    font-size: 1.6rem;
-  }
-
-  .french-translation {
-    font-size: 0.8rem;
-  }
-}
-
-/* --- 4. OPTIMISATION POUR PETITS ÉCRANS (EX: iPHONE SE) --- */
-@media (max-width: 360px) {
-  .qibla-content-wrapper {
-    gap: 16px;
-    padding: 0 15px;
-  }
-
-  #qibla-display {
-    width: 240px;
-    height: 240px;
-  }
-
-  .hero-main-title {
-    font-size: 1.8rem;
+  /* GRILLE D'INFOS (Degrés / Distance) */
+  .qibla-info-grid {
+    padding: 15px;
+    border-radius: 20px;
+    gap: 10px;
   }
 
   .card-data .value {
-    font-size: 1.7rem;
+    font-size: 1.8rem !important;
+  }
+
+  .card-icon {
+    font-size: 1rem;
   }
 
   .divider-gold {
-    height: 40px;
+    height: 35px;
   }
 
-  .qibla-map-container {
-    height: 150px; /* On réduit la carte pour laisser respirer la boussole */
+  /* Textes Arabes */
+  .arabic-text {
+    font-size: 1.5rem !important;
   }
 }
 
-/* --- 5. GESTION DU MODE PAYSAGE (LANDSCAPE) --- */
-@media (max-height: 500px) and (orientation: landscape) {
-  body {
-    overflow-y: auto; /* Autorise le scroll si l'écran est trop court */
+/* --- 3. PETITS ÉCRANS (320px - 340px) --- */
+@media (max-width: 340px) {
+  .hero-main-title {
+    font-size: 1.2rem !important;
   }
-  .navigation-top {
-    min-height: 60px;
-    padding-top: 20px;
-  }
+
   #qibla-display {
-    width: 180px;
-    height: 180px;
+    width: 230px;
+    height: 230px;
   }
-  .compass-section {
-    padding: 10px 0;
+
+  .qibla-info-grid {
+    padding: 10px;
+  }
+
+  .card-data .value {
+    font-size: 1.5rem !important;
+  }
+
+  .qibla-map-container {
+    height: 140px;
+  }
+}
+
+/* --- 4. MODE PAYSAGE --- */
+@media (max-height: 500px) and (orientation: landscape) {
+  .navigation-top {
+    min-height: 50px;
+    padding-top: 10px;
+    flex-direction: row; /* En paysage, on remet sur une ligne */
+    justify-content: space-between;
+  }
+
+  #qibla-display {
+    width: 160px;
+    height: 160px;
+  }
+
+  .qibla-content-wrapper {
+    flex-direction: row; /* Boussole et Carte côte à côte */
+    flex-wrap: wrap;
+    justify-content: center;
   }
 }

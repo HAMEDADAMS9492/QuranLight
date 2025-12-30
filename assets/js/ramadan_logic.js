@@ -1,6 +1,6 @@
 /**
  * RAMADAN APP - LOGIC
- * Support: GPS + AlAdhan API + Premium Wide UI
+ * Support: GPS + Nominatim (Ville, Pays) + AlAdhan API
  */
 
 const listContainer = document.getElementById("monthly-events-list");
@@ -8,30 +8,76 @@ const listContainer = document.getElementById("monthly-events-list");
 async function initRamadanApp() {
   try {
     // 1. Détection de la position réelle (GPS)
-    const coords = await new Promise((res) => {
+    const locationData = await new Promise((res) => {
       navigator.geolocation.getCurrentPosition(
-        (p) => res({ lat: p.coords.latitude, lon: p.coords.longitude }),
-        () => res({ lat: 48.8566, lon: 2.3522 }), // Fallback Paris
+        async (p) => {
+          const lat = p.coords.latitude;
+          const lon = p.coords.longitude;
+
+          let cityName = "Ma Position";
+
+          // Récupération du nom de la ville via Nominatim (Logique Universelle)
+          try {
+            const geoRes = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10`
+            );
+            const geoData = await geoRes.json();
+            const a = geoData.address;
+
+            // Sélection de la ville
+            let city =
+              a.city ||
+              a.town ||
+              a.village ||
+              a.municipality ||
+              a.county ||
+              a.state ||
+              "";
+
+            // Correction spécifique pour les noms administratifs (ex: Abuja)
+            if (
+              city.toLowerCase().includes("municipal") ||
+              city.toLowerCase().includes("capital territory")
+            ) {
+              city = a.city_district || a.suburb || a.town || "Abuja";
+            }
+
+            // Nettoyage des prépositions
+            city = city.replace(/^(du |de |de la |des |the )/gi, "").trim();
+            const country = a.country || "";
+
+            // Format Final : Ville, Pays
+            if (country && city.toLowerCase() !== country.toLowerCase()) {
+              cityName = `${city}, ${country}`;
+            } else {
+              cityName = city || country || "Ma Position";
+            }
+          } catch (e) {
+            console.error("Erreur de nom de ville, utilisation fallback.");
+          }
+
+          res({ lat, lon, city: cityName });
+        },
+        () => res({ lat: 48.8566, lon: 2.3522, city: "Paris, France" }), // Fallback si GPS refusé
         { timeout: 5000 }
       );
     });
 
-    // 2. Récupération des données du mois actuel
+    // 2. Récupération des données du mois actuel via AlAdhan
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth() + 1;
 
     const response = await fetch(
-      `https://api.aladhan.com/v1/calendar/${year}/${month}?latitude=${coords.lat}&longitude=${coords.lon}&method=3`
+      `https://api.aladhan.com/v1/calendar/${year}/${month}?latitude=${locationData.lat}&longitude=${locationData.lon}&method=3`
     );
     const result = await response.json();
 
     if (result.code === 200 && result.data) {
       const firstDay = result.data[0];
-      const city = firstDay.meta.timezone.split("/").pop().replace("_", " ");
       const hYear = firstDay.date.hijri.year;
 
-      // 3. Mise à jour du Dashboard (Organisation optimisée des titres)
+      // 3. Mise à jour du Dashboard (Ville, Pays propre)
       const infoBox = document.querySelector(".info-highlight-box");
       if (infoBox) {
         infoBox.innerHTML = `
@@ -41,7 +87,7 @@ async function initRamadanApp() {
           </div>
           <div class="info-item">
             <span><i class="fas fa-map-marker-alt"></i> Localisation</span>
-            <b id="location-display">${city}</b>
+            <b id="location-display">${locationData.city}</b>
           </div>
         `;
       }
@@ -69,6 +115,7 @@ function renderList(days) {
 
     const isToday = d === todayNum && m === currentMonth;
 
+    // Nettoyage des horaires (format HH:MM)
     const imsak = day.timings.Imsak.split(" ")[0];
     const iftar = day.timings.Maghrib.split(" ")[0];
 
@@ -81,7 +128,6 @@ function renderList(days) {
     }>
         <div class="card-date">
           <span class="h-day">${ramadanDay}</span>
-
           <div class="g-day-info">
             <span class="g-day">Jour</span>
             <span class="g-date">${realDate}</span>
@@ -105,7 +151,7 @@ function renderList(days) {
 
   listContainer.innerHTML = html;
 
-  // Scroll fluide vers aujourd'hui
+  // Scroll fluide vers le jour actuel
   setTimeout(() => {
     const activeElement = document.getElementById("active-day");
     if (activeElement) {

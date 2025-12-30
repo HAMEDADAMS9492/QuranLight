@@ -4,6 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Paramètres - QuranLight</title>
+
+    <script src="assets/js/theme-loader.js"></script>
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -12,38 +15,15 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
       rel="stylesheet"
     />
+
     <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/theme-variables.css" />
 
     <style>
-      :root {
-        /* Émeraude Royale (Par défaut) */
-        --gold: #b08d57;
-        --gold-bright: #d4bc96;
-        --gold-glow: rgba(176, 141, 87, 0.4);
-        --emerald-dark: #05140f;
-        --emerald-mid: #0a2d20;
-        --glass: rgba(255, 255, 255, 0.05);
-        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      /* --- VARIANTES DE THÈMES --- */
-      body.theme-midnight {
-        --gold: #a3aab0; /* Argent */
-        --gold-bright: #e1e4e6;
-        --gold-glow: rgba(163, 170, 176, 0.4);
-        --emerald-dark: #050a14;
-        --emerald-mid: #0a182d;
-      }
-
-      body.theme-dark {
-        --gold: #b08d57;
-        --gold-bright: #d4bc96;
-        --gold-glow: rgba(176, 141, 87, 0.3);
-        --emerald-dark: #000000;
-        --emerald-mid: #111111;
-      }
-
+      /* Styles spécifiques à la mise en page des réglages */
       body {
+        /* Utilisation des variables pour la compatibilité totale avec le loader */
+        background-color: var(--emerald-dark);
         background: radial-gradient(
           circle at top,
           var(--emerald-mid),
@@ -55,10 +35,9 @@
         margin: 0;
         padding-bottom: 50px;
         overflow-x: hidden;
-        transition: background 0.5s ease; /* Transition douce pour le changement de thème */
+        transition: background 0.5s ease;
       }
 
-      /* --- HEADER PREMIUM --- */
       .settings-header {
         display: grid;
         grid-template-columns: 1fr auto 1fr;
@@ -66,7 +45,7 @@
         padding: 15px 30px;
         background: rgba(0, 0, 0, 0.6);
         backdrop-filter: blur(20px);
-        border-bottom: 1px solid rgba(176, 141, 87, 0.3);
+        border-bottom: 1px solid var(--border-light);
         position: sticky;
         top: 0;
         z-index: 1000;
@@ -78,18 +57,17 @@
         background: rgba(255, 255, 255, 0.05);
         padding: 8px 12px;
         border-radius: 10px;
-        border: 1px solid rgba(176, 141, 87, 0.3);
+        border: 1px solid var(--border-light);
         font-size: 0.85rem;
         font-weight: 600;
         display: flex;
         align-items: center;
         gap: 8px;
-        transition: var(--transition);
+        transition: 0.3s;
         width: fit-content;
       }
 
-      .back-home:hover,
-      .back-home:active {
+      .back-home:hover {
         background: var(--gold);
         color: var(--emerald-dark);
         border-color: var(--gold-bright);
@@ -129,7 +107,6 @@
         }
       }
 
-      /* --- CONTAINER --- */
       .settings-container {
         max-width: 700px;
         margin: 40px auto;
@@ -155,17 +132,13 @@
       .section-title::after {
         content: "";
         height: 1px;
-        background: linear-gradient(
-          to right,
-          rgba(176, 141, 87, 0.5),
-          transparent
-        );
+        background: linear-gradient(to right, var(--border-light), transparent);
         flex-grow: 1;
       }
 
       .settings-card {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(176, 141, 87, 0.15);
+        background: var(--card-bg);
+        border: 1px solid var(--border-light);
         border-radius: 12px;
         overflow: hidden;
         backdrop-filter: blur(5px);
@@ -177,14 +150,11 @@
         justify-content: space-between;
         padding: 22px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        transition: var(--transition);
+        transition: 0.3s;
       }
 
       .setting-row:last-child {
         border-bottom: none;
-      }
-      .setting-row:hover {
-        background: rgba(176, 141, 87, 0.03);
       }
 
       .setting-info {
@@ -193,6 +163,7 @@
         gap: 18px;
         flex: 1;
       }
+
       .setting-info i {
         font-size: 1.2rem;
         color: var(--gold);
@@ -206,6 +177,7 @@
         font-weight: 600;
         color: #fdfdfd;
       }
+
       .setting-desc {
         display: block;
         font-size: 0.8rem;
@@ -217,11 +189,10 @@
       select {
         background: var(--emerald-dark);
         color: var(--gold-bright);
-        border: 1px solid rgba(176, 141, 87, 0.4);
+        border: 1px solid var(--border-light);
         padding: 10px 15px;
         border-radius: 8px;
         outline: none;
-        font-family: inherit;
         cursor: pointer;
       }
 
@@ -238,11 +209,13 @@
         width: 50px;
         height: 26px;
       }
+
       .switch input {
         opacity: 0;
         width: 0;
         height: 0;
       }
+
       .slider {
         position: absolute;
         cursor: pointer;
@@ -250,8 +223,9 @@
         background-color: rgba(255, 255, 255, 0.1);
         transition: 0.4s;
         border-radius: 34px;
-        border: 1px solid rgba(176, 141, 87, 0.2);
+        border: 1px solid var(--border-light);
       }
+
       .slider:before {
         position: absolute;
         content: "";
@@ -262,8 +236,8 @@
         background-color: white;
         transition: 0.4s;
         border-radius: 50%;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
       }
+
       input:checked + .slider {
         background-color: var(--gold);
       }
@@ -294,12 +268,6 @@
         text-transform: uppercase;
       }
 
-      .preview-text {
-        color: var(--gold-bright);
-        font-style: italic;
-        line-height: 1.6;
-      }
-
       .btn-danger {
         background: rgba(255, 68, 68, 0.1);
         border: 1px solid rgba(255, 68, 68, 0.4);
@@ -311,29 +279,17 @@
         transition: 0.3s;
         text-transform: uppercase;
         font-size: 0.8rem;
-        letter-spacing: 1px;
       }
 
       .btn-danger:hover {
         background: #ff4444;
         color: white;
-        box-shadow: 0 0 20px rgba(255, 68, 68, 0.3);
       }
 
       @media (max-width: 600px) {
         .settings-header {
           grid-template-columns: auto 1fr;
           gap: 15px;
-          padding: 15px;
-        }
-        .header-center {
-          justify-content: flex-end;
-        }
-        .header-center h1 {
-          font-size: 1rem;
-        }
-        .header-center i {
-          font-size: 1.4rem;
         }
         .back-home span {
           display: none;
@@ -342,9 +298,6 @@
           flex-direction: column;
           align-items: flex-start;
           gap: 15px;
-        }
-        .setting-info {
-          width: 100%;
         }
         select {
           width: 100%;
@@ -377,8 +330,7 @@
               <div>
                 <span class="setting-label">Profil d'Apprentissage</span>
                 <span class="setting-desc"
-                  >Adapte les tutoriels audio et visuels selon votre
-                  genre.</span
+                  >Adapte les tutoriels selon votre genre.</span
                 >
               </div>
             </div>
@@ -393,7 +345,7 @@
               <div>
                 <span class="setting-label">Notifications de Dhikr</span>
                 <span class="setting-desc"
-                  >Rappels discrets pour le Tasbih après chaque Salât.</span
+                  >Rappels discrets pour le Tasbih.</span
                 >
               </div>
             </div>
@@ -406,7 +358,7 @@
       </div>
 
       <div class="settings-section">
-        <div class="section-title">Interface & Confort de Lecture</div>
+        <div class="section-title">Interface & Confort</div>
         <div class="settings-card">
           <div class="setting-row">
             <div class="setting-info">
@@ -414,7 +366,7 @@
               <div>
                 <span class="setting-label">Nuance d'ambiance</span>
                 <span class="setting-desc"
-                  >Choisissez l'atmosphère visuelle de l'application.</span
+                  >Choisissez l'atmosphère visuelle.</span
                 >
               </div>
             </div>
@@ -431,46 +383,26 @@
           >
             <div class="setting-info" style="margin-bottom: 10px">
               <i class="fas fa-text-height"></i>
-              <span class="setting-label"
-                >Taille des caractères (Coran & Sunnah)</span
-              >
+              <span class="setting-label">Taille des caractères</span>
             </div>
             <input type="range" id="font-range" min="14" max="32" value="18" />
             <div class="preview-box">
               <div class="preview-label">Aperçu direct</div>
-              <div class="preview-text" id="font-preview">
+              <div
+                class="preview-text"
+                id="font-preview"
+                style="color: var(--gold-bright)"
+              >
                 "Certes, c'est par l'évocation d'Allah que les cœurs
-                s'apaisent." (Sore 13:28)
+                s'apaisent." (13:28)
               </div>
             </div>
-          </div>
-
-          <div class="setting-row">
-            <div class="setting-info">
-              <i class="fas fa-clock"></i>
-              <span class="setting-label">Format des horaires de prière</span>
-            </div>
-            <select id="time-format">
-              <option value="24">Standard 24h (18:30)</option>
-              <option value="12">Format 12h (06:30 PM)</option>
-            </select>
-          </div>
-
-          <div class="setting-row">
-            <div class="setting-info">
-              <i class="fas fa-map-marker-alt"></i>
-              <span class="setting-label">Calcul des distances</span>
-            </div>
-            <select id="distance-unit">
-              <option value="km">Métrique (Kilomètres)</option>
-              <option value="miles">Impérial (Miles)</option>
-            </select>
           </div>
         </div>
       </div>
 
       <div class="settings-section">
-        <div class="section-title">Stockage & Confidentialité</div>
+        <div class="section-title">Confidentialité</div>
         <div class="settings-card">
           <div class="setting-row">
             <div class="setting-info">
@@ -478,7 +410,7 @@
               <div>
                 <span class="setting-label">Nettoyage des données</span>
                 <span class="setting-desc"
-                  >Efface les favoris et les préférences enregistrées.</span
+                  >Efface les préférences enregistrées.</span
                 >
               </div>
             </div>
@@ -492,12 +424,9 @@
       const fontRange = document.getElementById("font-range");
       const fontPreview = document.getElementById("font-preview");
       const genderSelect = document.getElementById("pref-gender");
-      const themeSelect = document.getElementById("pref-theme"); // Nouveau
-      const timeSelect = document.getElementById("time-format");
-      const distanceSelect = document.getElementById("distance-unit");
+      const themeSelect = document.getElementById("pref-theme");
       const dhikrToggle = document.getElementById("pref-dhikr");
 
-      // Charger les préférences
       function loadSettings() {
         const settings =
           JSON.parse(localStorage.getItem("quranlight_prefs")) || {};
@@ -511,12 +440,9 @@
           themeSelect.value = settings.theme;
           applyTheme(settings.theme);
         }
-        if (settings.timeFormat) timeSelect.value = settings.timeFormat;
-        if (settings.distanceUnit) distanceSelect.value = settings.distanceUnit;
         if (settings.dhikr !== undefined) dhikrToggle.checked = settings.dhikr;
       }
 
-      // Sauvegarde générique
       function saveSetting(key, value) {
         let settings =
           JSON.parse(localStorage.getItem("quranlight_prefs")) || {};
@@ -524,53 +450,47 @@
         localStorage.setItem("quranlight_prefs", JSON.stringify(settings));
       }
 
-      // Appliquer le thème visuel
       function applyTheme(themeName) {
+        // Nettoyer les classes existantes
         document.body.classList.remove("theme-midnight", "theme-dark");
-        if (themeName === "midnight") {
-          document.body.classList.add("theme-midnight");
-        } else if (themeName === "dark") {
-          document.body.classList.add("theme-dark");
+        document.documentElement.classList.remove(
+          "theme-midnight",
+          "theme-dark"
+        );
+
+        // Appliquer la nouvelle classe
+        if (themeName !== "emerald") {
+          document.body.classList.add(`theme-${themeName}`);
+          document.documentElement.classList.add(`theme-${themeName}`);
         }
       }
-
-      // Ecouteurs
-      fontRange.addEventListener("input", (e) => {
-        fontPreview.style.fontSize = e.target.value + "px";
-        saveSetting("fontSize", e.target.value);
-      });
 
       themeSelect.addEventListener("change", (e) => {
         applyTheme(e.target.value);
         saveSetting("theme", e.target.value);
       });
 
+      fontRange.addEventListener("input", (e) => {
+        fontPreview.style.fontSize = e.target.value + "px";
+        saveSetting("fontSize", e.target.value);
+      });
+
       genderSelect.addEventListener("change", (e) =>
         saveSetting("gender", e.target.value)
-      );
-      timeSelect.addEventListener("change", (e) =>
-        saveSetting("timeFormat", e.target.value)
-      );
-      distanceSelect.addEventListener("change", (e) =>
-        saveSetting("distanceUnit", e.target.value)
       );
       dhikrToggle.addEventListener("change", (e) =>
         saveSetting("dhikr", e.target.checked)
       );
 
       document.getElementById("clear-cache").addEventListener("click", () => {
-        if (
-          confirm(
-            "Attention : Cette action effacera toutes vos préférences. Continuer ?"
-          )
-        ) {
+        if (confirm("Réinitialiser toutes vos préférences ?")) {
           localStorage.removeItem("quranlight_prefs");
           location.reload();
         }
       });
 
+      // Lancer au chargement
       loadSettings();
     </script>
-    <script src="assets/js/script.js"></script>
   </body>
 </html>
