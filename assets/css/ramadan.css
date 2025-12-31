@@ -1,6 +1,6 @@
 /* ============================================================ */
 /* DESIGN HYBRIDE : PREMIUM WIDE EMERALD & GOLD MAT            */
-/* Harmonisé avec le style Collections de Hadiths              */
+/* Harmonisé avec le style Collections de Hadiths               */
 /* ============================================================ */
 
 :root {
@@ -11,6 +11,8 @@
   --emerald-mid: #0a2d20;
   --glass: rgba(255, 255, 255, 0.04);
   --glass-border: rgba(176, 141, 87, 0.2);
+  --imsak: #80eaff;
+  --iftar: #ffb366;
 }
 
 /* --- ESPACE HAUT DE PAGE ET ALIGNEMENT GLOBAL --- */
@@ -19,20 +21,19 @@
   margin-top: 0 !important;
 }
 
-/* CONTENEUR DU HAUT (Bouton + Titre alignés) */
 .header-top-bar {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Bouton à gauche, Titre au centre */
+  justify-content: space-between;
   padding: 0 30px;
   margin-bottom: 30px;
   position: relative;
 }
 
-/* --- BOUTON RETOUR "ACCUEIL" --- */
+/* --- BOUTON RETOUR --- */
 .navigation-top {
   margin: 0;
-  flex: 1; /* Permet de pousser le titre au centre */
+  flex: 1;
 }
 
 .floating-back-btn {
@@ -52,6 +53,7 @@
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  z-index: 100;
 }
 
 .floating-back-btn:hover {
@@ -61,18 +63,18 @@
   box-shadow: 0 5px 15px var(--gold-glow);
 }
 
-/* --- HERO / TITRE ET LUNE ALIGNÉS --- */
+/* --- HERO SECTION --- */
 .hero-intro-section {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 15px;
-  flex: 2; /* Prend plus d'espace pour rester centré */
+  flex: 2;
 }
 
 .moon-logo {
-  font-size: 2.5rem; /* Taille ajustée pour l'alignement avec le titre */
+  font-size: 2.5rem;
   color: var(--gold);
   filter: drop-shadow(0 0 10px var(--gold-glow));
   animation: float 3s ease-in-out infinite;
@@ -90,7 +92,7 @@
 }
 
 .hero-main-title {
-  font-size: 2.8rem; /* Taille harmonisée pour tenir sur une ligne */
+  font-size: 2.8rem;
   font-weight: 900;
   color: #ffffff;
   text-transform: uppercase;
@@ -100,7 +102,6 @@
   white-space: nowrap;
 }
 
-/* Bloc textes sous le titre (centré) */
 .hero-intro-section-footer {
   text-align: center;
   margin-bottom: 40px;
@@ -142,55 +143,45 @@
   overflow: hidden;
 }
 
-.events-section::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url("https://www.transparenttextures.com/patterns/dark-matter.png");
-  opacity: 0.1;
-  pointer-events: none;
-}
-
-/* SECTION HEADER */
-.section-header {
+/* --- COMPTE À REBOURS (Nouveau) --- */
+.countdown-banner {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px dashed var(--gold);
+  border-radius: 25px;
+  padding: 20px;
   text-align: center;
-  margin-bottom: 35px;
-  position: relative;
-  z-index: 1;
+  margin-bottom: 30px;
+  animation: pulseGlow 3s infinite;
 }
 
-.section-title {
-  font-size: 2.5rem;
-  font-weight: 900;
-  background: linear-gradient(to bottom, #ffffff 30%, var(--gold) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+#countdown-label {
+  display: block;
+  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 3px;
-  margin: 0;
-}
-
-.header-divider {
-  width: 60px;
-  height: 3px;
-  background: var(--gold);
-  margin: 15px auto;
-  border-radius: 10px;
-  box-shadow: 0 0 10px var(--gold-glow);
-}
-
-.header-sub {
+  letter-spacing: 2px;
   color: var(--gold-bright);
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 4px;
-  opacity: 0.8;
+  margin-bottom: 5px;
 }
 
-/* DASHBOARD INFO */
+#countdown-timer {
+  font-size: 2.2rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #fff;
+  text-shadow: 0 0 15px var(--gold-glow);
+}
+
+@keyframes pulseGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 5px rgba(176, 141, 87, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(176, 141, 87, 0.4);
+  }
+}
+
+/* --- DASHBOARD INFO --- */
 .info-highlight-box {
   background: rgba(0, 0, 0, 0.3);
   border-radius: 30px;
@@ -199,16 +190,14 @@
   grid-template-columns: 1fr 1fr;
   gap: 30px;
   border: 1px solid var(--glass-border);
-  margin-bottom: 45px;
+  margin-bottom: 30px;
   backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
 }
 
 .info-item {
   text-align: center;
   position: relative;
 }
-
 .info-item:first-child::after {
   content: "";
   position: absolute;
@@ -226,122 +215,126 @@
   letter-spacing: 2px;
   display: block;
   margin-bottom: 8px;
-  font-weight: 600;
 }
 
 .info-item b {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  letter-spacing: 1px;
+  gap: 8px;
 }
 
-.info-item i {
+/* --- MENU DE NAVIGATION (TUILES) --- */
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 25px;
+  position: relative;
+  z-index: 5;
+}
+
+.option-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 15px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.option-card i {
+  font-size: 1.4rem;
   color: var(--gold);
-  font-size: 1.1rem;
+}
+.option-card span {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #fff;
 }
 
-/* LISTE ET CARTES */
+.option-card.active {
+  background: var(--gold);
+  border-color: var(--gold);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px var(--gold-glow);
+}
+
+.option-card.active i,
+.option-card.active span {
+  color: var(--emerald-dark);
+}
+
+/* --- GESTION DES MODULES --- */
+.module-content {
+  display: none;
+  animation: fadeIn 0.4s ease forwards;
+}
+.module-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- SECTION HEADER INTERNE --- */
+.section-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+.section-title {
+  font-size: 1.8rem;
+  font-weight: 900;
+  background: linear-gradient(to bottom, #ffffff, var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+}
+.header-sub {
+  color: var(--gold-bright);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* --- LISTE CALENDRIER (CORRIGÉE : COMPACTE & ALIGNÉE) --- */
 #monthly-events-list {
-  max-height: 650px;
+  max-height: 500px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 20px 10px;
+  gap: 8px; /* Correctif : Espacement réduit entre les blocs */
+  padding-right: 8px;
 }
 
 .ramadan-card {
   background: var(--glass);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 25px;
-  padding: 22px 35px;
+  border-radius: 12px; /* Correctif : Arrondis plus fins */
+  padding: 10px 20px; /* Correctif : Padding réduit pour la hauteur */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  min-height: 110px;
+  transition: 0.3s;
+  min-height: 55px; /* Correctif : Hauteur maîtrisée */
 }
 
-.ramadan-card:hover {
-  background: rgba(176, 141, 87, 0.08);
-  border-color: var(--gold);
-  transform: translateX(5px);
-}
-
-.card-date {
-  display: flex;
-  align-items: center;
-  gap: 25px;
-}
-
-.h-day {
-  font-size: 2.2rem;
-  font-weight: 900;
-  color: var(--gold);
-  min-width: 60px;
-  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-.g-day-info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-}
-
-.g-day {
-  font-weight: 800;
-  font-size: 1.1rem;
-  color: #fff;
-  text-transform: capitalize;
-}
-
-.g-date {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.5);
-  font-weight: 500;
-}
-
-.card-times {
-  display: flex;
-  gap: 20px;
-  background: rgba(0, 0, 0, 0.4);
-  padding: 15px 25px;
-  border-radius: 20px;
-  border: 1px solid var(--glass-border);
-  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
-}
-
-.time-item {
-  text-align: center;
-  min-width: 80px;
-}
-
-.time-label {
-  font-size: 0.65rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  color: var(--gold-bright);
-}
-
-.time-value {
-  font-size: 1.4rem;
-  font-weight: 900;
-}
-
-.imsak-color {
-  color: #80eaff;
-}
-.iftar-color {
-  color: #ffb366;
-}
-
-/* CARTE ACTIVE */
 .ramadan-card.active {
   background: linear-gradient(
     135deg,
@@ -349,153 +342,200 @@
     rgba(10, 45, 32, 0.6)
   ) !important;
   border: 1px solid var(--gold) !important;
-  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.7), 0 0 20px var(--gold-glow) !important;
-  transform: scale(1.03);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* Scrollbar Style */
+.card-date {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.h-day {
+  font-size: 1.4rem; /* Correctif : Taille réduite */
+  font-weight: 900;
+  color: var(--gold);
+  min-width: 35px;
+}
+
+.g-day-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.g-day {
+  font-size: 0.65rem; /* Correctif : Texte plus petit */
+  text-transform: uppercase;
+  color: var(--gold-bright);
+  font-weight: 700;
+}
+
+.g-date {
+  font-size: 0.75rem; /* Correctif : Texte plus petit */
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.card-times {
+  display: flex;
+  gap: 20px;
+  background: rgba(
+    0,
+    0,
+    0,
+    0.3
+  ); /* Correctif : Plus sombre pour le contraste */
+  padding: 6px 15px; /* Correctif : Plus compact */
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+  min-width: 130px;
+  justify-content: center;
+}
+
+.time-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.time-label {
+  font-size: 0.55rem; /* Correctif : Très petit label */
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+  opacity: 0.8;
+}
+
+.time-value {
+  font-size: 1rem; /* Correctif : Taille optimisée */
+  font-weight: 800;
+}
+
+.imsak-color {
+  color: var(--imsak);
+}
+.iftar-color {
+  color: var(--iftar);
+}
+
+/* --- MODULE DOUAS --- */
+#douas-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.doua-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 22px;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* --- MODULE CHECK-LIST --- */
+.checklist-item {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  padding: 20px;
+  border-radius: 18px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.checklist-item span {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #fff;
+}
+.check-box {
+  width: 26px;
+  height: 26px;
+  border: 2px solid var(--gold);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s;
+}
+
+.checklist-item.checked {
+  background: rgba(176, 141, 87, 0.1);
+  border-color: var(--gold);
+}
+.checklist-item.checked .check-box {
+  background: var(--gold);
+}
+.checklist-item.checked .check-box i {
+  color: var(--emerald-dark);
+  font-size: 0.9rem;
+}
+
+/* --- SCROLLBAR --- */
 #monthly-events-list::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 #monthly-events-list::-webkit-scrollbar-thumb {
   background: var(--gold);
   border-radius: 10px;
 }
 
-/* ============================================================ */
-/* RÉPARATION RAMADAN : HEADER & DASHBOARD COMPACT (PERFECTION) */
-/* ============================================================ */
-
+/* --- MOBILE RESPONSIVE --- */
 @media (max-width: 480px) {
-  /* --- 1. HEADER : TITRE DESCENDU --- */
   .header-top-bar {
-    flex-direction: column !important;
-    align-items: center;
-    padding: 5px 10px;
-    gap: 12px;
-    margin-bottom: 5px;
-  }
-
-  .navigation-top {
-    align-self: flex-start;
-    flex: none;
-    margin-bottom: -5px;
-  }
-
-  .hero-intro-section {
-    position: relative;
-    width: 100%;
-    justify-content: center;
-    gap: 10px;
-  }
-
-  .hero-main-title {
-    font-size: 1.6rem !important;
-    letter-spacing: 2px;
-  }
-
-  .moon-logo {
-    font-size: 1.6rem !important;
-  }
-
-  /* --- 2. DASHBOARD COMPACT (Imsak/Iftar du jour) --- */
-  .info-highlight-box {
-    grid-template-columns: 1fr 1fr; /* On repasse en 2 colonnes mais très serrées */
-    gap: 10px;
-    padding: 15px 10px; /* Padding réduit au minimum */
-    border-radius: 18px;
-    margin-bottom: 25px; /* Plus d'espace avec la liste */
-  }
-
-  .info-item {
+    flex-direction: column;
     padding: 5px;
+    margin-bottom: 15px;
   }
-
-  .info-item:first-child::after {
-    /* On garde la séparation mais discrète */
-    display: block;
-    right: -5px;
-    height: 50%;
-    top: 25%;
+  .hero-main-title {
+    font-size: 1.8rem !important;
   }
-
-  .info-item span {
-    font-size: 0.6rem !important; /* Texte "IMSAK" / "IFTAR" très petit */
-    letter-spacing: 1px;
-    margin-bottom: 4px;
+  .hero-intro-section {
+    gap: 10px;
   }
-
-  .info-item b {
-    font-size: 1rem !important; /* Heure plus petite pour tenir sur une ligne */
-    gap: 6px;
-  }
-
-  .info-item i {
-    font-size: 0.9rem !important; /* Icônes lune/soleil discrètes */
-  }
-
-  /* --- 3. LISTE DES CARTES --- */
   .events-section {
-    padding: 12px 8px;
-    border-radius: 20px;
+    padding: 30px 15px;
+    border-radius: 30px;
+  }
+
+  .info-highlight-box {
+    padding: 15px;
+    gap: 10px;
+    grid-template-columns: 1fr 1fr;
+  }
+  .info-item b {
+    font-size: 0.85rem !important;
+  }
+
+  .countdown-timer {
+    font-size: 1.8rem !important;
   }
 
   .ramadan-card {
-    padding: 10px;
-    border-radius: 15px;
-    gap: 8px;
-  }
-
-  .h-day {
-    font-size: 1.6rem;
-    min-width: 45px;
-  }
-
-  .g-day {
-    font-size: 0.95rem;
-  }
-
-  .card-times {
-    padding: 8px 5px;
-    border-radius: 12px;
+    padding: 12px;
+    flex-direction: row;
     gap: 5px;
+    justify-content: space-between;
   }
-
-  .time-item {
-    min-width: 50px;
+  .card-times {
+    min-width: 110px;
+    gap: 10px;
+    padding: 5px 10px;
   }
-
   .time-value {
-    font-size: 1rem;
+    font-size: 0.9rem;
+  }
+  .h-day {
+    font-size: 1.2rem;
+    min-width: 25px;
   }
 
-  .time-label {
-    font-size: 0.55rem;
-  }
-
-  /* --- 4. TEXTES SECONDAIRES --- */
-  .hero-intro-section-footer {
-    margin-bottom: 20px;
-  }
-
-  .arabic-text {
-    font-size: 1.4rem;
-  }
-
-  .french-translation {
-    font-size: 0.75rem;
-  }
-}
-
-/* --- AJUSTEMENT ÉCRANS CRITIQUES (320px) --- */
-@media (max-width: 330px) {
-  .info-item b {
-    font-size: 0.9rem !important;
-  }
-  .floating-back-btn span {
-    display: none;
-  }
-  .hero-main-title {
-    font-size: 1.3rem !important;
+  .option-card span {
+    font-size: 0.6rem;
   }
 }

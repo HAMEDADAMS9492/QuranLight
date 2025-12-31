@@ -4,23 +4,18 @@
 /* 1. POLICES & VARIABLES GLOBALES                 */
 /* =============================================== */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap");
-
 :root {
-  /* Ces variables se mettront à jour automatiquement via theme-variables.css */
   --color-gold: var(--gold, #b08d57);
   --color-gold-light: var(--gold-bright, #d4bc96);
   --color-emerald-abyssal: var(--emerald-dark, #05140f);
 
-  /* Paramètres Layout (Inchangés) */
   --header-height: 70px;
   --sidebar-width: 280px;
 
-  /* Couleurs de texte et surfaces */
   --text-main: #ffffff;
   --text-muted: #bebebe;
   --bg-surface: var(--card-bg, rgba(13, 34, 27, 0.85));
 
-  /* Bordures et Transitions */
   --glass-border: 1px solid var(--border-light, rgba(176, 141, 87, 0.2));
   --transition-speed: 0.3s ease-in-out;
 }
@@ -624,7 +619,7 @@ a {
 }
 
 /* ======================================================== */
-/* 8. RESPONSIVE MOBILE AJUSTÉ                              */
+/*  RESPONSIVE MOBILE AJUSTÉ                              */
 /* ======================================================== */
 
 @media (max-width: 480px) {
@@ -791,7 +786,6 @@ a {
 }
 
 /* --- NAVIGATION & LIENS --- */
-
 .footer-links nav {
   display: flex;
   flex-direction: column;
@@ -810,10 +804,17 @@ a {
   gap: 12px;
 }
 
-.footer-links a:hover,
-.social-links-vertical a:hover {
+/* On ne décale que les liens de texte, pas les icônes sociales */
+.footer-links a:hover {
   color: var(--color-gold) !important;
   transform: translateX(8px);
+}
+
+.social-links-vertical a:hover {
+  color: var(--color-gold) !important;
+  transform: scale(
+    1.1
+  ); /* Un léger zoom plutôt qu'un décalage pour les réseaux */
 }
 
 /* Icônes dans les liens */
@@ -822,8 +823,8 @@ a {
   color: var(--color-gold);
   width: 20px;
   text-align: center;
+  transition: transform 0.3s ease;
 }
-
 /* --- LE SELECTEUR DE LANGUE AMÉLIORÉ --- */
 .footer-lang {
   min-width: 200px;
@@ -1129,68 +1130,63 @@ a {
 }
 
 /* ============================================================ */
-/* 11. RESPONSIVE MASTER : OPTIMISATION MOBILE PREMIUM         */
+/* 11. RESPONSIVE MASTER : OPTIMISATION UNIVERSELLE           */
+/* (Tablettes, Mobiles, Écrans étroits)                       */
 /* ============================================================ */
 
+/* --- TABLETTES ET GRANDS MOBILES (768px et moins) --- */
 @media (max-width: 768px) {
-  /* --- STRUCTURE GLOBALE --- */
   .main-container {
-    padding-top: calc(var(--header-height) + 10px) !important;
+    padding-top: calc(var(--header-height) + 15px) !important;
     padding-left: 15px;
     padding-right: 15px;
   }
 
-  /* --- SIDEBAR : Ajustement largeur sur tablettes --- */
   :root {
     --sidebar-width: 260px;
   }
+
+  /* Ajustement des titres Premium pour tablette */
+  .section-title-premium {
+    font-size: 1.4rem;
+    letter-spacing: 3px;
+  }
+
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+  }
 }
 
+/* --- SMARTPHONES STANDARDS (480px et moins) --- */
 @media (max-width: 480px) {
-  /* --- HEADER : Plus compact --- */
   .glass-panel {
     height: 60px;
     padding: 0 10px;
   }
 
-  #header-location {
-    font-size: 0.9rem;
-  }
-
-  /* --- BLOC ACCUEIL (TIME BLOCK) --- */
+  /* BLOC ACCUEIL : Correction de l'ombre et du texte */
   .home-date-time-block {
     width: 100%;
-    padding: 30px 15px;
-    border-radius: 25px;
-    margin-bottom: 20px;
+    padding: 25px 15px;
+    border-radius: 20px;
   }
 
   .home-date-time-block .current-time {
-    font-size: 3.2rem !important; /* Évite le débordement */
-    margin: 10px 0;
+    font-size: 3rem !important; /* Un poil plus petit pour iPhone SE */
+    letter-spacing: -1px;
   }
 
-  .home-date-time-block .gregorian-date {
-    font-size: 0.8rem;
-    letter-spacing: 1.5px;
+  .home-date-time-block .hijri-date {
+    font-size: 1rem;
+    margin-bottom: 20px;
   }
 
-  .next-prayer-info {
-    padding: 15px;
-    border-radius: 18px;
-  }
-
-  .next-prayer-name {
-    font-size: 1.1rem;
-  }
-  .next-prayer-countdown {
-    font-size: 1.4rem;
-  }
-
-  /* --- MODULES (BIJOUX) : Grille parfaite --- */
+  /* MODULES EN GRILLE : Équilibrage parfait */
   .modules-grid {
-    gap: 30px 15px;
-    padding: 20px 5px 40px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px 15px;
+    padding: 20px 0;
   }
 
   .module-icon {
@@ -1198,7 +1194,6 @@ a {
     height: 72px !important;
     font-size: 1.5rem !important;
     border-radius: 22px !important;
-    margin-bottom: 12px;
   }
 
   .module-label {
@@ -1206,30 +1201,34 @@ a {
     letter-spacing: 1px !important;
   }
 
-  /* --- RAPPEL QUOTIDIEN --- */
+  /* RAPPEL QUOTIDIEN : Blindage du texte */
   .daily-reminder-card {
-    padding: 30px 20px;
-    margin: 30px 0;
+    padding: 25px 15px;
+    margin: 25px 0;
+    width: 100%;
   }
 
   .quote-arabic {
-    font-size: 1.6rem !important;
+    font-size: 1.5rem !important;
+    line-height: 1.4;
   }
 
   .quote-french {
     font-size: 0.85rem !important;
+    line-height: 1.6;
     max-width: 100%;
   }
 
-  /* --- RÉCITATEURS : Scroll fluide --- */
+  /* RÉCITATEURS : Optimisation du scroll horizontal */
   .reciters-horizontal-list {
+    gap: 15px;
+    padding-bottom: 15px;
     justify-content: flex-start;
-    gap: 20px;
-    padding-bottom: 20px;
+    -webkit-overflow-scrolling: touch;
   }
 
   .reciter-card-circle {
-    flex: 0 0 85px;
+    flex: 0 0 85px; /* Largeur fixe pour éviter l'écrasement */
   }
 
   .reciter-image-wrapper {
@@ -1237,96 +1236,102 @@ a {
     height: 75px !important;
   }
 
-  /* --- FOOTER : RÉALIGNEMENT TOTAL & RÉSEAUX SOCIAUX --- */
+  .reciter-label {
+    font-size: 0.8rem;
+    white-space: normal; /* Permet le retour à la ligne si nom trop long */
+  }
+
+  /* --- FOOTER : RÉALIGNEMENT TOTAL & RÉSEAUX --- */
   .footer {
-    padding: 40px 20px 30px;
-    border-radius: 40px 40px 0 0;
-    margin-top: 40px;
+    padding: 40px 15px 30px;
+    text-align: center;
+    border-radius: 35px 35px 0 0;
   }
 
   .footer-grid {
-    grid-template-columns: 1fr; /* Une seule colonne centrée */
-    gap: 40px;
-    text-align: center;
+    grid-template-columns: 1fr !important;
+    gap: 35px;
   }
 
-  .footer-brand {
+  .footer-brand,
+  .footer-section {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centre Logo + Titre */
+    align-items: center;
     justify-content: center;
-    text-align: center;
   }
 
   .footer-desc {
     margin: 15px auto 0;
     border-left: none;
-    border-top: 1px solid rgba(176, 141, 87, 0.3);
-    padding: 15px 0 0 0;
-    max-width: 100%;
-    text-align: center;
+    border-top: 1px solid rgba(176, 141, 87, 0.2);
+    padding: 15px 10px 0;
+    font-size: 0.85rem;
   }
 
-  /* CENTRAGE DES RÉSEAUX SOCIAUX */
-  .footer-socials {
-    display: flex !important;
+  /* FIX DES RÉSEAUX SOCIAUX : ALIGNEMENT PARFAIT */
+  .social-links-vertical {
+    flex-direction: row !important;
     justify-content: center !important;
     align-items: center !important;
-    gap: 20px;
-    margin: 25px auto 0 !important;
+    gap: 30px !important; /* Plus d'espace pour les gros doigts */
     width: 100%;
+    margin-top: 10px !important;
+    padding: 10px 0;
   }
 
-  .footer-socials a {
-    margin: 0 !important;
-    display: flex;
+  .social-links-vertical a {
+    display: flex !important;
     justify-content: center;
-    align-items: center;
+    transform: none !important; /* Désactive le décalage horizontal mobile */
+  }
+
+  .social-links-vertical a span {
+    display: none;
+  }
+
+  .social-links-vertical a i {
+    font-size: 1.8rem !important;
+    color: var(--color-gold);
+    text-shadow: 0 0 10px rgba(176, 141, 87, 0.3);
   }
 
   .footer-links nav {
-    display: flex;
-    flex-direction: column;
     align-items: center;
+    gap: 15px;
   }
 
   .footer-links a {
     justify-content: center;
-    text-align: center;
-  }
-
-  .lang-selector-wrapper {
-    margin: 0 auto;
-    max-width: 240px;
-  }
-
-  .footer-bottom p {
-    font-size: 0.8rem;
-    text-align: center;
+    font-size: 0.9rem;
+    transform: none !important;
   }
 }
 
-/* --- OPTIMISATION ÉCRANS TRÈS ÉTROITS (320px) --- */
+/* --- ÉCRANS ULTRA-ÉTROITS (340px et moins) --- */
 @media (max-width: 340px) {
   .home-date-time-block .current-time {
-    font-size: 2.6rem !important;
+    font-size: 2.4rem !important;
   }
 
   .module-icon {
-    width: 62px !important;
-    height: 62px !important;
+    width: 65px !important;
+    height: 65px !important;
   }
 
   .section-title-premium {
-    font-size: 1.1rem !important;
+    font-size: 1.1rem;
     letter-spacing: 2px;
   }
 }
 
-/* --- CORRECTIF ANTI-SCROLL HORIZONTAL --- */
+/* --- SÉCURITÉ ANTI-DÉBORDEMENT ET LISSAGE --- */
 html,
 body {
   overflow-x: hidden;
   width: 100%;
   position: relative;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
 }

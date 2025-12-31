@@ -22,7 +22,6 @@
     <style>
       /* Styles spécifiques à la mise en page des réglages */
       body {
-        /* Utilisation des variables pour la compatibilité totale avec le loader */
         background-color: var(--emerald-dark);
         background: radial-gradient(
           circle at top,
@@ -372,7 +371,6 @@
             </div>
             <select id="pref-theme">
               <option value="emerald">🌲 Émeraude Royale</option>
-              <option value="midnight">🌊 Bleu Nuit & Argent</option>
               <option value="dark">🌑 Velours Noir & Or</option>
             </select>
           </div>
@@ -451,17 +449,13 @@
       }
 
       function applyTheme(themeName) {
-        // Nettoyer les classes existantes
-        document.body.classList.remove("theme-midnight", "theme-dark");
-        document.documentElement.classList.remove(
-          "theme-midnight",
-          "theme-dark"
-        );
+        // Nettoyage simplifié (Uniquement Dark, Emerald étant par défaut)
+        document.body.classList.remove("theme-dark");
+        document.documentElement.classList.remove("theme-dark");
 
-        // Appliquer la nouvelle classe
-        if (themeName !== "emerald") {
-          document.body.classList.add(`theme-${themeName}`);
-          document.documentElement.classList.add(`theme-${themeName}`);
+        if (themeName === "dark") {
+          document.body.classList.add("theme-dark");
+          document.documentElement.classList.add("theme-dark");
         }
       }
 
@@ -489,7 +483,6 @@
         }
       });
 
-      // Lancer au chargement
       loadSettings();
     </script>
   </body>

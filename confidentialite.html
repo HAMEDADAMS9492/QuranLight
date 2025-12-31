@@ -8,18 +8,19 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
-    <link rel="stylesheet" href="assets/css/theme-variables.css">
     <style>
       /* ======================================================== */
-      /* 1. CONFIGURATION DU THÈME PREMIUM (LUMINOSITÉ ÉQUILIBRÉE) */
+      /* 1. CONFIGURATION DU THÈME PREMIUM                       */
       /* ======================================================== */
       :root {
         --mp-green-bg: #0a1f16;
-        --mp-green-surface: rgba(18, 38, 30, 0.96);
+        --mp-green-surface: rgba(18, 38, 30, 0.97);
         --mp-gold: #c5a47e;
         --mp-gold-bright: #f1d5a9;
         --text-main: #ffffff;
         --text-muted: rgba(255, 255, 255, 0.9);
+        --btn-radius: 50px;
+        --transition-premium: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
       }
 
       body {
@@ -29,31 +30,31 @@
         background-attachment: fixed;
         color: var(--text-main);
         line-height: 1.8;
-        padding: 10px; /* Réduit pour mobile par défaut */
+        padding: clamp(10px, 3vw, 30px);
         box-sizing: border-box;
+        -webkit-font-smoothing: antialiased;
       }
 
       /* ======================================================== */
-      /* 2. CONTAINER GLASSMORPHISM (ÉCRIN PREMIUM)               */
+      /* 2. CONTAINER GLASSMORPHISM                              */
       /* ======================================================== */
       .legal-page-container {
         width: 100%;
         max-width: 900px;
-        margin: 20px auto; /* Margin réduit sur mobile */
-        padding: clamp(25px, 5vw, 50px); /* Padding fluide */
+        margin: 0 auto;
+        padding: clamp(30px, 6vw, 60px);
         background: var(--mp-green-surface);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        border-radius: clamp(20px, 4vw, 40px); /* Coins arrondis fluides */
-        border: 1px solid rgba(197, 164, 126, 0.3);
+        border-radius: clamp(25px, 4vw, 40px);
+        border: 1px solid rgba(197, 164, 126, 0.25);
         box-shadow: 0 30px 100px rgba(0, 0, 0, 0.7);
         animation: fadeInPage 0.8s ease-out;
         box-sizing: border-box;
-        overflow-x: hidden; /* Sécurité anti-débordement */
       }
 
       /* ======================================================== */
-      /* 3. BOUTON RETOUR PILL                                    */
+      /* 3. BOUTON RETOUR                                        */
       /* ======================================================== */
       .back-btn {
         color: var(--text-main);
@@ -61,42 +62,55 @@
         font-weight: 600;
         display: inline-flex;
         align-items: center;
-        gap: 10px;
-        background: rgba(255, 255, 255, 0.08);
-        padding: 10px 22px;
-        border-radius: 50px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        transition: all 0.4s ease;
-        margin-bottom: clamp(20px, 5vw, 40px);
+        justify-content: center;
+        gap: 12px;
+        background: rgba(255, 255, 255, 0.06);
+        padding: 12px 28px;
+        border-radius: var(--btn-radius);
+        border: 1px solid rgba(197, 164, 126, 0.3);
+        transition: var(--transition-premium);
+        margin-bottom: clamp(30px, 5vw, 50px);
         font-size: 0.85rem;
-        letter-spacing: 1px;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
         white-space: nowrap;
+      }
+
+      .back-btn i {
+        font-size: 1rem;
+        color: var(--mp-gold-bright);
+        transition: transform 0.3s ease;
       }
 
       .back-btn:hover {
         background: var(--mp-gold);
-        color: #0a1f16;
-        border-color: var(--mp-gold);
+        color: #0a1f16 !important;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .back-btn:hover i {
         transform: translateX(-5px);
+        color: #0a1f16;
       }
 
       /* ======================================================== */
-      /* 4. HEADER (CENTRE & LUMINEUX)                            */
+      /* 4. HEADER (CENTRE & ALIGNÉ)                             */
       /* ======================================================== */
       .legal-header {
         text-align: center;
-        margin-bottom: clamp(30px, 8vw, 60px);
+        margin-bottom: clamp(40px, 8vw, 70px);
       }
 
       .legal-header i {
-        font-size: clamp(2.5rem, 8vw, 4rem);
+        font-size: clamp(2.8rem, 10vw, 4.5rem);
         color: var(--mp-gold-bright);
-        filter: drop-shadow(0 0 20px rgba(197, 164, 126, 0.5));
-        margin-bottom: 15px;
+        filter: drop-shadow(0 0 25px rgba(197, 164, 126, 0.4));
+        margin-bottom: 20px;
       }
 
       h1 {
-        font-size: clamp(1.6rem, 6vw, 2.8rem); /* Taille adaptative */
+        font-size: clamp(1.7rem, 6vw, 3rem);
         font-weight: 900;
         margin: 10px 0;
         background: linear-gradient(
@@ -107,80 +121,81 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         text-transform: uppercase;
-        letter-spacing: 1px;
-        line-height: 1.2;
+        letter-spacing: 1.5px;
+        line-height: 1.1;
       }
 
       .header-sub {
         display: block;
-        text-align: center;
-        font-size: clamp(0.9rem, 3vw, 1.15rem);
+        text-align: center; /* Force l'alignement central */
+        font-size: clamp(0.9rem, 3vw, 1.1rem);
         font-weight: 500;
         color: var(--mp-gold-bright);
-        margin-top: 10px;
+        letter-spacing: 1px;
+        margin-top: 15px;
+        opacity: 0.9;
       }
 
       /* ======================================================== */
-      /* 5. SECTIONS ET CONTENU                                   */
+      /* 5. SECTIONS ET TEXTE                                    */
       /* ======================================================== */
       section {
-        margin-bottom: clamp(30px, 6vw, 45px);
+        margin-bottom: clamp(35px, 6vw, 55px);
       }
 
       h2 {
         color: var(--mp-gold-bright);
-        font-size: clamp(1.1rem, 4vw, 1.5rem);
+        font-size: clamp(1.15rem, 4vw, 1.6rem);
         font-weight: 800;
         display: flex;
         align-items: center;
-        gap: clamp(10px, 3vw, 15px);
-        margin-bottom: 18px;
+        gap: 15px;
+        margin-bottom: 22px;
         border-bottom: 1px solid rgba(197, 164, 126, 0.2);
         padding-bottom: 12px;
       }
 
       h2 i {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         color: #0a1f16;
         background: var(--mp-gold-bright);
-        padding: clamp(6px, 2vw, 10px);
-        border-radius: clamp(8px, 2vw, 12px);
-        flex-shrink: 0; /* Empêche l'icône de s'écraser */
+        padding: clamp(8px, 2vw, 11px);
+        border-radius: clamp(10px, 2vw, 14px);
+        flex-shrink: 0;
       }
 
       p {
         font-size: clamp(0.95rem, 2.5vw, 1.05rem);
-        font-weight: 400;
         color: var(--text-muted);
-        margin-bottom: 15px;
+        margin-bottom: 20px;
         text-align: justify;
-        hyphens: auto; /* Coupe les mots proprement si besoin */
+        line-height: 1.7;
       }
 
       .highlight {
-        color: var(--mp-gold-bright);
+        color: #fff;
         font-weight: 700;
-        text-shadow: 0 0 5px rgba(241, 213, 169, 0.2);
+        border-bottom: 1px solid var(--mp-gold);
       }
 
       /* ======================================================== */
-      /* 6. FOOTER INTERNE ET ANIMATIONS                          */
+      /* 6. FOOTER INTERNE                                       */
       /* ======================================================== */
       .legal-footer-info {
         text-align: center;
-        margin-top: clamp(40px, 8vw, 60px);
-        padding-top: 30px;
+        margin-top: 60px;
+        padding: 30px 10px 0;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
         font-weight: 600;
         color: var(--mp-gold-bright);
-        letter-spacing: 1px;
         font-size: 0.9rem;
+        letter-spacing: 1px;
       }
 
       @keyframes fadeInPage {
         from {
           opacity: 0;
-          transform: translateY(20px);
+          transform: translateY(25px);
         }
         to {
           opacity: 1;
@@ -189,38 +204,35 @@
       }
 
       /* ======================================================== */
-      /* 7. AJUSTEMENTS SPÉCIFIQUES MOBILE                        */
+      /* 7. RESPONSIVE MASTER                                    */
       /* ======================================================== */
       @media (max-width: 768px) {
         body {
-          padding: 10px;
+          padding: 0;
         }
-
         .legal-page-container {
-          margin: 10px auto;
-          border-radius: 25px;
+          margin: 0;
+          border-radius: 0;
+          border: none;
+          padding: 40px 20px;
         }
-
         p {
-          text-align: left; /* Justifié est illisible sur petit écran */
-          line-height: 1.6;
-        }
-
-        h2 {
-          line-height: 1.3;
+          text-align: left;
         }
       }
 
       @media (max-width: 480px) {
         .back-btn {
           width: 100%;
-          justify-content: center;
-          padding: 12px;
-          box-sizing: border-box;
+          padding: 16px;
+          font-size: 0.8rem;
         }
-
-        .legal-header i {
-          margin-bottom: 10px;
+        h2 {
+          align-items: flex-start;
+          line-height: 1.4;
+        }
+        h2 i {
+          margin-top: 4px;
         }
       }
     </style>
@@ -234,7 +246,9 @@
       <div class="legal-header">
         <i class="fas fa-balance-scale"></i>
         <h1>Mentions Légales et Confidentialité</h1>
-        <p class="header-sub">Transparence et Intégrité du projet QuranLight</p>
+        <span class="header-sub"
+          >Transparence et Intégrité du projet QuranLight</span
+        >
       </div>
 
       <section>
@@ -293,6 +307,5 @@
         © 2025 QuranLight. Tous droits réservés.
       </div>
     </div>
-    <script src="assets/js/theme-loader.js"></script>
   </body>
 </html>

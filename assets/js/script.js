@@ -11,6 +11,7 @@ let lastNotifiedPrayer = ""; // Empêche les notifications multiples pour la mê
 // ============================================================
 // 1. GESTION DU TEMPS ET DES DATES + NOTIFICATIONS
 // ============================================================
+
 function initDateTime() {
   const timeEl = document.getElementById("current-time");
   const gregEl = document.getElementById("gregorian-date");
@@ -18,38 +19,51 @@ function initDateTime() {
 
   if (!timeEl) return;
 
+  // 1. On définit les noms des mois en phonétique
+  const moisArabe = [
+    "mouharram", "safar", "rabi' al-awwal", "rabi' ath-thani",
+    "joumada al-oula", "joumada ath-thania", "rajab", "cha'bane",
+    "ramadan", "chawwal", "dhou al-qi'da", "dhou al-hijja"
+  ];
+
+  // 2. Fonction de calcul manuel (Algorithme Koweitien/Standard)
+  function getHijriDate(date) {
+    let jd = Math.floor(date.getTime() / 86400000) + 2440588;
+    let l = jd - 1948440 + 10632;
+    let n = Math.floor((l - 1) / 10631);
+    l = l - 10631 * n + 354;
+    let j = (Math.floor((10985 - l) / 5316)) * (Math.floor((50 * l) / 17719)) + (Math.floor(l / 5670)) * (Math.floor((43 * l) / 15238));
+    l = l - (Math.floor((30 - j) / 15)) * (Math.floor((17719 * j) / 50)) - (Math.floor(j / 16)) * (Math.floor((15238 * j) / 43)) + 29;
+    let month = Math.floor((24 * l) / 709);
+    let day = l - Math.floor((709 * month) / 24);
+    let year = 30 * n + j - 30;
+    
+    // Ajustement de -1 jour souvent nécessaire pour Umm al-Qura
+    // Tu peux changer day - 1 si besoin selon la lune
+    return { day: day, month: month - 1, year: year };
+  }
+
   const updateClock = () => {
     const now = new Date();
-    const currentTimeStr = now.toLocaleTimeString("fr-FR", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
 
-    // 1. Mise à jour de l'affichage
+    // Heure
     timeEl.textContent = now.toLocaleTimeString("fr-FR", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
+      hour: "2-digit", minute: "2-digit", second: "2-digit",
     });
 
-    // 2. Date Grégorienne
+    // Date Grégorienne (Ex: MERCREDI 31 DÉCEMBRE)
     gregEl.textContent = now.toLocaleDateString("fr-FR", {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-    });
+      weekday: "long", day: "numeric", month: "long",
+    }).toUpperCase();
 
-    // 3. Date Hijri
-    hijriEl.textContent = new Intl.DateTimeFormat("fr-TN-u-ca-islamic", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }).format(now);
+    // Date Hijri calculée SANS le navigateur
+    const h = getHijriDate(now);
+    
+    // Résultat forcé : "11 rajab 1447 AH"
+    hijriEl.textContent = `${h.day} ${moisArabe[h.month]} ${h.year} AH`;
 
-    // --- SYSTÈME DE NOTIFICATION RÉELLE ---
-    // On vérifie chaque minute si l'heure actuelle correspond à une prière
     if (now.getSeconds() === 0) {
-      checkAndSendNotifications(currentTimeStr);
+      checkAndSendNotifications(now.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }));
     }
   };
 

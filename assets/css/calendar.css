@@ -11,12 +11,12 @@
   --glass: rgba(255, 255, 255, 0.04);
 }
 
-/* --- BARRE DE NAVIGATION (BOUTON + TITRE + LOGO SUR UNE LIGNE) --- */
+/* --- BARRE DE NAVIGATION --- */
 .navigation-top {
   display: flex;
   align-items: center;
   padding: 20px 25px;
-  position: relative; /* Nécessaire pour le centrage absolu du titre */
+  position: relative;
   z-index: 10;
   min-height: 60px;
 }
@@ -28,7 +28,7 @@
   padding: 10px 20px;
   background: rgba(10, 45, 32, 0.6);
   border: 1px solid var(--gold);
-  border-radius: 8px; /* STYLE HADITH */
+  border-radius: 8px;
   color: var(--gold);
   text-decoration: none;
   font-weight: 700;
@@ -45,11 +45,11 @@
   box-shadow: 0 5px 15px var(--gold-glow);
 }
 
-/* --- SECTION HERO (TITRE & LOGO ALIGNÉS ET CENTRÉS) --- */
+/* --- SECTION HERO --- */
 .hero-intro-section {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%); /* Centrage horizontal parfait */
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -75,10 +75,10 @@
   filter: drop-shadow(0 0 15px var(--gold-glow));
 }
 
-/* --- TEXTES SECONDAIRES (PARFAITEMENT CENTRÉS EN DESSOUS) --- */
+/* --- TEXTES SECONDAIRES --- */
 .header-subtext {
   text-align: center;
-  margin-top: 15px; /* Espace après la ligne du titre */
+  margin-top: 15px;
   margin-bottom: 25px;
   width: 100%;
 }
@@ -99,7 +99,7 @@
   display: block;
 }
 
-/* --- CONTENEUR CALENDRIER (STYLE HADITHS : BORDS CARRÉS) --- */
+/* --- CONTENEUR CALENDRIER --- */
 .calendar-container {
   max-width: 700px;
   margin: 0 auto 20px auto;
@@ -109,13 +109,12 @@
     var(--emerald-mid),
     var(--emerald-dark)
   );
-  border-radius: 12px; /* STYLE HADITH */
+  border-radius: 12px;
   border: 1px solid rgba(176, 141, 87, 0.2);
   box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8),
     inset 0 1px 20px rgba(176, 141, 87, 0.05);
 }
 
-/* Affichage de la date courante */
 .current-date-info {
   text-align: center;
   margin-bottom: 25px;
@@ -155,6 +154,18 @@
   font-weight: 800;
   text-transform: uppercase;
   color: #fff;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.month-divider {
+  color: var(--gold);
+  opacity: 0.4;
+}
+
+.month-hijri {
+  color: var(--gold-bright);
 }
 
 .nav-button {
@@ -176,7 +187,7 @@
   color: #05140f;
 }
 
-/* --- JOURS DE LA SEMAINE --- */
+/* --- GRILLE & JOURS --- */
 .weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -190,8 +201,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 1px;
 }
 
 .main-txt {
@@ -204,11 +213,9 @@
 .arabic-txt {
   color: rgba(255, 255, 255, 0.35);
   font-size: 0.55rem;
-  font-weight: 500;
   text-transform: capitalize;
 }
 
-/* Grille des jours */
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -227,12 +234,58 @@
   transition: 0.3s ease;
   cursor: pointer;
   color: #fff;
+  position: relative;
 }
 
 .day:hover:not(.empty-day) {
   background: rgba(176, 141, 87, 0.1);
   border-color: var(--gold);
   transform: translateY(-2px);
+}
+
+/* --- ÉTATS SPÉCIAUX DES JOURS --- */
+.day.current-day {
+  background: var(--gold) !important;
+  box-shadow: 0 0 20px var(--gold-glow);
+  border: none;
+  transform: scale(1.05);
+  z-index: 2;
+}
+
+.day.current-day .gregorian-num,
+.day.current-day .hijri-num {
+  color: #05140f !important;
+  font-weight: 900;
+}
+
+/* Événement majeur (Étoile via JS et cadre or) */
+.day.event-day {
+  border: 1.5px solid var(--gold) !important;
+  background: rgba(176, 141, 87, 0.15) !important;
+  box-shadow: inset 0 0 10px rgba(176, 141, 87, 0.2);
+}
+
+/* L'étoile ajoutée par le JS dans le jour */
+.event-star {
+  text-shadow: 0 0 5px var(--gold-glow);
+  pointer-events: none;
+}
+
+/* Jour Blanc (Point discret centré en bas) */
+.day.white-day::after {
+  content: "•";
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--gold-bright);
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.empty-day {
+  opacity: 0;
+  cursor: default;
 }
 
 .gregorian-num {
@@ -245,27 +298,7 @@
   opacity: 0.8;
 }
 
-/* JOUR ACTUEL */
-.day.current-day {
-  background: var(--gold) !important;
-  box-shadow: 0 0 20px var(--gold-glow);
-  border: none;
-  transform: scale(1.05);
-  border-radius: 8px;
-}
-
-.day.current-day .gregorian-num,
-.day.current-day .hijri-num {
-  color: #05140f !important;
-  font-weight: 900;
-}
-
-.empty-day {
-  opacity: 0;
-  cursor: default;
-}
-
-/* --- SECTION EVENEMENTS --- */
+/* --- SECTION EVENEMENTS (OPTIMISATION BLOCS) --- */
 .events-section {
   max-width: 700px;
   margin: 20px auto 40px;
@@ -278,128 +311,143 @@
 .section-header {
   text-align: center;
 }
-
 .section-title {
   font-size: 1.1rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 2px;
   color: #fff;
   margin: 0;
 }
-
 .header-divider {
   width: 35px;
   height: 2px;
   background: var(--gold);
   margin: 8px auto 20px;
-  border-radius: 5px;
 }
 
-/* ============================================================ */
-/* RÉPARATION STRUCTURELLE : NAVIGATION & CALENDRIER PREMIUM    */
-/* ============================================================ */
+#monthly-events-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Style des cartes individuelles injectées par le JS */
+.event-card {
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 4px solid var(--gold);
+  padding: 18px;
+  border-radius: 10px;
+  border-top: 1px solid rgba(176, 141, 87, 0.1);
+  border-right: 1px solid rgba(176, 141, 87, 0.1);
+  border-bottom: 1px solid rgba(176, 141, 87, 0.1);
+  animation: fadeIn 0.5s ease forwards;
+  transition: all 0.3s ease;
+}
+
+.event-card:hover {
+  transform: translateX(8px);
+  background: rgba(176, 141, 87, 0.08);
+  box-shadow: -5px 0 15px rgba(176, 141, 87, 0.1);
+}
+
+.event-card i {
+  color: var(--gold-bright);
+  opacity: 0.8;
+}
+
+.no-event {
+  text-align: center;
+  padding: 20px;
+  opacity: 0.5;
+  font-style: italic;
+  color: #fff;
+}
+
+/* --- RESPONSIVE OPTIMISÉ --- */
+
+.calendar-container,
+.events-section {
+  width: 95%;
+  box-sizing: border-box;
+}
+
+.navigation-top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 15px;
+  padding: clamp(15px, 4vw, 25px);
+}
+
+@media (max-width: 768px) {
+  .navigation-top {
+    flex-direction: column;
+    text-align: center;
+  }
+  .floating-back-btn {
+    order: 1;
+  }
+  .hero-intro-section {
+    position: relative;
+    left: auto;
+    transform: none;
+    order: 0;
+    width: 100%;
+    justify-content: center;
+  }
+  .date-hijri {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 769px) {
+  .hero-intro-section {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.calendar-grid {
+  gap: clamp(4px, 1.5vw, 10px);
+}
+.day {
+  min-height: clamp(45px, 12vw, 80px);
+}
 
 @media (max-width: 480px) {
-  /* 1. HEADER : Empilement Titre sous Bouton Retour */
-  .navigation-top {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 15px 10px !important;
-    min-height: 110px;
-    gap: 12px;
+  .calendar-container {
+    padding: 15px;
   }
-
-  .floating-back-btn {
-    align-self: flex-start;
-    position: relative;
-    margin-bottom: 0;
+  .main-txt {
+    font-size: 0.6rem;
   }
-
-  /* 2. TITRE : Logo et Texte bien centrés */
-  .hero-intro-section {
-    position: static;
-    transform: none;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    gap: 10px;
+  .arabic-txt {
+    display: none;
   }
-
-  .hero-main-title {
-    font-size: 1.5rem !important;
-    letter-spacing: 2px;
-    margin: 0;
-  }
-
-  .moon-logo {
-    font-size: 1.5rem !important;
-  }
-
-  /* 3. CALENDRIER : Navigation "Comme sur Bureau" mais adaptée */
-  .calendar-header {
-    display: flex !important;
-    flex-direction: row !important; /* RESTE EN LIGNE */
-    justify-content: space-between !important; /* Écarte les éléments */
-    align-items: center !important;
-    padding: 12px 15px !important;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 15px;
-    gap: 5px;
-  }
-
-  /* Le bloc contenant "Mois Année" */
   #calendar-month-year {
-    font-size: 0.85rem !important;
-    font-weight: 600;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    flex: 1; /* Prend l'espace disponible */
-    text-align: left;
-    white-space: nowrap;
+    font-size: 0.9rem;
+    flex-direction: column;
+    gap: 2px;
   }
-
-  /* Les flèches de navigation */
-  .calendar-nav-buttons {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .nav-btn {
-    width: 35px !important;
-    height: 35px !important;
-    font-size: 0.8rem !important;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  /* On garde le séparateur mais plus fin ou on le gère en marge */
   .month-divider {
-    height: 15px;
-    width: 1px;
-    background: rgba(176, 141, 87, 0.3);
-    margin: 0 10px;
-    display: inline-block; /* On le garde pour le style premium */
+    display: none;
+  }
+  .hero-main-title {
+    font-size: 1.5rem;
+  }
+  .moon-logo {
+    font-size: 1.5rem;
   }
 }
 
-/* --- OPTIMISATION TRÈS PETIT ÉCRAN (340px) --- */
-@media (max-width: 340px) {
-  .hero-main-title {
-    font-size: 1.2rem !important;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-
-  #calendar-month-year {
-    font-size: 0.75rem !important;
-  }
-
-  .nav-btn {
-    width: 30px !important;
-    height: 30px !important;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

@@ -14,18 +14,10 @@
   --transition-speed: 0.5s;
 }
 
-/* 2. THÈME BLEU NUIT & ARGENT */
-:root.theme-midnight, body.theme-midnight {
-  --gold: #a3aab0; /* Argent */
-  --gold-bright: #e1e4e6;
-  --gold-glow: rgba(163, 170, 176, 0.4);
-  --emerald-dark: #050a14;
-  --emerald-mid: #0a182d;
-  --border-light: rgba(163, 170, 176, 0.3);
-}
-
-/* 3. THÈME VELOURS NOIR & OR */
-:root.theme-dark, body.theme-dark {
+/* 2. THÈME VELOURS NOIR & OR */
+/* Suppression du thème Midnight pour ne garder que le Dark */
+:root.theme-dark,
+body.theme-dark {
   --gold: #b08d57;
   --gold-bright: #d4bc96;
   --gold-glow: rgba(176, 141, 87, 0.2);
@@ -46,37 +38,47 @@ body {
   background-attachment: fixed !important;
   color: var(--text-main);
   /* Transition douce lors du changement de thème */
-  transition: background var(--transition-speed) ease, 
-              color var(--transition-speed) ease, 
-              border-color var(--transition-speed) ease;
+  transition: background var(--transition-speed) ease,
+    color var(--transition-speed) ease,
+    border-color var(--transition-speed) ease;
 }
 
 /* --- MISE À JOUR DES ÉLÉMENTS COMMUNS --- */
 
 /* Applique la bordure et le fond de carte à tous tes composants */
-.settings-card, .quran-card, .prayer-time-row, .card, .preview-box {
+.settings-card,
+.quran-card,
+.prayer-time-row,
+.card,
+.preview-box {
   background: var(--card-bg) !important;
   border: 1px solid var(--border-light) !important;
   transition: all var(--transition-speed) ease;
 }
 
 /* Harmonisation des icônes et titres */
-i { 
-  color: var(--gold); 
+i {
+  color: var(--gold);
   transition: color var(--transition-speed) ease;
 }
 
-h1, h2, h3, .gold-text, .setting-label { 
-  color: var(--gold-bright); 
+h1,
+h2,
+h3,
+.gold-text,
+.setting-label {
+  color: var(--gold-bright);
   transition: color var(--transition-speed) ease;
 }
 
 /* Les boutons de retour et autres éléments interactifs */
-.back-home, select, .btn-secondary {
+.back-home,
+select,
+.btn-secondary {
   border-color: var(--border-light) !important;
 }
 
-/* Optionnel : Amélioration du scrollbar selon le thème */
+/* Amélioration du scrollbar selon le thème */
 ::-webkit-scrollbar {
   width: 8px;
 }

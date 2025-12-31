@@ -8,10 +8,10 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
-    <link rel="stylesheet" href="assets/css/theme-variables.css">
+    <link rel="stylesheet" href="assets/css/theme-variables.css" />
     <style>
       /* ======================================================== */
-      /* 1. CONFIGURATION DU THÈME PREMIUM (PLUS LUMINEUX)        */
+      /* 1. CONFIGURATION DU THÈME PREMIUM                       */
       /* ======================================================== */
       :root {
         --mp-green-bg: #0a1f16;
@@ -20,6 +20,7 @@
         --mp-gold-bright: #f1d5a9;
         --text-main: #ffffff;
         --text-muted: rgba(255, 255, 255, 0.85);
+        --transition-smooth: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       }
 
       body {
@@ -29,18 +30,18 @@
         background-attachment: fixed;
         color: var(--text-main);
         line-height: 1.8;
-        /* On utilise une marge adaptative */
-        padding: 10px;
+        padding: 20px 10px;
+        -webkit-font-smoothing: antialiased;
       }
 
       /* ======================================================== */
-      /* 2. CONTAINER LEGAL (STYLE ÉCRIN LUMINEUX)                */
+      /* 2. CONTAINER LEGAL (STYLE ÉCRIN)                        */
       /* ======================================================== */
       .legal-page-container {
         width: 100%;
         max-width: 900px;
         margin: 20px auto;
-        padding: 50px 40px; /* Moins de padding latéral par défaut */
+        padding: 60px 50px;
         box-sizing: border-box;
         background: var(--mp-green-surface);
         backdrop-filter: blur(15px);
@@ -52,7 +53,7 @@
       }
 
       /* ======================================================== */
-      /* 3. BOUTON RETOUR (MIEUX DÉFINI)                          */
+      /* 3. BOUTON RETOUR (STYLE BIJOU OPTIMISÉ)                 */
       /* ======================================================== */
       .back-btn {
         color: var(--text-main);
@@ -60,26 +61,41 @@
         font-weight: 600;
         display: inline-flex;
         align-items: center;
-        gap: 10px;
-        background: rgba(255, 255, 255, 0.08);
-        padding: 12px 25px;
+        justify-content: center;
+        gap: 12px;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 14px 28px;
         border-radius: 50px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        transition: all 0.4s ease;
-        margin-bottom: 40px;
+        border: 1px solid rgba(197, 164, 126, 0.2);
+        transition: var(--transition-smooth);
+        margin-bottom: 50px;
         font-size: 0.85rem;
-        letter-spacing: 1px;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        backdrop-filter: blur(5px);
+      }
+
+      .back-btn i {
+        font-size: 1rem;
+        transition: transform 0.3s ease;
+        color: var(--mp-gold-bright);
       }
 
       .back-btn:hover {
         background: var(--mp-gold);
-        color: #0a1f16;
+        color: #0a1f16 !important;
         border-color: var(--mp-gold);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(197, 164, 126, 0.3);
+      }
+
+      .back-btn:hover i {
         transform: translateX(-5px);
+        color: #0a1f16;
       }
 
       /* ======================================================== */
-      /* 4. HEADER ET TITRES                                      */
+      /* 4. HEADER ET TITRES                                     */
       /* ======================================================== */
       .legal-header {
         text-align: center;
@@ -90,11 +106,11 @@
         font-size: 3.5rem;
         color: var(--mp-gold-bright);
         filter: drop-shadow(0 0 20px rgba(197, 164, 126, 0.6));
-        margin-bottom: 20px;
+        margin-bottom: 25px;
       }
 
       h1 {
-        font-size: clamp(1.8rem, 5vw, 2.8rem); /* Taille adaptative */
+        font-size: clamp(1.8rem, 5vw, 2.8rem);
         font-weight: 800;
         margin: 10px 0;
         background: linear-gradient(
@@ -111,17 +127,17 @@
       .header-sub {
         display: block;
         text-align: center;
-        font-size: clamp(0.9rem, 3vw, 1.15rem);
-        font-weight: 400;
+        font-size: clamp(0.9rem, 3vw, 1.1rem);
         color: var(--mp-gold-bright);
-        margin-top: 5px;
+        opacity: 0.9;
+        margin-top: 10px;
       }
 
       /* ======================================================== */
-      /* 5. SECTIONS ET TEXTE                                     */
+      /* 5. SECTIONS ET TEXTE                                    */
       /* ======================================================== */
       section {
-        margin-bottom: 45px;
+        margin-bottom: 50px;
       }
 
       h2 {
@@ -131,25 +147,26 @@
         display: flex;
         align-items: center;
         gap: 15px;
-        margin-bottom: 20px;
-        border-bottom: 1px solid rgba(197, 164, 126, 0.2);
+        margin-bottom: 25px;
+        border-bottom: 1px solid rgba(197, 164, 126, 0.15);
         padding-bottom: 12px;
       }
 
       h2 i {
-        font-size: 1.1rem;
+        font-size: 1rem;
         color: #0a1f16;
         background: var(--mp-gold-bright);
-        padding: 8px;
-        border-radius: 10px;
-        flex-shrink: 0; /* Évite que l'icône s'écrase */
+        padding: 10px;
+        border-radius: 12px;
+        flex-shrink: 0;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
       }
 
       p {
         font-size: 1.05rem;
         color: var(--text-muted);
         text-align: justify;
-        word-wrap: break-word; /* Évite les débordements de texte */
+        margin-bottom: 20px;
       }
 
       b,
@@ -160,16 +177,16 @@
       }
 
       /* ======================================================== */
-      /* 6. FOOTER INTERNE ET ANIMATIONS                          */
+      /* 6. FOOTER INTERNE ET ANIMATIONS                         */
       /* ======================================================== */
       .legal-footer-info {
         text-align: center;
-        margin-top: 60px;
-        padding-top: 30px;
+        margin-top: 70px;
+        padding-top: 40px;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
-        font-weight: 500;
         font-size: 0.9rem;
         color: var(--mp-gold-bright);
+        letter-spacing: 0.5px;
       }
 
       @keyframes fadeInPage {
@@ -184,42 +201,75 @@
       }
 
       /* ======================================================== */
-      /* 7. MEDIA QUERIES (OPTIMISATION SMARTPHONE)               */
+      /* 7. MEDIA QUERIES (OPTIMISATION TOTALE)                  */
       /* ======================================================== */
+
+      /* TABLETTES */
       @media (max-width: 768px) {
-        .legal-page-container {
-          margin: 10px auto;
-          padding: 35px 20px;
-          border-radius: 20px; /* Moins d'arrondi sur mobile */
+        body {
+          padding: 0;
         }
 
-        .legal-header {
-          margin-bottom: 40px;
+        .legal-page-container {
+          margin: 0;
+          width: 100%;
+          border-radius: 0;
+          border: none;
+          padding: 40px 25px;
+        }
+
+        .back-btn {
+          margin-bottom: 35px;
+        }
+      }
+
+      /* SMARTPHONES */
+      @media (max-width: 480px) {
+        .back-btn {
+          width: 100%;
+          padding: 16px;
+          background: rgba(197, 164, 126, 0.08);
+          border-color: rgba(197, 164, 126, 0.3);
+          font-size: 0.8rem;
+        }
+
+        .back-btn:hover {
+          transform: translateY(-1px); /* Moins de mouvement sur mobile */
+        }
+
+        h1 {
+          font-size: 1.7rem;
+          letter-spacing: 1px;
+        }
+
+        h2 {
+          font-size: 1.2rem;
+          align-items: flex-start; /* Aligne l'icône sur la première ligne */
+        }
+
+        h2 i {
+          padding: 8px;
+          font-size: 0.9rem;
+        }
+
+        p {
+          text-align: left; /* Plus lisible sur petit écran */
+          font-size: 0.95rem;
+          line-height: 1.7;
         }
 
         .legal-header i {
           font-size: 2.8rem;
         }
-
-        p {
-          text-align: left; /* Meilleure lisibilité sur petit écran */
-          font-size: 1rem;
-        }
-
-        h2 {
-          gap: 10px;
-        }
       }
 
-      @media (max-width: 480px) {
-        .back-btn {
-          width: 100%;
-          justify-content: center;
-          box-sizing: border-box;
-        }
-
+      /* ÉCRANS TRÈS ÉTROITS */
+      @media (max-width: 360px) {
         h1 {
-          letter-spacing: 1px;
+          font-size: 1.5rem;
+        }
+        .legal-page-container {
+          padding: 30px 15px;
         }
       }
     </style>
