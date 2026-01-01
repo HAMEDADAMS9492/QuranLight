@@ -227,7 +227,18 @@
         font-weight: 600;
         text-transform: uppercase;
       }
+      /* Cache l'iframe du chatbot tant que le splash est là */
+      iframe[src="chatbot.html"] {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s ease;
+      }
 
+      /* Montre le chatbot uniquement quand le splash a disparu */
+      .splash-finished iframe[src="chatbot.html"] {
+        opacity: 1;
+        pointer-events: auto;
+      }
       /* Animations */
       @keyframes premiumReveal {
         to {
@@ -777,20 +788,30 @@
       });
     </script>
     <script>
-      // Gestion de la fermeture du Splash Screen
       window.addEventListener("load", () => {
-        // On attend 4 secondes (le temps que la barre de chargement finisse)
-        setTimeout(() => {
-          const splash = document.getElementById("splash-overlay");
-          if (splash) {
-            splash.classList.add("hide-splash");
+        const splash = document.getElementById("splash-overlay");
 
-            // On retire complètement l'élément après l'animation de fondu (0.8s)
-            setTimeout(() => {
-              splash.remove();
-            }, 800);
-          }
-        }, 4500);
+        // On vérifie si l'utilisateur a déjà vu le splash durant cette session
+        if (sessionStorage.getItem("splashShown") === "true") {
+          // Si oui, on supprime le splash immédiatement sans animation
+          if (splash) splash.remove();
+          document.body.classList.add("splash-finished");
+        } else {
+          // Si non, on joue l'animation
+          setTimeout(() => {
+            if (splash) {
+              splash.classList.add("hide-splash");
+              // On prévient le CSS que le splash est fini pour montrer le chatbot
+              document.body.classList.add("splash-finished");
+
+              setTimeout(() => {
+                splash.remove();
+                // On enregistre que le splash a été vu
+                sessionStorage.setItem("splashShown", "true");
+              }, 800);
+            }
+          }, 5500);
+        }
       });
     </script>
   </body>
