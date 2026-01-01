@@ -7,7 +7,7 @@
 
     <link rel="stylesheet" href="assets/css/style.css" />
     <link rel="stylesheet" href="assets/css/salat.css" />
-    <link rel="stylesheet" href="assets/css/theme-variables.css">
+    <link rel="stylesheet" href="assets/css/theme-variables.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -146,14 +146,129 @@
         pointer-events: auto !important; /* Force la détection de la souris */
       }
 
-      /* --- ASTUCE POUR LE CHATBOT --- */
-      /* Pour que le chatbot marche, tu DOIS aller dans ton fichier chatbot.html
-         et mettre "pointer-events: auto;" sur ton bouton de bulle.
-         En attendant, pour tester si c'est l'iframe qui bloque, remplace temporairement 
-         le z-index de l'iframe par 1 au lieu de 99999. */
+      /* --- SPLASH SCREEN SYSTEM --- */
+      #splash-overlay {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at center, #0a2d20, #051d14);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 99999; /* Priorité absolue sur tout le reste */
+        transition: opacity 0.8s ease, visibility 0.8s;
+      }
+
+      .splash-content {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .logo-wrapper-splash {
+        position: relative;
+        padding: 5px;
+        background: linear-gradient(135deg, #b08d57, #fbbf24);
+        border-radius: 50%;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5),
+          0 0 25px rgba(176, 141, 87, 0.3);
+        opacity: 0;
+        transform: scale(0.8);
+        animation: premiumReveal 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+      }
+
+      .main-logo-splash {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 50%;
+        display: block;
+        border: 3px solid #051d14;
+      }
+
+      .brand-name-splash {
+        font-size: 2.5rem;
+        font-weight: 600;
+        margin: 20px 0 0;
+        letter-spacing: 2px;
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(to right, #fff, #fbbf24, #fff);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shineText 4s linear infinite;
+      }
+
+      .loader-container-splash {
+        margin-top: 40px;
+        width: 180px;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .loader-bar-splash {
+        width: 0%;
+        height: 100%;
+        background: linear-gradient(to right, #b08d57, #fbbf24);
+        animation: loadingProgress 3.5s ease-in-out forwards;
+      }
+
+      .version-splash {
+        position: absolute;
+        bottom: 40px;
+        font-size: 0.8rem;
+        letter-spacing: 4px;
+        color: rgba(255, 255, 255, 0.3);
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      /* Animations */
+      @keyframes premiumReveal {
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      @keyframes shineText {
+        to {
+          background-position: 200% center;
+        }
+      }
+      @keyframes loadingProgress {
+        to {
+          width: 100%;
+        }
+      }
+
+      .hide-splash {
+        opacity: 0;
+        visibility: hidden;
+      }
     </style>
   </head>
   <body>
+    <div id="splash-overlay">
+      <div class="splash-content">
+        <div class="logo-wrapper-splash">
+          <img
+            src="assets/image/Logo.jpg"
+            alt="Logo QuranLight"
+            class="main-logo-splash"
+          />
+        </div>
+        <h1 class="brand-name-splash">QuranLight</h1>
+        <div class="loader-container-splash">
+          <div class="loader-bar-splash"></div>
+        </div>
+      </div>
+      <div class="version-splash">VERSION 2.12</div>
+    </div>
     <aside id="sidebar" class="sidebar">
       <div class="sidebar-header">
         <img
@@ -509,7 +624,6 @@
     <script src="assets/js/ramadan_logic.js"></script>
     <script src="assets/js/calendar_logic.js"></script>
     <script src="assets/js/quran_logic.js"></script>
-    
 
     <script>
       let allSurahsData = [];
@@ -662,6 +776,22 @@
         }
       });
     </script>
+    <script>
+      // Gestion de la fermeture du Splash Screen
+      window.addEventListener("load", () => {
+        // On attend 4 secondes (le temps que la barre de chargement finisse)
+        setTimeout(() => {
+          const splash = document.getElementById("splash-overlay");
+          if (splash) {
+            splash.classList.add("hide-splash");
 
+            // On retire complètement l'élément après l'animation de fondu (0.8s)
+            setTimeout(() => {
+              splash.remove();
+            }, 800);
+          }
+        }, 4500);
+      });
+    </script>
   </body>
 </html>
