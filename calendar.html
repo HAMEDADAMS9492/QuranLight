@@ -4,29 +4,55 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Calendrier Hégirien - QuranLight</title>
+
     <link rel="stylesheet" href="assets/css/style.css" />
     <link rel="stylesheet" href="assets/css/calendar.css" />
     <link rel="stylesheet" href="assets/css/theme-variables.css" />
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&family=Amiri:wght@700&display=swap"
       rel="stylesheet"
     />
   </head>
   <body class="ramadan-page">
-    <header class="navigation-top">
-      <a href="index.html" class="floating-back-btn">
-        <i class="fas fa-arrow-left"></i> <span>Accueil</span>
-      </a>
+    <header class="glass-panel main-header">
+      <div class="navigation-top">
+        <a href="index.html" class="floating-back-btn">
+          <i class="fas fa-arrow-left"></i> <span>Accueil</span>
+        </a>
+      </div>
 
-      <div class="hero-intro-section">
-        <h1 class="hero-main-title">Calendrier</h1>
-        <div class="moon-logo"><i class="fas fa-calendar-alt"></i></div>
+      <div class="header-center-content">
+        <div class="header-title-wrapper">
+          <div
+            class="hero-intro-section"
+            style="display: flex; align-items: center; gap: 12px"
+          >
+            <h1 class="header-main-title">Calendrier</h1>
+            <i
+              class="fas fa-calendar-alt moon-logo"
+              style="font-size: 1.8rem; color: var(--color-gold)"
+            ></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-actions-right">
+        <button
+          class="action-icon-btn"
+          onclick="window.location.reload();"
+          title="Actualiser le calendrier"
+        >
+          <i class="fas fa-rotate"></i>
+        </button>
       </div>
     </header>
+
+    <div class="header-spacer" style="height: 85px"></div>
 
     <div class="header-subtext">
       <p class="arabic-text">التقويم الهجري</p>
@@ -35,7 +61,7 @@
       </p>
     </div>
 
-    <div class="calendar-container">
+    <main class="calendar-container glass-morph">
       <div class="current-date-info">
         <p id="gregorian-date-display" class="date-gregorian">
           Chargement de la date...
@@ -85,9 +111,9 @@
       </div>
 
       <div id="calendar-grid" class="calendar-grid"></div>
-    </div>
+    </main>
 
-    <div class="events-section">
+    <section class="events-section">
       <div class="section-header">
         <h4 class="section-title">Événements du Mois</h4>
         <div class="header-divider"></div>
@@ -96,7 +122,7 @@
       <div id="monthly-events-list">
         <p class="no-event">Recherche des événements en cours...</p>
       </div>
-    </div>
+    </section>
 
     <script src="assets/js/calendar_logic.js"></script>
     <script src="assets/js/script.js"></script>

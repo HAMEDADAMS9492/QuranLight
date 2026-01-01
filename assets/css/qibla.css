@@ -1,15 +1,36 @@
 /* ============================================================
     QIBLA – MODULE PREMIUM (Ajusté pour Leaflet)
-    Thème : Emerald / Gold | Version Intégrale
+    Thème : Emerald / Gold | Version Intégrale Optimisée
 ============================================================ */
+
+/* ============================================================
+    HEADER : STYLE GLASS PANEL (AJUSTÉ)
+============================================================ */
+.glass-panel.main-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 85px;
+  background: rgba(6, 34, 24, 0.95);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-bottom: 1px solid rgba(176, 141, 87, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 2000;
+}
+
+.header-spacer {
+  height: 85px;
+}
 
 /* ============================================================
     BOUTON RETOUR : DÉTACHÉ DANS LE COIN RÉEL DE LA PAGE
 ============================================================ */
 .floating-back-btn {
-  position: fixed;
-  top: 20px;
-  left: 20px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -25,7 +46,6 @@
   text-transform: uppercase;
   letter-spacing: 1.5px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 9999;
   backdrop-filter: blur(8px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
@@ -38,36 +58,19 @@
 }
 
 /* ============================================================
-    EN-TÊTE : TITRE ET LOGO BOUSSOLE CENTRÉS (VERSION AJUSTÉE)
+    EN-TÊTE : TITRE ET LOGO BOUSSOLE
 ============================================================ */
-
-.navigation-top {
-  position: relative;
-  width: 100%;
-  max-width: 520px;
-  margin: 0 auto;
-  padding: 40px 10px 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100px;
-}
-
 .hero-intro-section {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 15px;
   white-space: nowrap;
-  z-index: 10;
 }
 
-.hero-main-title {
+.header-main-title {
   font-family: "Amiri", serif;
-  font-size: 2.8rem;
+  font-size: 1.8rem;
   font-weight: 900;
   margin: 0;
   background: linear-gradient(180deg, #ffffff 40%, #e0e0e0 100%);
@@ -79,7 +82,7 @@
 }
 
 .moon-logo {
-  font-size: 2.5rem;
+  font-size: 1.8rem;
   background: linear-gradient(180deg, #f1d388 20%, #b08d57 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -87,22 +90,31 @@
   margin: 0;
 }
 
-.header-subtext {
-  text-align: center;
-  margin-top: 35px; /* Ajusté pour ne pas chevaucher le titre absolu */
-  margin-bottom: 30px;
-  padding: 0 10px;
-  width: 100%;
+.action-icon-btn {
+  background: rgba(176, 141, 87, 0.1);
+  border: 1px solid rgba(176, 141, 87, 0.3);
+  color: #b08d57;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.arabic-text {
-  font-family: "Amiri", serif;
-  font-size: 2rem;
-  color: #f1d388;
-  font-weight: bold;
-  display: block;
-  line-height: 1.2;
-  text-shadow: 0 0 10px rgba(176, 141, 87, 0.2);
+.action-icon-btn:hover {
+  background: #b08d57;
+  color: #062218;
+}
+
+.header-subtext {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 25px;
+  padding: 0 10px;
+  width: 100%;
 }
 
 .french-translation {
@@ -112,27 +124,6 @@
   display: block;
   margin-top: 8px;
   letter-spacing: 0.5px;
-}
-
-.mini-calibrate-btn {
-  background: rgba(0, 0, 0, 0.7);
-  border: 1px solid #b08d57;
-  color: #b08d57;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(4px);
-}
-
-.mini-calibrate-btn:hover {
-  background: #b08d57;
-  color: #062218;
-  transform: rotate(180deg) scale(1.1);
 }
 
 /* =========================
@@ -253,8 +244,23 @@
   backdrop-filter: blur(6px);
 }
 
+.mini-calibrate-btn {
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid #b08d57;
+  color: #b08d57;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(4px);
+}
+
 /* =========================
-    BOUSSOLE (AMÉLIORÉE)
+    BOUSSOLE
 ========================= */
 .compass-section {
   width: 100%;
@@ -357,11 +363,6 @@
   border: 3px solid #062218;
 }
 
-.kaaba-center i {
-  color: #062218;
-  font-size: 1.2rem;
-}
-
 /* =========================
     STATUT & FOOTER
 ========================= */
@@ -378,13 +379,6 @@
   color: #fff;
   backdrop-filter: blur(4px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-.status-badge-premium.aligned {
-  background: var(--color-gold, #b08d57);
-  color: #062218;
-  border-color: #f1d388;
-  box-shadow: 0 0 20px rgba(176, 141, 87, 0.5);
 }
 
 .qibla-nav-footer {
@@ -416,7 +410,7 @@
 }
 
 /* ============================================================ */
-/* 11. RESPONSIVE UNIFIÉ ET OPTIMISÉ                           */
+/* RESPONSIVE UNIFIÉ ET OPTIMISÉ                                */
 /* ============================================================ */
 
 @media (min-width: 1024px) {
@@ -428,88 +422,57 @@
     width: 380px;
     height: 380px;
   }
-  .compass-section::after {
-    width: 450px;
-    height: 450px;
-  }
-  .hero-main-title {
-    font-size: 3.5rem;
+  .header-main-title {
+    font-size: 2.2rem;
   }
 }
 
-@media (max-width: 480px) {
-  .navigation-top {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 15px 10px !important;
-    min-height: 110px;
-    gap: 12px;
-  }
-
-  .floating-back-btn {
-    align-self: flex-start;
-    position: relative;
-    top: 0;
-    left: 0;
-    padding: 8px 12px;
-  }
-
-  .hero-intro-section {
-    position: static;
-    transform: none;
-    width: 100%;
-    gap: 10px;
-  }
-
-  .hero-main-title {
-    font-size: 1.5rem !important;
+@media (max-width: 600px) {
+  .header-main-title {
+    font-size: 1.4rem;
   }
   .moon-logo {
-    font-size: 1.5rem !important;
+    font-size: 1.5rem;
+  }
+  .floating-back-btn span {
+    display: none;
+  }
+  .floating-back-btn {
+    padding: 10px;
   }
   #qibla-display {
     width: 280px;
     height: 280px;
   }
-  .qibla-info-grid {
-    padding: 15px;
-  }
   .card-data .value {
-    font-size: 1.8rem !important;
-  }
-  .arabic-text {
-    font-size: 1.5rem !important;
+    font-size: 2.2rem;
   }
 }
 
-@media (max-width: 340px) {
-  .hero-main-title {
-    font-size: 1.2rem !important;
-  }
+@media (max-width: 360px) {
   #qibla-display {
-    width: 230px;
-    height: 230px;
+    width: 240px;
+    height: 240px;
   }
   .card-data .value {
-    font-size: 1.5rem !important;
+    font-size: 1.8rem;
   }
 }
 
 @media (max-height: 500px) and (orientation: landscape) {
-  .navigation-top {
-    min-height: 50px;
-    padding-top: 10px;
-    flex-direction: row;
-    justify-content: space-between;
+  .header-spacer {
+    height: 70px;
   }
-  #qibla-display {
-    width: 160px;
-    height: 160px;
+  .glass-panel.main-header {
+    height: 70px;
   }
   .qibla-content-wrapper {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
+  }
+  #qibla-display {
+    width: 180px;
+    height: 180px;
   }
 }

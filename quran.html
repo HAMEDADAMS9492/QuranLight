@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="assets/css/style.css" />
     <link rel="stylesheet" href="assets/css/quran.css" />
-    <link rel="stylesheet" href="assets/css/theme-variables.css">
+    <link rel="stylesheet" href="assets/css/theme-variables.css" />
 
     <link
       rel="stylesheet"
@@ -20,36 +20,45 @@
     />
   </head>
   <body class="quran-theme">
-    <a href="index.html" class="back-btn" id="btn-to-home">
-      <i class="fas fa-home"></i> Accueil
-    </a>
-
-    <a
-      href="quran.html"
-      class="back-btn"
-      id="btn-to-list"
-      style="display: none"
-    >
-      <i class="fas fa-arrow-left"></i> Retour
-    </a>
-
     <header class="glass-panel main-header">
-      <a href="index.html" id="back-button" class="icon-circle">
-        <i class="fas fa-arrow-left"></i>
-      </a>
-      <div class="header-center">
-        <span id="header-title">Le Saint Coran</span>
-        <small id="header-subtitle">Al-Qur'an al-Karim</small>
+      <div class="navigation-top">
+        <a href="index.html" class="floating-back-btn" id="btn-to-home">
+          <i class="fas fa-arrow-left"></i>
+          <span>Accueil</span>
+        </a>
+        <a
+          href="quran.html"
+          class="floating-back-btn"
+          id="btn-to-list"
+          style="display: none"
+        >
+          <i class="fas fa-chevron-left"></i>
+          <span>Liste</span>
+        </a>
       </div>
-      <div class="header-actions">
-        <button class="icon-circle active-gold" title="Favoris">
+
+      <div class="header-center-content">
+        <div class="header-title-wrapper">
+          <div class="title-text-stack" style="align-items: center">
+            <h1 class="header-main-title" id="header-title">Le Saint Coran</h1>
+            <span class="arabic-mini" id="header-subtitle"
+              >Al-Qur'an al-Karim</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="header-actions-right">
+        <button class="action-icon-btn active-gold" title="Favoris">
           <i class="fas fa-bookmark"></i>
         </button>
-        <button class="icon-circle" title="Paramètres">
+        <button class="action-icon-btn" title="Paramètres">
           <i class="fas fa-sliders-h"></i>
         </button>
       </div>
     </header>
+
+    <div class="header-spacer" style="height: 85px"></div>
 
     <div class="quran-brand-header" id="brand-header">
       <div class="brand-logo-container">
@@ -60,9 +69,7 @@
         />
       </div>
       <h2 class="brand-name">Le Noble Coran</h2>
-      <p class="brand-tagline">
-        Une guidance lumineuse, une lecture apaisante, une étude profonde
-      </p>
+      <p class="brand-tagline">Une guidance lumineuse, une lecture apaisante</p>
     </div>
 
     <main class="quran-container" id="quran-list-view">
@@ -114,7 +121,7 @@
 
       <div id="ayat-display" class="ayat-container"></div>
 
-      <div class="reader-footer-spacer"></div>
+      <div class="reader-footer-spacer" style="height: 120px"></div>
     </main>
 
     <footer

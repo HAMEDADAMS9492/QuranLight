@@ -12,7 +12,6 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
-    <link rel="stylesheet" href="assets/css/theme-variables.css" />
     <style>
       :root {
         --emerald-deep: #062c1e;
@@ -24,10 +23,13 @@
         --shadow-lux: 0 15px 35px rgba(0, 0, 0, 0.3);
       }
 
+      html,
       body {
         margin: 0;
+        padding: 0;
         font-family: "Poppins", sans-serif;
-        background: transparent;
+        background: transparent !important;
+        overflow: hidden;
       }
 
       #chatbot-container {
@@ -38,19 +40,22 @@
         display: flex;
         flex-direction: column;
         align-items: flex-end;
+        max-width: 95vw;
       }
 
-      /* Fenêtre du Chatbot - HAUTEUR RÉDUITE À 480px */
+      /* Fenêtre du Chatbot - AGRANDIE */
       .chatbot-window {
-        width: 350px;
-        height: 480px;
+        width: 400px; /* Largeur augmentée */
+        max-width: 88vw;
+        height: 600px; /* Hauteur augmentée */
+        max-height: 80vh;
         background: var(--white);
-        border-radius: 22px;
+        border-radius: 24px;
         box-shadow: var(--shadow-lux);
         display: none;
         flex-direction: column;
         overflow: hidden;
-        margin-bottom: 12px;
+        margin-bottom: 15px;
         border: 1px solid rgba(176, 141, 87, 0.4);
         animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
@@ -73,7 +78,7 @@
           var(--emerald-light),
           var(--emerald-deep)
         );
-        padding: 18px 20px;
+        padding: 15px 20px;
         color: var(--white);
         display: flex;
         align-items: center;
@@ -93,9 +98,8 @@
       .header-text h3 {
         margin: 0;
         font-family: "Amiri", serif;
-        font-size: 20px;
+        font-size: 22px;
         color: var(--gold-light);
-        line-height: 1;
       }
       .header-text p {
         margin: 0;
@@ -103,64 +107,42 @@
         opacity: 0.8;
       }
 
-      /* Sélecteur de Langue */
       .header-actions {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
       }
-
-      .lang-switch {
-        display: flex;
-        gap: 5px;
-      }
-
       .lang-btn {
-        width: 26px;
-        height: 26px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 10px;
+        padding: 4px 8px;
+        font-size: 11px;
         font-weight: 700;
         border-radius: 6px;
         background: rgba(255, 255, 255, 0.1);
         border: 1px solid rgba(176, 141, 87, 0.3);
         cursor: pointer;
-        transition: 0.3s;
         color: white;
+        transition: 0.2s;
       }
-
-      .lang-btn.active,
-      .lang-btn:hover {
+      .lang-btn.active {
         background: var(--gold-primary);
         color: var(--emerald-deep);
-        border-color: var(--gold-light);
       }
 
-      /* Bouton Fermer */
       .btn-close {
-        width: 28px;
-        height: 28px;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: none;
+        border: none;
         color: white;
-        border-radius: 6px;
         cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s;
+        font-size: 18px;
+        opacity: 0.8;
       }
-
       .btn-close:hover {
-        background: #e74c3c;
-        border-color: #c0392b;
+        opacity: 1;
         transform: rotate(90deg);
-        box-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+        transition: 0.3s;
       }
 
-      /* Messages */
+      /* Messages Area */
       .chatbot-messages {
         flex-grow: 1;
         padding: 20px;
@@ -169,108 +151,107 @@
         display: flex;
         flex-direction: column;
         gap: 15px;
+        scrollbar-width: thin;
       }
 
-      .bot-bubble {
-        background: var(--bg-msg-bot);
-        padding: 14px 18px;
-        border-radius: 18px 18px 18px 4px;
+      .msg {
         max-width: 85%;
-        font-size: 13.5px;
-        color: var(--emerald-deep);
+        padding: 12px 16px;
+        font-size: 14px;
         line-height: 1.5;
-        border: 1px solid #edf2f0;
         animation: fadeIn 0.3s ease;
       }
 
       @keyframes fadeIn {
         from {
           opacity: 0;
-          transform: translateX(-10px);
+          transform: translateY(5px);
         }
         to {
           opacity: 1;
-          transform: translateX(0);
+          transform: translateY(0);
         }
       }
 
-      /* Boutons Action */
-      .action-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        margin-top: 10px;
-        padding: 10px 16px;
-        background: var(--emerald-deep);
-        color: var(--gold-light) !important;
-        text-decoration: none;
-        border-radius: 10px;
-        font-size: 12px;
-        font-weight: 600;
-        border: 1px solid var(--gold-primary);
-        transition: 0.3s;
-      }
-
-      .action-link:hover {
-        background: var(--emerald-light);
-        transform: scale(1.02);
-      }
-
-      /* Options */
-      .option-button {
-        background: var(--white);
-        border: 1.5px solid var(--emerald-light);
+      .bot-msg {
+        background: var(--bg-msg-bot);
         color: var(--emerald-deep);
-        padding: 12px 15px;
+        border-radius: 18px 18px 18px 4px;
+        align-self: flex-start;
+        border: 1px solid #edf2f0;
+      }
+      .user-msg {
+        background: var(--emerald-light);
+        color: white;
+        border-radius: 18px 18px 4px 18px;
+        align-self: flex-end;
+        border-right: 4px solid var(--gold-primary);
+      }
+
+      /* Options List */
+      .options-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 5px;
+      }
+      .option-button {
+        background: white;
+        border: 1px solid #eee;
+        color: var(--emerald-deep);
+        padding: 10px 15px;
         border-radius: 12px;
-        text-align: left;
         font-size: 13px;
         cursor: pointer;
-        transition: 0.25s;
-        width: 100%;
-        font-weight: 600;
+        text-align: left;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        transition: 0.2s;
       }
-
       .option-button:hover {
         border-color: var(--gold-primary);
-        background: #fdfaf5;
-        color: var(--gold-primary);
+        background: var(--bg-msg-bot);
+        transform: translateX(8px);
       }
 
-      /* Input Zone */
+      /* Input Area */
       .input-area {
         padding: 15px 20px;
         background: var(--white);
         border-top: 1px solid #f0f0f0;
         display: flex;
-        gap: 12px;
+        gap: 10px;
       }
-
       .input-area input {
         flex-grow: 1;
         border: 1.5px solid #eee;
-        padding: 12px 18px;
+        padding: 10px 15px;
         border-radius: 25px;
         outline: none;
+        font-size: 14px;
+        transition: 0.3s;
       }
-
+      .input-area input:focus {
+        border-color: var(--gold-primary);
+        box-shadow: 0 0 8px rgba(176, 141, 87, 0.2);
+      }
       .send-btn {
         background: var(--emerald-light);
         color: var(--gold-light);
-        width: 45px;
-        height: 45px;
+        width: 42px;
+        height: 42px;
         border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
         border: none;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .send-btn:hover {
+        transform: scale(1.1) rotate(-10deg);
+        background: var(--emerald-deep);
       }
 
-      /* --- EFFET AURA SPIRTUELLE SUR LE BOUTON TOGGLE --- */
+      /* BOUTON TOGGLE AVEC EFFET AURA */
       .chatbot-toggle {
         width: 70px;
         height: 70px;
@@ -282,7 +263,8 @@
         align-items: center;
         justify-content: center;
         border: 3px solid var(--gold-primary);
-        position: relative; /* Nécessaire pour l'aura */
+        position: relative;
+        transition: 0.3s;
       }
 
       .chatbot-toggle::before {
@@ -293,6 +275,7 @@
         border-radius: 50%;
         border: 2px solid var(--gold-primary);
         animation: spirit-aura 2s infinite;
+        z-index: 1;
       }
 
       @keyframes spirit-aura {
@@ -309,9 +292,43 @@
       .chatbot-toggle img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
         border-radius: 50%;
+        object-fit: cover;
         z-index: 2;
+      }
+
+      .action-link {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 8px 15px;
+        background: var(--emerald-deep);
+        color: var(--gold-light) !important;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 12px;
+        border: 1px solid var(--gold-primary);
+        font-weight: 600;
+      }
+
+      .typing {
+        font-size: 12px;
+        color: #999;
+        display: none;
+        margin-bottom: 10px;
+        font-style: italic;
+      }
+
+      /* Mobile Adjustment */
+      @media (max-width: 480px) {
+        .chatbot-window {
+          width: 90vw;
+          height: 75vh;
+          right: 5vw;
+        }
+        .chatbot-toggle {
+          width: 60px;
+          height: 60px;
+        }
       }
     </style>
   </head>
@@ -322,54 +339,34 @@
           <div class="header-info">
             <i class="fas fa-mosque"></i>
             <div class="header-text">
-              <h3>QuranLight</h3>
-              <p>Guidance Spirituelle</p>
+              <h3 id="ui-title">QuranLight</h3>
+              <p id="ui-subtitle">Guidance Spirituelle</p>
             </div>
           </div>
           <div class="header-actions">
-            <div class="lang-switch">
-              <div class="lang-btn active" onclick="setLang('FR')">FR</div>
-              <div class="lang-btn" onclick="setLang('EN')">EN</div>
-            </div>
+            <button
+              class="lang-btn active"
+              id="btn-fr"
+              onclick="changeLang('FR')"
+            >
+              FR
+            </button>
+            <button class="lang-btn" id="btn-en" onclick="changeLang('EN')">
+              EN
+            </button>
             <button class="btn-close" id="close-chat">
               <i class="fas fa-times"></i>
             </button>
           </div>
         </div>
 
-        <div class="chatbot-messages" id="chat-messages">
-          <div class="bot-bubble">
-            As-salamu alaykum 👋 Comment puis-je vous aider ?
-          </div>
-          <div
-            id="options-container"
-            style="
-              display: flex;
-              flex-direction: column;
-              gap: 8px;
-              margin-top: 5px;
-            "
-          >
-            <button class="option-button" onclick="quickReply('Lire le Coran')">
-              <span>Lire le Noble Coran</span> <i class="fas fa-book-open"></i>
-            </button>
-            <button
-              class="option-button"
-              onclick="quickReply('Horaires de Prière')"
-            >
-              <span>Horaires de Prière</span> <i class="fas fa-clock"></i>
-            </button>
-            <button class="option-button" onclick="quickReply('Hadiths')">
-              <span>Hadiths du Jour</span> <i class="fas fa-quote-left"></i>
-            </button>
-          </div>
-        </div>
+        <div class="chatbot-messages" id="chat-messages"></div>
 
         <div class="input-area">
           <input
             type="text"
             id="user-input"
-            placeholder="Posez une question..."
+            placeholder="Posez votre question..."
           />
           <button class="send-btn" id="send-msg">
             <i class="fas fa-paper-plane"></i>
@@ -390,96 +387,297 @@
       const userInput = document.getElementById("user-input");
       const messagesArea = document.getElementById("chat-messages");
 
-      openBtn.onclick = () => {
-        chatWindow.style.display = "flex";
-        openBtn.style.display = "none";
-      };
-      closeBtn.onclick = () => {
-        chatWindow.style.display = "none";
-        openBtn.style.display = "flex";
+      let currentLang = "FR";
+      const data = {
+        FR: {
+          welcome:
+            "As-salamu alaykum 👋 Je suis votre assistant QuranLight. Je suis à votre écoute pour vous accompagner dans votre cheminement et répondre à vos interrogations spirituelles. Comment puis-je vous être utile aujourd'hui ?",
+          subtitle: "Guidance Spirituelle",
+          placeholder: "Exprimez-vous ici...",
+          typing: "QuranLight réfléchit...",
+          options: [
+            { id: "coran", text: "Lire le Noble Coran", icon: "fa-book-open" },
+            { id: "priere", text: "Horaires de Prière", icon: "fa-clock" },
+            { id: "hadith", text: "Hadiths du Jour", icon: "fa-quote-left" },
+            { id: "qibla", text: "Direction de la Qibla", icon: "fa-compass" },
+          ],
+          smartResponses: [
+            {
+              keywords: [
+                "salut",
+                "bonjour",
+                "salam",
+                "hi",
+                "hey",
+                "matin",
+                "soir",
+              ],
+              msg: "Wa Alaykum As-Salam ! Que la paix soit sur vous. C'est un plaisir de vous retrouver. En quoi puis-je éclairer votre journée ?",
+            },
+            {
+              keywords: [
+                "prière",
+                "salat",
+                "prier",
+                "heure",
+                "horaire",
+                "fajr",
+                "dhuhr",
+                "asr",
+                "maghrib",
+                "isha",
+                "sobli",
+                "tahajjud",
+              ],
+              msg: "La prière est le lien vital entre le serviteur et son Créateur, une source de tranquillité. Pour ne manquer aucune de vos obligations, voici nos horaires précis : <br><a href='salat.html' class='action-link'>Accéder aux horaires de Salat</a>",
+            },
+            {
+              keywords: [
+                "coran",
+                "lire",
+                "sourate",
+                "verset",
+                "ayats",
+                "recherche",
+                "récitation",
+                "écouter",
+              ],
+              msg: "Le Coran est une guidée infaillible et un remède pour l'âme. Plongez dans la parole d'Allah, étudiez ses sens ou écoutez ses mélodies célestes ici : <br><a href='quran.html' class='action-link'>Ouvrir le Noble Coran</a>",
+            },
+            {
+              keywords: [
+                "hadith",
+                "prophète",
+                "sunnah",
+                "parole",
+                "boukhari",
+                "muslim",
+                "nawawi",
+                "qudsi",
+              ],
+              msg: "Suivre la Sunnah du Prophète (psl), c'est marcher sur le chemin de l'excellence comportementale. Découvrez des sagesses authentiques pour guider vos pas : <br><a href='hadiths.html' class='action-link'>Consulter les Hadiths</a>",
+            },
+            {
+              keywords: [
+                "qibla",
+                "direction",
+                "kaaba",
+                "mecque",
+                "makkah",
+                "boussole",
+              ],
+              msg: "Tourner son visage vers la Kaaba est une unification des cœurs de tous les musulmans. Voici notre outil pour vous orienter avec précision : <br><a href='qibla.html' class='action-link'>Trouver la Qibla</a>",
+            },
+            {
+              keywords: [
+                "ramadan",
+                "jeûne",
+                "iftar",
+                "sahur",
+                "fêtes",
+                "aid",
+                "eid",
+              ],
+              msg: "Ce sont des moments de grande bénédiction et de partage. Si vous cherchez des horaires spécifiques ou des conseils pour ces périodes sacrées, nos sections dédiées peuvent vous aider.",
+            },
+            {
+              keywords: [
+                "zakat",
+                "aumône",
+                "don",
+                "sadaka",
+                "argent",
+                "pauvre",
+              ],
+              msg: "La Zakat purifie les biens et renforce la solidarité de la communauté. C'est un acte de foi profond qui apporte la baraka dans votre vie.",
+            },
+            {
+              keywords: [
+                "apprendre",
+                "islam",
+                "cours",
+                "comprendre",
+                "éducation",
+                "enfant",
+              ],
+              msg: "La recherche de la science est une obligation pour chaque musulman. Nous essayons de rendre cet apprentissage accessible à tous à travers nos différents supports.",
+            },
+            {
+              keywords: [
+                "merci",
+                "shukran",
+                "barakallah",
+                "jazak",
+                "gentil",
+                "super",
+              ],
+              msg: "Wa fika barakallah ! Je suis honoré de pouvoir vous assister. Puisse Allah nous accorder à tous la compréhension et la sagesse.",
+            },
+            {
+              keywords: [
+                "qui es-tu",
+                "ton nom",
+                "fonctionnement",
+                "comment",
+                "aide",
+              ],
+              msg: "Je suis votre compagnon digital QuranLight. Mon but est de faciliter votre accès aux outils spirituels essentiels : Coran, horaires de prière, Hadiths et bien plus. Posez-moi vos questions naturellement !",
+            },
+          ],
+          fallback:
+            "Je vous présente mes excuses, je n'ai pas saisi toute la subtilité de votre message. Pourriez-vous reformuler ou me donner un peu plus de détails ? Je souhaite vraiment pouvoir vous aider au mieux.",
+        },
+        EN: {
+          welcome:
+            "As-salamu alaykum 👋 I am your QuranLight assistant. I am here to walk with you on your spiritual path. How can I assist you today?",
+          subtitle: "Spiritual Guidance",
+          placeholder: "Share your thoughts...",
+          typing: "QuranLight is contemplating...",
+          options: [
+            { id: "coran", text: "Read Noble Quran", icon: "fa-book-open" },
+            { id: "priere", text: "Prayer Timings", icon: "fa-clock" },
+            { id: "hadith", text: "Hadiths of the Day", icon: "fa-quote-left" },
+            { id: "qibla", text: "Qibla Direction", icon: "fa-compass" },
+          ],
+          smartResponses: [
+            {
+              keywords: ["hello", "hi", "salam", "hey", "morning", "evening"],
+              msg: "Wa Alaykum As-Salam! It's a blessing to have you here. How can I illuminate your journey today?",
+            },
+            {
+              keywords: [
+                "prayer",
+                "salat",
+                "pray",
+                "time",
+                "fajr",
+                "dhuhr",
+                "asr",
+                "maghrib",
+                "isha",
+              ],
+              msg: "Prayer is the pillar of faith and a source of ultimate peace. To find the exact timings for your location, please visit: <br><a href='salat.html' class='action-link'>View Prayer Timings</a>",
+            },
+            {
+              keywords: ["quran", "read", "surah", "verse", "ayats", "listen"],
+              msg: "The Quran is a mercy and a healing for mankind. Explore its deep meanings or listen to its recitation here: <br><a href='quran.html' class='action-link'>Open Noble Quran</a>",
+            },
+            {
+              keywords: ["hadith", "prophet", "sunnah", "sayings"],
+              msg: "The Sunnah of the Prophet (pbuh) provides the best example of character and conduct. Explore authentic traditions here: <br><a href='hadiths.html' class='action-link'>Browse Hadiths</a>",
+            },
+            {
+              keywords: ["thanks", "thank", "shukran", "jazak", "barakallah"],
+              msg: "You are most welcome! It is my privilege to help. May Allah grant us all wisdom and steadfastness.",
+            },
+          ],
+          fallback:
+            "I apologize, I couldn't quite understand your request. Could you please provide more details or rephrase? I am here to help you in the best way possible.",
+        },
       };
 
-      function setLang(lang) {
-        document.querySelectorAll(".lang-btn").forEach((btn) => {
-          btn.classList.toggle("active", btn.innerText === lang);
-        });
+      function changeLang(lang) {
+        currentLang = lang;
+        document
+          .getElementById("btn-fr")
+          .classList.toggle("active", lang === "FR");
+        document
+          .getElementById("btn-en")
+          .classList.toggle("active", lang === "EN");
+        document.getElementById("ui-subtitle").innerText = data[lang].subtitle;
+        userInput.placeholder = data[lang].placeholder;
+        renderInitialState();
       }
 
-      function appendMessage(content, type) {
+      function renderInitialState() {
+        messagesArea.innerHTML = `
+          <div class="msg bot-msg">${data[currentLang].welcome}</div>
+          <div class="options-list">
+            ${data[currentLang].options
+              .map(
+                (opt) => `
+              <button class="option-button" onclick="handleAction('${opt.id}', '${opt.text}')">
+                <span>${opt.text}</span> <i class="fas ${opt.icon}"></i>
+              </button>
+            `
+              )
+              .join("")}
+          </div>
+          <div id="typing" class="typing">${data[currentLang].typing}</div>
+        `;
+      }
+
+      function handleAction(id, label) {
+        appendMessage(label, "user");
+        showTyping(true);
+
+        setTimeout(() => {
+          showTyping(false);
+          const res = data[currentLang].responses[id];
+          const content = `${res[0]}<br><a href="${res[1]}" target="_parent" class="action-link">${res[2]}</a>`;
+          appendMessage(content, "bot");
+        }, 800);
+      }
+
+      function appendMessage(text, side) {
         const msg = document.createElement("div");
-        msg.className = "bot-bubble";
-        if (type === "user") {
-          msg.style.alignSelf = "flex-end";
-          msg.style.background = "var(--emerald-light)";
-          msg.style.color = "white";
-          msg.style.borderRight = "3px solid var(--gold-primary)";
-          msg.style.borderRadius = "18px 18px 4px 18px";
-        }
-        msg.innerHTML = content;
-        messagesArea.appendChild(msg);
+        msg.className = `msg ${side}-msg`;
+        msg.innerHTML = text;
+        messagesArea.insertBefore(msg, document.getElementById("typing"));
         messagesArea.scrollTop = messagesArea.scrollHeight;
       }
 
-      function quickReply(text) {
-        appendMessage(text, "user");
-        handleLogic(text);
+      function showTyping(status) {
+        document.getElementById("typing").style.display = status
+          ? "block"
+          : "none";
+        messagesArea.scrollTop = messagesArea.scrollHeight;
       }
 
-      function handleLogic(input) {
-        let response = "";
-        let actionBtn = "";
+      function processSmartResponse(input) {
         const text = input.toLowerCase();
+        const smartRes = data[currentLang].smartResponses;
 
-        if (text.includes("coran")) {
-          response = "Consultez le Coran ici :";
-          actionBtn =
-            '<a href="quran.html" target="_blank" class="action-link"><i class="fas fa-book-open"></i> Acceder au Coran</a>';
-        } else if (text.includes("prière") || text.includes("salat")) {
-          response = "Voici les horaires de salat :";
-          actionBtn =
-            '<a href="salat.html" target="_blank" class="action-link"><i class="fas fa-clock"></i> Horaires de Prière</a>';
-        } else if (text.includes("hadith")) {
-          response = "Découvrez les Hadiths authentiques :";
-          actionBtn =
-            '<a href="hadiths.html" target="_blank" class="action-link"><i class="fas fa-quote-left"></i> Acceder aux Hadiths</a>';
-        } else {
-          response =
-            "Je peux vous aider avec le Coran, la Salat ou les Hadiths.";
+        for (let item of smartRes) {
+          if (item.keywords.some((key) => text.includes(key))) {
+            return item.msg;
+          }
         }
-
-        setTimeout(() => {
-          appendMessage(
-            response + (actionBtn ? "<br>" + actionBtn : ""),
-            "bot"
-          );
-        }, 600);
+        return data[currentLang].responses.fallback;
       }
 
       sendBtn.onclick = () => {
         const val = userInput.value.trim();
         if (val) {
           appendMessage(val, "user");
-          handleLogic(val);
           userInput.value = "";
+          showTyping(true);
+
+          setTimeout(() => {
+            showTyping(false);
+            const response = processSmartResponse(val);
+            appendMessage(response, "bot");
+          }, 1000);
         }
       };
 
       userInput.onkeypress = (e) => {
         if (e.key === "Enter") sendBtn.click();
       };
-      // Envoie un message à la page parente pour changer la taille de l'iframe
+
       openBtn.onclick = () => {
         chatWindow.style.display = "flex";
         openBtn.style.display = "none";
-        window.parent.postMessage("openChat", "*"); // Prévenir le parent
+        window.parent.postMessage("openChat", "*");
       };
 
       closeBtn.onclick = () => {
         chatWindow.style.display = "none";
         openBtn.style.display = "flex";
-        window.parent.postMessage("closeChat", "*"); // Prévenir le parent
+        window.parent.postMessage("closeChat", "*");
       };
+
+      renderInitialState();
     </script>
-    <script src="assets/js/theme-loader.js"></script>
   </body>
 </html>

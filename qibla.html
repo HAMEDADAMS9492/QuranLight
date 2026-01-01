@@ -5,82 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>QuranLight – Direction de la Qibla</title>
 
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Poppins:wght@300;400;600&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
+
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     <link rel="stylesheet" href="assets/css/style.css" />
     <link rel="stylesheet" href="assets/css/qibla.css" />
     <link rel="stylesheet" href="assets/css/theme-variables.css">
   </head>
-  <body>
-    <aside id="sidebar" class="sidebar">
-      <div class="sidebar-header">
-        <img
-          src="assets/image/Logo.jpg"
-          alt="Logo QuranLight"
-          class="app-logo-sidebar"
-        />
-      </div>
+  <body class="qibla-theme">
 
-      <nav class="sidebar-nav">
-        <a href="index.html" class="nav-item"
-          ><i class="fas fa-home"></i> Accueil</a
-        >
-        <a href="salat.html" class="nav-item"
-          ><i class="fas fa-clock"></i> Horaires de Prières</a
-        >
-        <a href="quran.html" class="nav-item"
-          ><i class="fas fa-quran"></i> Coran</a
-        >
-        <a href="qibla.html" class="nav-item active"
-          ><i class="fas fa-compass"></i> Direction de la Qibla</a
-        >
-        <a href="calendar.html" class="nav-item"
-          ><i class="fas fa-calendar-alt"></i> Calendrier Musulman</a
-        >
-        <a href="ramadan.html" class="nav-item"
-          ><i class="fas fa-moon"></i> Ramadan</a
-        >
-      </nav>
-
-      <div class="sidebar-footer">
-        <a href="#" class="nav-item"><i class="fas fa-cog"></i> Paramètres</a>
-      </div>
-    </aside>
-
-    <div id="sidebar-overlay"></div>
-
-    <div class="main-container">
+    <header class="glass-panel main-header">
       <div class="navigation-top">
         <a href="index.html" class="floating-back-btn">
           <i class="fas fa-arrow-left"></i>
           <span>Accueil</span>
         </a>
+      </div>
 
-        <div class="hero-intro-section">
-          <h1 class="hero-main-title">Direction Qibla</h1>
-          <i class="fas fa-compass moon-logo"></i>
+      <div class="header-center-content">
+        <div class="header-title-wrapper">
+          <div class="hero-intro-section" style="display: flex; align-items: center; gap: 12px;">
+            <div class="title-text-stack" style="align-items: center">
+              <h1 class="header-main-title">Direction Qibla</h1>
+            </div>
+            <i class="fas fa-compass moon-logo" style="font-size: 1.8rem; color: var(--color-gold);"></i>
+          </div>
         </div>
       </div>
 
-      <div class="header-subtext">
-        <span class="arabic-text">القبلة</span>
-        <span class="french-translation"
-          >La direction sacrée vers la Kaaba</span
-        >
+      <div class="header-actions-right">
+        <button class="action-icon-btn" onclick="window.location.reload();" title="Actualiser la position">
+          <i class="fas fa-rotate"></i>
+        </button>
       </div>
+    </header>
+
+    <div class="header-spacer" style="height: 85px"></div>
+
+    <main class="main-container">
+      <div class="header-subtext">
+        <span class="french-translation">La direction sacrée vers la Kaaba</span>
+      </div>
+
       <section class="qibla-content-wrapper">
+        
         <div class="qibla-info-grid">
           <div class="info-card glass-morph">
             <div class="card-icon">
@@ -100,7 +71,7 @@
             </div>
             <div class="card-data">
               <span class="value gold-text" id="qibla-angle">--°</span>
-              <span class="label">Angle de la Qibla</span>
+              <span class="label">Angle Qibla</span>
             </div>
           </div>
         </div>
@@ -111,11 +82,7 @@
               <i class="fas fa-location-arrow"></i>
               Trajet direct vers La Mecque
             </span>
-            <button
-              class="mini-calibrate-btn"
-              id="calibrate-btn"
-              title="Recalibrer"
-            >
+            <button class="mini-calibrate-btn" id="calibrate-btn" title="Recalibrer">
               <i class="fas fa-sync-alt"></i>
             </button>
           </div>
@@ -164,7 +131,7 @@
           </button>
         </div>
       </section>
-    </div>
+    </main>
 
     <script src="assets/js/script.js"></script>
     <script src="assets/js/qibla_logic.js"></script>

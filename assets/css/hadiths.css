@@ -2,221 +2,333 @@
 /* 1. CONFIGURATION DU THÈME HADITHS (PREMIUM DARK)         */
 /* ======================================================== */
 :root {
-    --mp-green-bg: #060e0a;
-    --mp-green-surface: #0d1612;
-    --mp-gold: #b08d57;
-    --mp-gold-bright: #e6c18a;
-    --text-main: #ffffff;
-    --text-muted: rgba(255, 255, 255, 0.5);
-    --font-ar: "Amiri", serif;
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --mp-green-bg: #060e0a;
+  --mp-green-surface: #0d1612;
+  --mp-gold: #b08d57;
+  --mp-gold-bright: #e6c18a;
+  --text-main: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.5);
+  --font-ar: "Amiri", serif;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --header-height: 85px;
 }
 
 body {
-    background-color: var(--mp-green-bg);
-    color: var(--text-main);
-    font-family: "Poppins", sans-serif;
-    margin: 0;
-    padding: 0;
-    background-image: linear-gradient(to bottom, rgba(176, 141, 87, 0.05), transparent);
-    background-attachment: fixed;
+  background-color: var(--mp-green-bg);
+  color: var(--text-main);
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(176, 141, 87, 0.05),
+    transparent
+  );
+  background-attachment: fixed;
 }
 
 /* ======================================================== */
-/* 2. BOUTON RETOUR (COIN SUPÉRIEUR GAUCHE FIXE)            */
+/* 2. HEADER FIXE GLASS PANEL (BARRE DE TÂCHES)            */
 /* ======================================================== */
-.back-btn {
-    position: fixed; /* Fixé par rapport à la fenêtre */
-    top: 20px;
-    left: 20px;
-    z-index: 1000; /* Toujours au-dessus */
-    color: var(--text-main);
-    text-decoration: none;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(13, 22, 18, 0.8); /* Fond sombre pour lisibilité */
-    padding: 10px 18px;
-    border-radius: 12px;
-    border: 1px solid rgba(176, 141, 87, 0.3);
-    backdrop-filter: blur(10px);
-    transition: var(--transition);
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+.glass-panel.main-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  background: rgba(6, 14, 10, 0.95);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-bottom: 1px solid rgba(176, 141, 87, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 2000;
 }
 
-.back-btn:hover {
-    background: var(--mp-gold);
-    color: #060e0a;
-    transform: scale(1.05);
-    border-color: var(--mp-gold);
-    box-shadow: 0 0 20px rgba(176, 141, 87, 0.4);
+.header-spacer {
+  height: var(--header-height);
+}
+
+/* Alignement des blocs du header */
+.navigation-top,
+.header-actions-right {
+  display: flex;
+  align-items: center;
+  min-width: 100px; /* Espace réservé pour équilibrer le centre */
+}
+
+.header-center-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden; /* Sécurité pour titres longs */
+}
+
+/* Bouton Retour Premium */
+.floating-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: rgba(13, 22, 18, 0.8);
+  border: 1px solid var(--mp-gold);
+  border-radius: 12px;
+  color: var(--mp-gold);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.floating-back-btn:hover {
+  background: var(--mp-gold);
+  color: #060e0a;
+  box-shadow: 0 0 15px rgba(176, 141, 87, 0.4);
+}
+
+/* Titre Central Dynamique */
+.header-main-title {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.moon-logo {
+  font-size: 1.6rem;
+  color: var(--mp-gold);
+  filter: drop-shadow(0 0 10px rgba(176, 141, 87, 0.4));
+}
+
+/* Bouton Refresh à droite */
+.action-icon-btn {
+  background: rgba(176, 141, 87, 0.1);
+  border: 1px solid rgba(176, 141, 87, 0.3);
+  color: var(--mp-gold);
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-left: auto;
+}
+
+.action-icon-btn:hover {
+  background: var(--mp-gold);
+  color: #060e0a;
 }
 
 /* ======================================================== */
-/* 3. CONTAINER & HEADER                                    */
+/* 3. CONTAINER & CONTENU                                   */
 /* ======================================================== */
 .legal-page-container {
-    max-width: 800px;
-    margin: 80px auto 40px; /* Marge haute pour ne pas chevaucher le bouton fixe */
-    padding: 0 20px;
-    animation: fadeIn 0.8s ease-out;
+  max-width: 800px;
+  margin: 20px auto 40px;
+  padding: 0 20px;
+  animation: fadeIn 0.8s ease-out;
 }
 
 .legal-header {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.legal-header i {
-    font-size: 3rem;
-    color: var(--mp-gold);
-    filter: drop-shadow(0 0 15px rgba(176, 141, 87, 0.4));
-    margin-bottom: 15px;
-}
-
-h1 {
-    font-size: 2.2rem;
-    font-weight: 800;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin: 10px 0;
+  text-align: center;
+  margin-bottom: 30px;
 }
 
 .header-sub {
-    color: var(--mp-gold);
-    font-style: italic;
-    font-size: 1rem;
+  color: var(--mp-gold);
+  font-style: italic;
+  font-size: 1rem;
+  display: block;
+  margin-top: 10px;
 }
 
-/* Recherche */
+/* Barre de Recherche */
 .search-bar {
-    position: relative;
-    max-width: 500px;
-    margin: 30px auto;
+  position: relative;
+  max-width: 500px;
+  margin: 30px auto;
 }
 
 .search-bar i {
-    position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--mp-gold);
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--mp-gold);
 }
 
 .search-bar input {
-    width: 100%;
-    padding: 15px 20px 15px 55px;
-    background: var(--mp-green-surface);
-    border: 1px solid rgba(176, 141, 87, 0.2);
-    border-radius: 12px;
-    color: white;
-    font-size: 1rem;
-    box-sizing: border-box;
+  width: 100%;
+  padding: 15px 20px 15px 55px;
+  background: var(--mp-green-surface);
+  border: 1px solid rgba(176, 141, 87, 0.2);
+  border-radius: 12px;
+  color: white;
+  font-size: 1rem;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.search-bar input:focus {
+  border-color: var(--mp-gold);
 }
 
 /* Filtres */
 .filter-tabs {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-bottom: 35px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 35px;
 }
 
 .tab-btn {
-    padding: 8px 20px;
-    background: transparent;
-    border: 1px solid rgba(176, 141, 87, 0.3);
-    color: var(--mp-gold-bright);
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    transition: var(--transition);
+  padding: 8px 20px;
+  background: transparent;
+  border: 1px solid rgba(176, 141, 87, 0.3);
+  color: var(--mp-gold-bright);
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  transition: var(--transition);
 }
 
 .tab-btn.active {
-    background: var(--mp-gold);
-    color: #060e0a;
+  background: var(--mp-gold);
+  color: #060e0a;
 }
 
 /* ======================================================== */
-/* 4. LISTE DES HADITHS (LIGNE PAR LIGNE COMPACT)           */
+/* 4. CARTES DES HADITHS                                    */
 /* ======================================================== */
-#hadiths-display {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+.hadiths-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .hadith-card {
-    background: var(--mp-green-surface);
-    border: 1px solid rgba(176, 141, 87, 0.15);
-    border-radius: 15px;
-    padding: 25px 30px;
-    transition: var(--transition);
+  background: var(--mp-green-surface);
+  border: 1px solid rgba(176, 141, 87, 0.15);
+  border-radius: 15px;
+  padding: 25px 30px;
+  transition: var(--transition);
 }
 
 .hadith-card:hover {
-    border-color: var(--mp-gold);
-    background: rgba(176, 141, 87, 0.03);
-}
-
-.hadith-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-}
-
-.badge {
-    color: var(--mp-gold);
-    font-weight: 800;
-    font-size: 0.7rem;
-    text-transform: uppercase;
+  border-color: var(--mp-gold);
+  background: rgba(176, 141, 87, 0.03);
+  transform: translateY(-3px);
 }
 
 .hadith-arabic {
-    font-family: var(--font-ar);
-    font-size: 1.8rem;
-    color: var(--mp-gold-bright);
-    text-align: right;
-    line-height: 1.8;
-    margin-bottom: 20px;
-    direction: rtl;
+  font-family: var(--font-ar);
+  font-size: 1.8rem;
+  color: var(--mp-gold-bright);
+  text-align: right;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  direction: rtl;
 }
 
 .hadith-french {
-    font-size: 1.05rem;
-    color: #ffffff; /* BLANC */
-    line-height: 1.6;
-    font-weight: 700; /* GRAS */
-    padding-left: 15px;
-    border-left: 3px solid var(--mp-gold);
+  font-size: 1.05rem;
+  color: #ffffff;
+  line-height: 1.6;
+  font-weight: 700;
+  padding-left: 15px;
+  border-left: 3px solid var(--mp-gold);
 }
 
 .hadith-ref {
-    margin-top: 15px;
-    font-size: 0.8rem;
-    color: var(--mp-gold);
-    opacity: 0.7;
-    font-weight: 600;
+  margin-top: 15px;
+  font-size: 0.8rem;
+  color: var(--mp-gold);
+  opacity: 0.7;
+  font-weight: 600;
+}
+
+.legal-footer-info {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
 }
 
 /* ======================================================== */
-/* 5. RESPONSIVE                                            */
+/* 5. RESPONSIVE OPTIMISÉ                                   */
 /* ======================================================== */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .header-main-title {
+    font-size: 1.2rem;
+  }
+  .moon-logo {
+    font-size: 1.3rem;
+  }
 }
 
 @media (max-width: 600px) {
-    .back-btn { top: 10px; left: 10px; padding: 8px 12px; font-size: 0.7rem; }
-    .legal-page-container { margin-top: 70px; }
-    .hadith-card { padding: 20px; }
-    .hadith-arabic { font-size: 1.6rem; }
+  .glass-panel.main-header {
+    padding: 0 10px;
+  }
+
+  /* Réduction du texte bouton retour pour gagner de la place */
+  .floating-back-btn span {
+    display: none;
+  }
+
+  .floating-back-btn {
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  /* Adaptation du titre si toujours trop long */
+  .header-main-title {
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+  }
+
+  .hadith-card {
+    padding: 20px;
+  }
+
+  .hadith-arabic {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .header-main-title {
+    font-size: 0.9rem;
+  }
+  .header-center-content {
+    gap: 5px;
+  }
 }
