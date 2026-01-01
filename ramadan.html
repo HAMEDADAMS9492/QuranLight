@@ -14,40 +14,42 @@
     />
   </head>
   <body class="ramadan-page">
-    <header class="glass-panel">
-      <div class="navigation-top">
-        <a href="index.html" class="floating-back-btn">
-          <i class="fas fa-arrow-left"></i>
-          <span>Accueil</span>
-        </a>
-      </div>
+   <header class="glass-panel main-header">
+  <div class="navigation-top">
+    <a href="index.html" class="floating-back-btn" title="Retour Accueil">
+      <i class="fas fa-home"></i>
+    </a>
+  </div>
 
-      <div class="header-center-content">
-        <div class="header-title-wrapper">
-          <i class="fas fa-moon moon-logo-mini"></i>
-          <div class="title-text-stack">
-            <h1 class="header-main-title">Ramadan</h1>
-            <span class="arabic-mini">رمضان مبارك</span>
-          </div>
-        </div>
+  <div class="header-center-content">
+    <div class="header-title-wrapper">
+      <div class="hero-intro-section" style="display: flex; align-items: center; gap: 12px">
+        <h1 class="header-main-title">Ramadan</h1>
+        <i class="fas fa-moon moon-logo" style="font-size: 1.5rem;"></i>
       </div>
+    </div>
+  </div>
 
-      <div class="header-actions-right">
-        <button
-          id="refresh-ramadan"
-          class="action-icon-btn"
-          onclick="location.reload()"
-          title="Actualiser"
-        >
-          <i class="fas fa-sync-alt"></i>
-        </button>
-      </div>
-    </header>
+  <div class="header-actions-right">
+    <button id="refresh-ramadan" class="action-icon-btn" onclick="location.reload()" title="Actualiser">
+      <i class="fas fa-rotate"></i>
+    </button>
+  </div>
+</header>
 
-    <div class="main-container">
-      <div class="hero-intro-section-footer">
-        <p class="french-translation">Mois sacré de jeûne et de piété</p>
-      </div>
+<div class="header-spacer"></div>
+
+<main class="main-container">
+  <div class="header-subtext">
+    <h2 class="arabic-title-large">رمضان مبارك</h2>
+    
+    <div class="sub-divider"></div>
+    
+    <div class="hero-intro-section-footer">
+      <p class="french-translation">Mois sacré de jeûne et de piété</p>
+    </div>
+  </div>
+</main>
 
       <div class="events-section">
         <div id="ramadan-info" class="info-highlight-box">
@@ -61,14 +63,15 @@
           </div>
         </div>
 
-        <div
-          id="countdown-container"
-          class="countdown-banner"
-          style="display: none"
-        >
-          <span id="countdown-label">Chargement...</span>
-          <div id="countdown-timer">00:00:00</div>
-        </div>
+        <div id="countdown-container" class="countdown-banner">
+    <span id="countdown-label">Prochain Iftar dans</span>
+    <div id="countdown-timer">00:00:00</div>
+    <div class="timer-units">
+      <span>HEURES</span>
+      <span>MINUTES</span>
+      <span>SECONDES</span>
+    </div>
+  </div>
 
         <div class="options-grid">
           <div class="option-card active" data-target="section-calendar">

@@ -32,6 +32,7 @@
         overflow: hidden;
       }
 
+      /* --- Conteneur Principal --- */
       #chatbot-container {
         position: fixed;
         bottom: 20px;
@@ -43,11 +44,11 @@
         max-width: 95vw;
       }
 
-      /* Fenêtre du Chatbot - AGRANDIE */
+      /* --- Fenêtre du Chatbot --- */
       .chatbot-window {
-        width: 400px; /* Largeur augmentée */
+        width: 400px;
         max-width: 88vw;
-        height: 600px; /* Hauteur augmentée */
+        height: 600px;
         max-height: 80vh;
         background: var(--white);
         border-radius: 24px;
@@ -71,7 +72,7 @@
         }
       }
 
-      /* Header */
+      /* --- Header & Boutons Actions --- */
       .chatbot-header {
         background: radial-gradient(
           circle at top left,
@@ -112,37 +113,51 @@
         align-items: center;
         gap: 8px;
       }
+
+      /* Style des boutons Langue (FR/EN) */
       .lang-btn {
-        padding: 4px 8px;
-        font-size: 11px;
-        font-weight: 700;
-        border-radius: 6px;
         background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(176, 141, 87, 0.3);
+        border: 1px solid rgba(176, 141, 87, 0.5);
+        color: var(--white);
+        padding: 4px 8px;
+        border-radius: 8px;
+        font-size: 10px;
+        font-weight: 600;
         cursor: pointer;
-        color: white;
-        transition: 0.2s;
+        transition: all 0.3s ease;
       }
+
       .lang-btn.active {
         background: var(--gold-primary);
         color: var(--emerald-deep);
+        border-color: var(--gold-light);
+        box-shadow: 0 0 10px rgba(176, 141, 87, 0.5);
       }
 
+      .lang-btn:hover:not(.active) {
+        background: rgba(176, 141, 87, 0.3);
+        border-color: var(--gold-light);
+      }
+
+      /* Style du bouton Fermer (X) */
       .btn-close {
         background: none;
         border: none;
-        color: white;
-        cursor: pointer;
+        color: var(--gold-light);
         font-size: 18px;
-        opacity: 0.8;
-      }
-      .btn-close:hover {
-        opacity: 1;
-        transform: rotate(90deg);
-        transition: 0.3s;
+        cursor: pointer;
+        margin-left: 5px;
+        transition: transform 0.3s ease, color 0.3s ease;
+        display: flex;
+        align-items: center;
       }
 
-      /* Messages Area */
+      .btn-close:hover {
+        color: var(--white);
+        transform: rotate(90deg);
+      }
+
+      /* --- Zone des Messages --- */
       .chatbot-messages {
         flex-grow: 1;
         padding: 20px;
@@ -152,6 +167,7 @@
         flex-direction: column;
         gap: 15px;
         scrollbar-width: thin;
+        scrollbar-color: var(--gold-primary) transparent;
       }
 
       .msg {
@@ -159,18 +175,7 @@
         padding: 12px 16px;
         font-size: 14px;
         line-height: 1.5;
-        animation: fadeIn 0.3s ease;
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(5px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+        animation: fadeInChat 0.3s ease;
       }
 
       .bot-msg {
@@ -180,6 +185,7 @@
         align-self: flex-start;
         border: 1px solid #edf2f0;
       }
+
       .user-msg {
         background: var(--emerald-light);
         color: white;
@@ -188,13 +194,46 @@
         border-right: 4px solid var(--gold-primary);
       }
 
-      /* Options List */
+      /* --- Bouton de Redirection --- */
+      .redirect-container {
+        margin-top: 12px;
+        animation: fadeInChat 0.4s ease;
+      }
+
+      .redirect-confirm-btn {
+        background: linear-gradient(
+          135deg,
+          var(--emerald-deep),
+          var(--emerald-light)
+        );
+        color: var(--gold-light);
+        border: 1px solid var(--gold-primary);
+        padding: 10px 18px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+      }
+
+      .redirect-confirm-btn:hover {
+        transform: translateY(-2px);
+        background: var(--gold-primary);
+        color: var(--emerald-deep);
+        box-shadow: 0 6px 18px rgba(176, 141, 87, 0.4);
+      }
+
+      /* --- Options & Input --- */
       .options-list {
         display: flex;
         flex-direction: column;
         gap: 8px;
-        margin-top: 5px;
       }
+
       .option-button {
         background: white;
         border: 1px solid #eee;
@@ -203,19 +242,19 @@
         border-radius: 12px;
         font-size: 13px;
         cursor: pointer;
-        text-align: left;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        transition: 0.2s;
+        transition: all 0.3s ease;
       }
+
       .option-button:hover {
         border-color: var(--gold-primary);
         background: var(--bg-msg-bot);
         transform: translateX(8px);
+        color: var(--emerald-light);
       }
 
-      /* Input Area */
       .input-area {
         padding: 15px 20px;
         background: var(--white);
@@ -223,6 +262,7 @@
         display: flex;
         gap: 10px;
       }
+
       .input-area input {
         flex-grow: 1;
         border: 1.5px solid #eee;
@@ -230,12 +270,8 @@
         border-radius: 25px;
         outline: none;
         font-size: 14px;
-        transition: 0.3s;
       }
-      .input-area input:focus {
-        border-color: var(--gold-primary);
-        box-shadow: 0 0 8px rgba(176, 141, 87, 0.2);
-      }
+
       .send-btn {
         background: var(--emerald-light);
         color: var(--gold-light);
@@ -244,14 +280,15 @@
         border-radius: 50%;
         border: none;
         cursor: pointer;
-        transition: 0.2s;
-      }
-      .send-btn:hover {
-        transform: scale(1.1) rotate(-10deg);
-        background: var(--emerald-deep);
+        transition: all 0.3s ease;
       }
 
-      /* BOUTON TOGGLE AVEC EFFET AURA */
+      .send-btn:hover {
+        background: var(--emerald-deep);
+        transform: scale(1.1);
+      }
+
+      /* --- Toggle Button & Aura --- */
       .chatbot-toggle {
         width: 70px;
         height: 70px;
@@ -265,6 +302,14 @@
         border: 3px solid var(--gold-primary);
         position: relative;
         transition: 0.3s;
+        overflow: visible;
+      }
+
+      .chatbot-toggle img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
       }
 
       .chatbot-toggle::before {
@@ -275,7 +320,6 @@
         border-radius: 50%;
         border: 2px solid var(--gold-primary);
         animation: spirit-aura 2s infinite;
-        z-index: 1;
       }
 
       @keyframes spirit-aura {
@@ -289,36 +333,18 @@
         }
       }
 
-      .chatbot-toggle img {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        object-fit: cover;
-        z-index: 2;
+      @keyframes fadeInChat {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
 
-      .action-link {
-        display: inline-block;
-        margin-top: 10px;
-        padding: 8px 15px;
-        background: var(--emerald-deep);
-        color: var(--gold-light) !important;
-        text-decoration: none;
-        border-radius: 8px;
-        font-size: 12px;
-        border: 1px solid var(--gold-primary);
-        font-weight: 600;
-      }
-
-      .typing {
-        font-size: 12px;
-        color: #999;
-        display: none;
-        margin-bottom: 10px;
-        font-style: italic;
-      }
-
-      /* Mobile Adjustment */
+      /* --- Responsive --- */
       @media (max-width: 480px) {
         .chatbot-window {
           width: 90vw;
@@ -388,202 +414,122 @@
       const messagesArea = document.getElementById("chat-messages");
 
       let currentLang = "FR";
+
       const data = {
         FR: {
           welcome:
-            "As-salamu alaykum 👋 Je suis votre assistant QuranLight. Je suis à votre écoute pour vous accompagner dans votre cheminement et répondre à vos interrogations spirituelles. Comment puis-je vous être utile aujourd'hui ?",
+            "As-salamu alaykum 👋 Je suis votre assistant QuranLight. Comment puis-je vous aider ?",
           subtitle: "Guidance Spirituelle",
           placeholder: "Exprimez-vous ici...",
           typing: "QuranLight réfléchit...",
           options: [
-            { id: "coran", text: "Lire le Noble Coran", icon: "fa-book-open" },
-            { id: "priere", text: "Horaires de Prière", icon: "fa-clock" },
-            { id: "hadith", text: "Hadiths du Jour", icon: "fa-quote-left" },
-            { id: "qibla", text: "Direction de la Qibla", icon: "fa-compass" },
+            {
+              id: "coran",
+              text: "Lire le Noble Coran",
+              icon: "fa-book-open",
+              url: "quran.html",
+            },
+            {
+              id: "priere",
+              text: "Horaires de Prière",
+              icon: "fa-clock",
+              url: "salat.html",
+            },
+            {
+              id: "hadith",
+              text: "Hadiths du Jour",
+              icon: "fa-quote-left",
+              url: "hadiths.html",
+            },
+            {
+              id: "qibla",
+              text: "Direction de la Qibla",
+              icon: "fa-compass",
+              url: "qibla.html",
+            },
           ],
+          actionResponses: {
+            coran:
+              "Le Coran est une lumière et une guidée pour l'âme. Accédez à la lecture ici :",
+            priere:
+              "La prière est le lien entre le serviteur et son Créateur. Voici les horaires :",
+            hadith:
+              "Plongez dans les enseignements et sagesses du Prophète (psl) :",
+            qibla:
+              "Pour vous orienter avec précision vers la Kaaba, utilisez notre boussole :",
+          },
           smartResponses: [
             {
-              keywords: [
-                "salut",
-                "bonjour",
-                "salam",
-                "hi",
-                "hey",
-                "matin",
-                "soir",
-              ],
-              msg: "Wa Alaykum As-Salam ! Que la paix soit sur vous. C'est un plaisir de vous retrouver. En quoi puis-je éclairer votre journée ?",
+              keywords: ["salam", "bonjour", "salut"],
+              msg: "Wa Alaykum As-Salam ! Heureux de vous retrouver. En quoi puis-je vous éclairer aujourd'hui ?",
             },
             {
-              keywords: [
-                "prière",
-                "salat",
-                "prier",
-                "heure",
-                "horaire",
-                "fajr",
-                "dhuhr",
-                "asr",
-                "maghrib",
-                "isha",
-                "sobli",
-                "tahajjud",
-              ],
-              msg: "La prière est le lien vital entre le serviteur et son Créateur, une source de tranquillité. Pour ne manquer aucune de vos obligations, voici nos horaires précis : <br><a href='salat.html' class='action-link'>Accéder aux horaires de Salat</a>",
-            },
-            {
-              keywords: [
-                "coran",
-                "lire",
-                "sourate",
-                "verset",
-                "ayats",
-                "recherche",
-                "récitation",
-                "écouter",
-              ],
-              msg: "Le Coran est une guidée infaillible et un remède pour l'âme. Plongez dans la parole d'Allah, étudiez ses sens ou écoutez ses mélodies célestes ici : <br><a href='quran.html' class='action-link'>Ouvrir le Noble Coran</a>",
-            },
-            {
-              keywords: [
-                "hadith",
-                "prophète",
-                "sunnah",
-                "parole",
-                "boukhari",
-                "muslim",
-                "nawawi",
-                "qudsi",
-              ],
-              msg: "Suivre la Sunnah du Prophète (psl), c'est marcher sur le chemin de l'excellence comportementale. Découvrez des sagesses authentiques pour guider vos pas : <br><a href='hadiths.html' class='action-link'>Consulter les Hadiths</a>",
-            },
-            {
-              keywords: [
-                "qibla",
-                "direction",
-                "kaaba",
-                "mecque",
-                "makkah",
-                "boussole",
-              ],
-              msg: "Tourner son visage vers la Kaaba est une unification des cœurs de tous les musulmans. Voici notre outil pour vous orienter avec précision : <br><a href='qibla.html' class='action-link'>Trouver la Qibla</a>",
-            },
-            {
-              keywords: [
-                "ramadan",
-                "jeûne",
-                "iftar",
-                "sahur",
-                "fêtes",
-                "aid",
-                "eid",
-              ],
-              msg: "Ce sont des moments de grande bénédiction et de partage. Si vous cherchez des horaires spécifiques ou des conseils pour ces périodes sacrées, nos sections dédiées peuvent vous aider.",
-            },
-            {
-              keywords: [
-                "zakat",
-                "aumône",
-                "don",
-                "sadaka",
-                "argent",
-                "pauvre",
-              ],
-              msg: "La Zakat purifie les biens et renforce la solidarité de la communauté. C'est un acte de foi profond qui apporte la baraka dans votre vie.",
-            },
-            {
-              keywords: [
-                "apprendre",
-                "islam",
-                "cours",
-                "comprendre",
-                "éducation",
-                "enfant",
-              ],
-              msg: "La recherche de la science est une obligation pour chaque musulman. Nous essayons de rendre cet apprentissage accessible à tous à travers nos différents supports.",
-            },
-            {
-              keywords: [
-                "merci",
-                "shukran",
-                "barakallah",
-                "jazak",
-                "gentil",
-                "super",
-              ],
-              msg: "Wa fika barakallah ! Je suis honoré de pouvoir vous assister. Puisse Allah nous accorder à tous la compréhension et la sagesse.",
-            },
-            {
-              keywords: [
-                "qui es-tu",
-                "ton nom",
-                "fonctionnement",
-                "comment",
-                "aide",
-              ],
-              msg: "Je suis votre compagnon digital QuranLight. Mon but est de faciliter votre accès aux outils spirituels essentiels : Coran, horaires de prière, Hadiths et bien plus. Posez-moi vos questions naturellement !",
+              keywords: ["merci", "shukran"],
+              msg: "Barakallahu feek ! C'est un honneur de vous accompagner dans votre cheminement.",
             },
           ],
           fallback:
-            "Je vous présente mes excuses, je n'ai pas saisi toute la subtilité de votre message. Pourriez-vous reformuler ou me donner un peu plus de détails ? Je souhaite vraiment pouvoir vous aider au mieux.",
+            "Je n'ai pas bien saisi. Pourriez-vous reformuler votre demande ou choisir l'une des options ci-dessus ?",
         },
         EN: {
           welcome:
-            "As-salamu alaykum 👋 I am your QuranLight assistant. I am here to walk with you on your spiritual path. How can I assist you today?",
+            "As-salamu alaykum 👋 I am your QuranLight assistant. How can I help you?",
           subtitle: "Spiritual Guidance",
-          placeholder: "Share your thoughts...",
-          typing: "QuranLight is contemplating...",
+          placeholder: "Type here...",
+          typing: "QuranLight is thinking...",
           options: [
-            { id: "coran", text: "Read Noble Quran", icon: "fa-book-open" },
-            { id: "priere", text: "Prayer Timings", icon: "fa-clock" },
-            { id: "hadith", text: "Hadiths of the Day", icon: "fa-quote-left" },
-            { id: "qibla", text: "Qibla Direction", icon: "fa-compass" },
+            {
+              id: "coran",
+              text: "Read Noble Quran",
+              icon: "fa-book-open",
+              url: "quran.html",
+            },
+            {
+              id: "priere",
+              text: "Prayer Timings",
+              icon: "fa-clock",
+              url: "salat.html",
+            },
+            {
+              id: "hadith",
+              text: "Hadiths of the Day",
+              icon: "fa-quote-left",
+              url: "hadiths.html",
+            },
+            {
+              id: "qibla",
+              text: "Qibla Direction",
+              icon: "fa-compass",
+              url: "qibla.html",
+            },
           ],
+          actionResponses: {
+            coran:
+              "The Quran is a light and guidance for the soul. Access the reading here:",
+            priere:
+              "Prayer is the link between the servant and the Creator. Here are the timings:",
+            hadith: "Dive into the teachings and wisdom of the Prophet (pbuh):",
+            qibla:
+              "To orient yourself precisely towards the Kaaba, use our compass:",
+          },
           smartResponses: [
             {
-              keywords: ["hello", "hi", "salam", "hey", "morning", "evening"],
-              msg: "Wa Alaykum As-Salam! It's a blessing to have you here. How can I illuminate your journey today?",
-            },
-            {
-              keywords: [
-                "prayer",
-                "salat",
-                "pray",
-                "time",
-                "fajr",
-                "dhuhr",
-                "asr",
-                "maghrib",
-                "isha",
-              ],
-              msg: "Prayer is the pillar of faith and a source of ultimate peace. To find the exact timings for your location, please visit: <br><a href='salat.html' class='action-link'>View Prayer Timings</a>",
-            },
-            {
-              keywords: ["quran", "read", "surah", "verse", "ayats", "listen"],
-              msg: "The Quran is a mercy and a healing for mankind. Explore its deep meanings or listen to its recitation here: <br><a href='quran.html' class='action-link'>Open Noble Quran</a>",
-            },
-            {
-              keywords: ["hadith", "prophet", "sunnah", "sayings"],
-              msg: "The Sunnah of the Prophet (pbuh) provides the best example of character and conduct. Explore authentic traditions here: <br><a href='hadiths.html' class='action-link'>Browse Hadiths</a>",
-            },
-            {
-              keywords: ["thanks", "thank", "shukran", "jazak", "barakallah"],
-              msg: "You are most welcome! It is my privilege to help. May Allah grant us all wisdom and steadfastness.",
+              keywords: ["salam", "hello", "hi"],
+              msg: "Wa Alaykum As-Salam! Happy to see you. How can I assist your spiritual journey today?",
             },
           ],
           fallback:
-            "I apologize, I couldn't quite understand your request. Could you please provide more details or rephrase? I am here to help you in the best way possible.",
+            "I didn't quite catch that. Could you please rephrase or pick an option above?",
         },
       };
 
       function changeLang(lang) {
         currentLang = lang;
-        document
-          .getElementById("btn-fr")
-          .classList.toggle("active", lang === "FR");
-        document
-          .getElementById("btn-en")
-          .classList.toggle("active", lang === "EN");
+        const btnFr = document.getElementById("btn-fr");
+        const btnEn = document.getElementById("btn-en");
+        if (btnFr) btnFr.classList.toggle("active", lang === "FR");
+        if (btnEn) btnEn.classList.toggle("active", lang === "EN");
+
         document.getElementById("ui-subtitle").innerText = data[lang].subtitle;
         userInput.placeholder = data[lang].placeholder;
         renderInitialState();
@@ -591,74 +537,103 @@
 
       function renderInitialState() {
         messagesArea.innerHTML = `
-          <div class="msg bot-msg">${data[currentLang].welcome}</div>
-          <div class="options-list">
-            ${data[currentLang].options
-              .map(
-                (opt) => `
-              <button class="option-button" onclick="handleAction('${opt.id}', '${opt.text}')">
-                <span>${opt.text}</span> <i class="fas ${opt.icon}"></i>
-              </button>
-            `
-              )
-              .join("")}
-          </div>
-          <div id="typing" class="typing">${data[currentLang].typing}</div>
-        `;
+      <div class="msg bot-msg">${data[currentLang].welcome}</div>
+      <div class="options-list">
+        ${data[currentLang].options
+          .map(
+            (opt) => `
+          <button class="option-button" onclick="handleAction('${opt.id}', '${opt.text}', '${opt.url}')">
+            <span>${opt.text}</span>
+            <i class="fas ${opt.icon}"></i>
+          </button>
+        `
+          )
+          .join("")}
+      </div>
+      <div id="typing" class="typing" style="display:none">${
+        data[currentLang].typing
+      }</div>
+    `;
       }
 
-      function handleAction(id, label) {
+      /* ===================================================
+     ACTION : RÉPONSE ADAPTÉE AVEC BOUTON PERSONNALISÉ
+  ====================================================== */
+      function handleAction(id, label, url) {
         appendMessage(label, "user");
         showTyping(true);
 
         setTimeout(() => {
           showTyping(false);
-          const res = data[currentLang].responses[id];
-          const content = `${res[0]}<br><a href="${res[1]}" target="_parent" class="action-link">${res[2]}</a>`;
-          appendMessage(content, "bot");
-        }, 800);
+
+          const introText = data[currentLang].actionResponses[id];
+          // Ici, on utilise "label" (le texte de l'option) directement pour le bouton
+          const responseHtml = `
+        <div class="bot-response-content">
+          ${introText}
+          <div class="redirect-container">
+            <button class="redirect-confirm-btn" onclick="redirectTo('${url}')">
+              ${label} <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      `;
+
+          appendMessage(responseHtml, "bot");
+        }, 850);
       }
 
-      function appendMessage(text, side) {
-        const msg = document.createElement("div");
-        msg.className = `msg ${side}-msg`;
-        msg.innerHTML = text;
-        messagesArea.insertBefore(msg, document.getElementById("typing"));
-        messagesArea.scrollTop = messagesArea.scrollHeight;
-      }
-
-      function showTyping(status) {
-        document.getElementById("typing").style.display = status
-          ? "block"
-          : "none";
-        messagesArea.scrollTop = messagesArea.scrollHeight;
+      function redirectTo(url) {
+        // Redirection de la page parente
+        if (window.parent && window.parent !== window) {
+          window.parent.location.href = url;
+        } else {
+          window.location.href = url;
+        }
       }
 
       function processSmartResponse(input) {
         const text = input.toLowerCase();
         const smartRes = data[currentLang].smartResponses;
-
         for (let item of smartRes) {
           if (item.keywords.some((key) => text.includes(key))) {
             return item.msg;
           }
         }
-        return data[currentLang].responses.fallback;
+        return data[currentLang].fallback;
+      }
+
+      function appendMessage(content, side) {
+        const msg = document.createElement("div");
+        msg.className = `msg ${side}-msg`;
+        msg.innerHTML = content;
+        const typingElem = document.getElementById("typing");
+        if (typingElem) {
+          messagesArea.insertBefore(msg, typingElem);
+        } else {
+          messagesArea.appendChild(msg);
+        }
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+      }
+
+      function showTyping(status) {
+        const t = document.getElementById("typing");
+        if (t) t.style.display = status ? "block" : "none";
+        messagesArea.scrollTop = messagesArea.scrollHeight;
       }
 
       sendBtn.onclick = () => {
         const val = userInput.value.trim();
-        if (val) {
-          appendMessage(val, "user");
-          userInput.value = "";
-          showTyping(true);
+        if (!val) return;
 
-          setTimeout(() => {
-            showTyping(false);
-            const response = processSmartResponse(val);
-            appendMessage(response, "bot");
-          }, 1000);
-        }
+        appendMessage(val, "user");
+        userInput.value = "";
+        showTyping(true);
+
+        setTimeout(() => {
+          showTyping(false);
+          appendMessage(processSmartResponse(val), "bot");
+        }, 1000);
       };
 
       userInput.onkeypress = (e) => {

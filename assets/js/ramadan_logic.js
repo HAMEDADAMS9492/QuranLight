@@ -13,7 +13,7 @@ async function initRamadanApp() {
   renderDouas();
 
   try {
-    // Détection Position (GPS)
+    // Détection Position (GPS) avec fallback
     const locationData = await new Promise((res) => {
       navigator.geolocation.getCurrentPosition(
         async (p) => {
@@ -35,7 +35,7 @@ async function initRamadanApp() {
               a.state ||
               "";
             if (city.toLowerCase().includes("municipal"))
-              city = a.city_district || "Abuja";
+              city = a.city_district || "";
             city = city.replace(/^(du |de |de la |des |the )/gi, "").trim();
             cityName = city ? `${city}, ${a.country}` : a.country;
           } catch (e) {
@@ -61,6 +61,7 @@ async function initRamadanApp() {
     const hijriYear = dateCheckData.data.hijri.year;
     document.getElementById("hijri-ramadan-year").innerText = hijriYear + "H";
 
+    // Appel API pour le mois de Ramadan (9ème mois)
     const response = await fetch(
       `https://api.aladhan.com/v1/hijriCalendar/${hijriYear}/9?latitude=${locationData.lat}&longitude=${locationData.lon}&method=3`
     );
@@ -97,12 +98,16 @@ function renderCalendar(days) {
 
   let html = "";
   let todayTimings = null;
+  let tomorrowTimings = null;
 
-  days.forEach((day) => {
+  days.forEach((day, index) => {
     const gregorianDate = day.date.gregorian.date;
     const isToday = gregorianDate === todayStr;
 
-    if (isToday) todayTimings = day.timings;
+    if (isToday) {
+      todayTimings = day.timings;
+      if (days[index + 1]) tomorrowTimings = days[index + 1].timings;
+    }
 
     const [d, m, y] = gregorianDate.split("-");
     const dateObj = new Date(y, m - 1, d);
@@ -113,36 +118,36 @@ function renderCalendar(days) {
     displayDate = displayDate.replace(/(\s|^)\w/g, (l) => l.toUpperCase());
 
     html += `
-            <div class="ramadan-card ${isToday ? "active" : ""}" ${
+      <div class="ramadan-card ${isToday ? "active" : ""}" ${
       isToday ? 'id="active-day"' : ""
     }>
-                <div class="card-date">
-                    <span class="h-day">${parseInt(day.date.hijri.day)}</span>
-                    <div class="g-day-info">
-                        <span class="g-day">Ramadan</span>
-                        <span class="g-date">${displayDate}</span>
-                    </div>
-                </div>
-                <div class="card-times">
-                    <div class="time-item">
-                        <span class="time-label imsak-color">IMSAK</span>
-                        <span class="time-value imsak-color">${
-                          day.timings.Imsak.split(" ")[0]
-                        }</span>
-                    </div>
-                    <div class="time-item">
-                        <span class="time-label iftar-color">IFTAR</span>
-                        <span class="time-value iftar-color">${
-                          day.timings.Maghrib.split(" ")[0]
-                        }</span>
-                    </div>
-                </div>
-            </div>`;
+        <div class="card-date">
+          <span class="h-day">${parseInt(day.date.hijri.day)}</span>
+          <div class="g-day-info">
+            <span class="g-day">Ramadan</span>
+            <span class="g-date">${displayDate}</span>
+          </div>
+        </div>
+        <div class="card-times">
+          <div class="time-item">
+            <span class="time-label imsak-color">IMSAK</span>
+            <span class="time-value imsak-color">${
+              day.timings.Imsak.split(" ")[0]
+            }</span>
+          </div>
+          <div class="time-item">
+            <span class="time-label iftar-color">IFTAR</span>
+            <span class="time-value iftar-color">${
+              day.timings.Maghrib.split(" ")[0]
+            }</span>
+          </div>
+        </div>
+      </div>`;
   });
 
   listContainer.innerHTML = html;
 
-  if (todayTimings) startCountdown(todayTimings);
+  if (todayTimings) startCountdown(todayTimings, tomorrowTimings);
 
   if (document.getElementById("active-day")) {
     setTimeout(
@@ -155,9 +160,8 @@ function renderCalendar(days) {
   }
 }
 
-// --- LOGIQUE DU COMPTE À REBOURS ---
-function startCountdown(timings) {
-  const container = document.getElementById("countdown-container");
+// --- LOGIQUE DU COMPTE À REBOURS OPTIMISÉE ---
+function startCountdown(todayTimings, tomorrowTimings) {
   const label = document.getElementById("countdown-label");
   const timer = document.getElementById("countdown-timer");
 
@@ -165,33 +169,44 @@ function startCountdown(timings) {
 
   function update() {
     const now = new Date();
-    const parseTime = (timeStr) => {
+
+    const parseTime = (timeStr, isTomorrow = false) => {
       const [h, m] = timeStr.split(":");
       const d = new Date();
+      if (isTomorrow) d.setDate(d.getDate() + 1);
       d.setHours(parseInt(h), parseInt(m), 0, 0);
       return d;
     };
 
-    const imsak = parseTime(timings.Imsak.split(" ")[0]);
-    const iftar = parseTime(timings.Maghrib.split(" ")[0]);
+    const imsakToday = parseTime(todayTimings.Imsak.split(" ")[0]);
+    const iftarToday = parseTime(todayTimings.Maghrib.split(" ")[0]);
 
     let target, text;
 
-    if (now < imsak) {
-      target = imsak;
-      text = "Temps restant avant l'Imsak";
-    } else if (now < iftar) {
-      target = iftar;
-      text = "Temps restant avant l'Iftar";
+    if (now < imsakToday) {
+      target = imsakToday;
+      text = "Fin du Suhoor (Imsak) dans";
+    } else if (now < iftarToday) {
+      target = iftarToday;
+      text = "Rupture du jeûne (Iftar) dans";
+    } else if (tomorrowTimings) {
+      target = parseTime(tomorrowTimings.Imsak.split(" ")[0], true);
+      text = "Reprise du jeûne (Imsak) dans";
     } else {
-      container.style.display = "none";
+      label.innerText = "Ramadan Moubarak";
+      timer.innerText = "00:00:00";
       return;
     }
 
-    container.style.display = "block";
     label.innerText = text;
 
     const diff = target - now;
+    if (diff <= 0) {
+      // Rafraîchissement léger pour passer à l'étape suivante si le temps est écoulé
+      timer.innerText = "00:00:00";
+      return;
+    }
+
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
@@ -282,7 +297,7 @@ function renderDouas() {
       translation: "J'ai l'intention de jeûner demain pour le mois de Ramadan.",
     },
     {
-      title: "Pour les 10 dernières nuits (Laylat al-Qadr)",
+      title: "Pour les 10 dernières nuits",
       arabic: "اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي",
       phonetic: "Allahumma innaka 'afuwwun tuhibbu-l-'afwa fa'fu 'anni",
       translation:
@@ -296,18 +311,21 @@ function renderDouas() {
     },
   ];
 
-  document.getElementById("douas-container").innerHTML = douas
-    .map(
-      (d) => `
-        <div class="ramadan-card" style="flex-direction:column; align-items:flex-start; gap:10px; margin-bottom:15px; padding: 20px;">
-            <h3 style="color:var(--gold); font-size:1rem; margin-bottom: 5px;">${d.title}</h3>
-            <p style="font-family:'Amiri',serif; font-size:1.5rem; text-align:right; width:100%; line-height:1.6; margin: 5px 0;">${d.arabic}</p>
-            <p style="font-size:0.85rem; color:var(--gold); font-style:italic; opacity: 0.9;">${d.phonetic}</p>
-            <p style="font-size:0.85rem; color:rgba(255,255,255,0.7); line-height:1.4;">${d.translation}</p>
-        </div>
-    `
-    )
-    .join("");
+  const container = document.getElementById("douas-container");
+  if (container) {
+    container.innerHTML = douas
+      .map(
+        (d) => `
+          <div class="ramadan-card" style="flex-direction:column; align-items:flex-start; gap:10px; margin-bottom:15px; padding: 20px;">
+              <h3 style="color:var(--gold); font-size:1rem; margin-bottom: 5px;">${d.title}</h3>
+              <p style="font-family:'Amiri',serif; font-size:1.5rem; text-align:right; width:100%; line-height:1.6; margin: 5px 0;">${d.arabic}</p>
+              <p style="font-size:0.85rem; color:var(--gold); font-style:italic; opacity: 0.9;">${d.phonetic}</p>
+              <p style="font-size:0.85rem; color:rgba(255,255,255,0.7); line-height:1.4;">${d.translation}</p>
+          </div>
+      `
+      )
+      .join("");
+  }
 }
 
 document.addEventListener("DOMContentLoaded", initRamadanApp);

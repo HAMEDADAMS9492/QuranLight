@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="assets/css/theme-variables.css" />
     <style>
       /* ======================================================== */
-      /* 1. CONFIGURATION DU THÈME PREMIUM                       */
+      /* 1. CONFIGURATION DU THÈME PREMIUM                         */
       /* ======================================================== */
       :root {
         --mp-green-bg: #0a1f16;
@@ -20,6 +20,7 @@
         --mp-gold-bright: #f1d5a9;
         --text-main: #ffffff;
         --text-muted: rgba(255, 255, 255, 0.9);
+        --header-height: 70px;
         --container-shadow: 0 30px 100px rgba(0, 0, 0, 0.7);
         --transition-premium: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
       }
@@ -31,18 +32,75 @@
         background-attachment: fixed;
         color: var(--text-main);
         line-height: 1.8;
-        padding: clamp(10px, 3vw, 30px);
+        padding-top: var(--header-height);
         box-sizing: border-box;
         -webkit-font-smoothing: antialiased;
       }
 
       /* ======================================================== */
-      /* 2. CONTAINER GLASSMORPHISM (LOOK ÉCRIN)                 */
+      /* 2. BARRE DE TÂCHES (HEADER FIXE) AVEC CENTRAGE ABSOLU    */
+      /* ======================================================== */
+      .taskbar-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: var(--header-height);
+        background: rgba(5, 20, 15, 0.95);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border-bottom: 2px solid var(--mp-gold);
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        padding: 0 20px;
+        box-sizing: border-box;
+        z-index: 2000;
+      }
+
+      .header-btn {
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        background: rgba(197, 164, 126, 0.1);
+        border: 1px solid rgba(197, 164, 126, 0.3);
+        color: var(--mp-gold-bright);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: var(--transition-premium);
+        cursor: pointer;
+      }
+
+      .header-btn:hover {
+        background: var(--mp-gold);
+        color: #0a1f16;
+        transform: translateY(-2px);
+      }
+
+      .header-title-center {
+        font-size: 1.1rem;
+        font-weight: 800;
+        letter-spacing: 3px;
+        color: var(--mp-gold-bright);
+        text-transform: uppercase;
+        margin: 0;
+        text-align: center;
+      }
+
+      .header-right {
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      /* ======================================================== */
+      /* 3. CONTAINER GLASSMORPHISM                               */
       /* ======================================================== */
       .legal-page-container {
-        width: 100%;
+        width: 95%;
         max-width: 900px;
-        margin: 0 auto;
+        margin: 30px auto;
         padding: clamp(30px, 6vw, 60px);
         background: var(--mp-green-surface);
         backdrop-filter: blur(20px);
@@ -55,52 +113,14 @@
       }
 
       /* ======================================================== */
-      /* 3. BOUTON RETOUR PILL (OPTIMISÉ)                        */
-      /* ======================================================== */
-      .back-btn {
-        color: var(--text-main);
-        text-decoration: none;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        background: rgba(255, 255, 255, 0.06);
-        padding: 14px 28px;
-        border-radius: 50px;
-        border: 1px solid rgba(197, 164, 126, 0.3);
-        transition: var(--transition-premium);
-        margin-bottom: clamp(30px, 5vw, 50px);
-        font-size: 0.85rem;
-        letter-spacing: 1.2px;
-        text-transform: uppercase;
-        white-space: nowrap;
-      }
-
-      .back-btn i {
-        font-size: 1rem;
-        color: var(--mp-gold-bright);
-        transition: transform 0.3s ease;
-      }
-
-      .back-btn:hover {
-        background: var(--mp-gold);
-        color: #0a1f16 !important;
-        transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(197, 164, 126, 0.2);
-      }
-
-      .back-btn:hover i {
-        transform: translateX(-5px);
-        color: #0a1f16;
-      }
-
-      /* ======================================================== */
-      /* 4. HEADER (CENTRE & LUMINEUX)                           */
+      /* 4. HEADER DE PAGE (CONTENU CENTRAL)                      */
       /* ======================================================== */
       .legal-header {
         text-align: center;
         margin-bottom: clamp(40px, 8vw, 70px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
 
       .legal-header i {
@@ -132,12 +152,13 @@
         font-size: clamp(0.95rem, 3vw, 1.15rem);
         font-weight: 500;
         color: var(--mp-gold-bright);
-        margin-top: 15px;
+        margin: 15px auto 0;
+        max-width: 90%;
         opacity: 0.9;
       }
 
       /* ======================================================== */
-      /* 5. SECTIONS, TEXTE ET LISTES                            */
+      /* 5. SECTIONS ET TEXTE                                     */
       /* ======================================================== */
       section {
         margin-bottom: clamp(40px, 6vw, 60px);
@@ -171,7 +192,6 @@
         margin-bottom: 20px;
       }
 
-      /* LISTE STYLISÉE ET RESPONSIVE */
       ul {
         list-style: none;
         padding-left: 0;
@@ -182,12 +202,11 @@
         position: relative;
         padding-left: 45px;
         margin-bottom: 20px;
-        font-weight: 400;
         color: var(--text-main);
         font-size: clamp(0.9rem, 2.5vw, 1rem);
         line-height: 1.6;
         display: flex;
-        align-items: flex-start; /* Aligne l'icône avec la première ligne de texte */
+        align-items: flex-start;
       }
 
       ul li::before {
@@ -196,7 +215,7 @@
         font-weight: 900;
         position: absolute;
         left: 0;
-        top: 2px; /* Ajustement précis pour l'alignement visuel */
+        top: 2px;
         color: var(--mp-gold-bright);
         background: rgba(197, 164, 126, 0.15);
         width: 28px;
@@ -209,9 +228,6 @@
         flex-shrink: 0;
       }
 
-      /* ======================================================== */
-      /* 6. FOOTER INTERNE                                       */
-      /* ======================================================== */
       .legal-footer-info {
         text-align: center;
         margin-top: 60px;
@@ -235,59 +251,64 @@
       }
 
       /* ======================================================== */
-      /* 7. ADAPTABILITÉ MOBILE (BREAKPOINTS)                    */
+      /* 7. RESPONSIVE                                            */
       /* ======================================================== */
       @media (max-width: 768px) {
-        body {
-          padding: 0;
-        }
-
         .legal-page-container {
           margin: 0;
+          width: 100%;
           border-radius: 0;
           border: none;
           padding: 40px 20px;
         }
-
         p {
           text-align: left;
         }
-
-        ul li {
-          padding-left: 40px;
+        .header-title-center {
+          font-size: 1rem;
+          letter-spacing: 2px;
         }
       }
 
       @media (max-width: 480px) {
-        .back-btn {
-          width: 100%;
-          padding: 16px;
-          font-size: 0.8rem;
+        .taskbar-header {
+          padding: 0 15px;
         }
-
+        .header-btn {
+          width: 40px;
+          height: 40px;
+        }
         h2 {
           align-items: flex-start;
           line-height: 1.3;
         }
-
         h2 i {
           margin-top: 3px;
         }
-
-        ul li::before {
-          width: 24px;
-          height: 24px;
-          font-size: 0.7rem;
+        .legal-header i {
+          font-size: 2.8rem;
         }
       }
     </style>
   </head>
   <body>
-    <div class="legal-page-container">
-      <a href="index.html" class="back-btn"
-        ><i class="fas fa-chevron-left"></i> Accueil
-      </a>
+    <header class="taskbar-header">
+      <div class="header-left">
+        <a href="index.html" class="header-btn" title="Retour Accueil">
+          <i class="fas fa-home"></i>
+        </a>
+      </div>
 
+      <h2 class="header-title-center">Cookies</h2>
+
+      <div class="header-right">
+        <div class="header-btn info-btn" title="Informations">
+          <i class="fas fa-info-circle"></i>
+        </div>
+      </div>
+    </header>
+
+    <div class="legal-page-container">
       <div class="legal-header">
         <i class="fas fa-cookie-bite"></i>
         <h1>Mémoire Digitale et Cookies</h1>
@@ -345,6 +366,7 @@
         © 2025 QuranLight. Tous droits réservés.
       </div>
     </div>
+
     <script src="assets/js/theme-loader.js"></script>
   </body>
 </html>

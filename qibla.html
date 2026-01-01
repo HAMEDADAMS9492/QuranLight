@@ -5,53 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>QuranLight – Direction de la Qibla</title>
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
 
     <link rel="stylesheet" href="assets/css/style.css" />
     <link rel="stylesheet" href="assets/css/qibla.css" />
-    <link rel="stylesheet" href="assets/css/theme-variables.css">
+    <link rel="stylesheet" href="assets/css/theme-variables.css" />
   </head>
   <body class="qibla-theme">
-
     <header class="glass-panel main-header">
       <div class="navigation-top">
-        <a href="index.html" class="floating-back-btn">
-          <i class="fas fa-arrow-left"></i>
-          <span>Accueil</span>
+        <a href="index.html" class="floating-back-btn" title="Retour Accueil">
+          <i class="fas fa-home"></i>
         </a>
       </div>
 
       <div class="header-center-content">
         <div class="header-title-wrapper">
-          <div class="hero-intro-section" style="display: flex; align-items: center; gap: 12px;">
+          <div
+            class="hero-intro-section"
+            style="display: flex; align-items: center; gap: 12px"
+          >
             <div class="title-text-stack" style="align-items: center">
-              <h1 class="header-main-title">Direction Qibla</h1>
+              <h1 class="header-main-title">La Qibla</h1>
             </div>
-            <i class="fas fa-compass moon-logo" style="font-size: 1.8rem; color: var(--color-gold);"></i>
+            <i
+              class="fas fa-compass moon-logo"
+              style="font-size: 1.6rem; color: var(--mp-gold)"
+            ></i>
           </div>
         </div>
       </div>
 
       <div class="header-actions-right">
-        <button class="action-icon-btn" onclick="window.location.reload();" title="Actualiser la position">
+        <button
+          class="action-icon-btn"
+          onclick="window.location.reload();"
+          title="Actualiser la position"
+        >
           <i class="fas fa-rotate"></i>
         </button>
       </div>
     </header>
-
     <div class="header-spacer" style="height: 85px"></div>
 
     <main class="main-container">
-      <div class="header-subtext">
-        <span class="french-translation">La direction sacrée vers la Kaaba</span>
-      </div>
+  <div class="header-subtext">
+    <h2 class="arabic-title">القبلة المشرفة</h2>
+    
+    <div class="sub-divider"></div>
+    
+    <span class="french-translation">
+      La direction sacrée vers la Noble Kaaba
+    </span>
+  </div>
+  
+  </main>
 
       <section class="qibla-content-wrapper">
-        
         <div class="qibla-info-grid">
           <div class="info-card glass-morph">
             <div class="card-icon">
@@ -82,7 +105,11 @@
               <i class="fas fa-location-arrow"></i>
               Trajet direct vers La Mecque
             </span>
-            <button class="mini-calibrate-btn" id="calibrate-btn" title="Recalibrer">
+            <button
+              class="mini-calibrate-btn"
+              id="calibrate-btn"
+              title="Recalibrer"
+            >
               <i class="fas fa-sync-alt"></i>
             </button>
           </div>

@@ -39,63 +39,74 @@ body {
   background: rgba(6, 14, 10, 0.95);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  border-bottom: 1px solid rgba(176, 141, 87, 0.2);
+  border-bottom: 2px solid var(--mp-gold); /* Harmonisé avec vos autres pages */
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
   z-index: 2000;
+  box-sizing: border-box;
 }
 
 .header-spacer {
   height: var(--header-height);
 }
 
-/* Alignement des blocs du header */
+/* Alignement des blocs pour garantir le centrage du milieu */
 .navigation-top,
 .header-actions-right {
   display: flex;
   align-items: center;
-  min-width: 100px; /* Espace réservé pour équilibrer le centre */
+  flex: 1; /* Alloue un espace égal à gauche et à droite */
+}
+
+.header-actions-right {
+  justify-content: flex-end; /* Pousse le bouton refresh à droite */
 }
 
 .header-center-content {
-  flex: 1;
+  flex: 0 1 auto; /* Le centre ne prend que la place nécessaire */
   display: flex;
   justify-content: center;
+  align-items: center;
   text-align: center;
-  overflow: hidden; /* Sécurité pour titres longs */
 }
 
-/* Bouton Retour Premium */
+/* Bouton Retour Premium (Icône seule) */
 .floating-back-btn {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  background: rgba(13, 22, 18, 0.8);
-  border: 1px solid var(--mp-gold);
+  justify-content: center;
+  width: 45px; /* Format carré comme les autres pages */
+  height: 45px;
+  background: rgba(176, 141, 87, 0.1);
+  border: 1px solid rgba(176, 141, 87, 0.3);
   border-radius: 12px;
-  color: var(--mp-gold);
+  color: var(--mp-gold-bright);
   text-decoration: none;
-  font-weight: 700;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: var(--transition);
-  white-space: nowrap;
+  transition: var(--transition-premium, all 0.3s ease);
+}
+
+.floating-back-btn i {
+  font-size: 1.2rem;
 }
 
 .floating-back-btn:hover {
   background: var(--mp-gold);
   color: #060e0a;
-  box-shadow: 0 0 15px rgba(176, 141, 87, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(176, 141, 87, 0.3);
+}
+
+/* Cache le texte Accueil s'il est présent dans le HTML */
+.floating-back-btn span {
+  display: none;
 }
 
 /* Titre Central Dynamique */
 .header-main-title {
   font-family: "Poppins", sans-serif;
-  font-size: 1.5rem;
+  font-size: clamp(1.1rem, 4vw, 1.5rem);
   font-weight: 800;
   color: #ffffff;
   text-transform: uppercase;
@@ -105,30 +116,42 @@ body {
 }
 
 .moon-logo {
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   color: var(--mp-gold);
   filter: drop-shadow(0 0 10px rgba(176, 141, 87, 0.4));
+  margin-left: 10px;
 }
 
 /* Bouton Refresh à droite */
 .action-icon-btn {
   background: rgba(176, 141, 87, 0.1);
   border: 1px solid rgba(176, 141, 87, 0.3);
-  color: var(--mp-gold);
-  width: 42px;
-  height: 42px;
+  color: var(--mp-gold-bright);
+  width: 45px; /* Aligné sur la taille du bouton retour */
+  height: 45px;
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: var(--transition);
-  margin-left: auto;
+  transition: var(--transition-premium, all 0.3s ease);
 }
 
 .action-icon-btn:hover {
   background: var(--mp-gold);
   color: #060e0a;
+  transform: translateY(-2px);
+}
+
+/* Correction responsive pour éviter que le titre ne soit écrasé */
+@media (max-width: 480px) {
+  .header-main-title {
+    font-size: 1rem;
+    letter-spacing: 1px;
+  }
+  .moon-logo {
+    display: none;
+  }
 }
 
 /* ======================================================== */
