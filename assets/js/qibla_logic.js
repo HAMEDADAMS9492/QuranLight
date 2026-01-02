@@ -64,66 +64,63 @@ function calculateQiblaDirection(lat, lon) {
 }
 
 // ==============================
-// GESTION DE LA BOUSSOLE
+// GESTION DE LA BOUSSOLE (CORRIGÉE)
 // ==============================
-function initCompass() {
-  const isIOS =
-    /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
-  if (isIOS && typeof DeviceOrientationEvent.requestPermission === "function") {
-    statusBadge.innerHTML =
-      '<i class="fas fa-hand-pointer"></i> Cliquez sur ↻ pour activer';
-  } else {
-    window.addEventListener(
-      "deviceorientationabsolute",
-      handleOrientation,
-      true
-    );
-    window.addEventListener("deviceorientation", handleOrientation, true);
-  }
-}
 
 function handleOrientation(event) {
   let heading = 0;
 
   if (event.webkitCompassHeading) {
-    heading = event.webkitCompassHeading; // iOS
+    heading = event.webkitCompassHeading; // iOS (Direction réelle)
   } else if (event.alpha !== null) {
-    heading = 360 - event.alpha; // Android (mouvement inverse)
+    // Sur Android, l'alpha augmente dans le sens anti-horaire
+    heading = 360 - event.alpha;
   }
 
   deviceHeading = heading;
   deviceAngleEl.textContent = `${Math.round(heading)}°`;
 
-  // Animation fluide
+  // On lance la mise à jour visuelle
   requestAnimationFrame(updateUI);
 }
 
 function updateUI() {
   if (qiblaBearing === null) return;
 
-  // Calcul de la différence d'angle
+  // 1. ROTATION DU CADRAN (NESO)
+  // Le cadran doit tourner à l'opposé du mouvement du téléphone pour que le N reste au Nord.
+  const dialRotation = -deviceHeading;
+  qiblaDisplay.style.transform = `rotate(${dialRotation}deg)`;
+
+  // 2. ROTATION DE LA FLÈCHE (QIBLA)
+  // La flèche est dans le groupe qui tourne avec le cadran,
+  // on lui donne l'angle calculé de la Qibla (ex: 119°).
+  const pointerGroup = document.querySelector(".qibla-pointer-group");
+  if (pointerGroup) {
+    pointerGroup.style.transform = `rotate(${qiblaBearing}deg)`;
+  }
+
+  // 3. ÉTAT DE L'ALIGNEMENT
+  // On est aligné quand le téléphone pointe (0°) vers la direction de la Qibla (qiblaBearing)
   let diff = qiblaBearing - deviceHeading;
+  let normalizedDiff = ((diff + 540) % 360) - 180;
 
-  // Normalisation pour rotation la plus courte
-  let rotation = ((diff + 540) % 360) - 180;
+  const isAligned = Math.abs(normalizedDiff) < 8; // Tolérance de 8 degrés
 
-  // Lissage (Lerp)
-  lastRotation += (rotation - lastRotation) * 0.15;
-  qiblaDisplay.style.transform = `rotate(${lastRotation}deg)`;
-
-  // État de l'alignement
-  const isAligned = Math.abs(rotation) < 5;
   if (isAligned) {
     statusBadge.classList.add("aligned");
     statusBadge.innerHTML = "🕋 Vous êtes face à la Qibla";
-    if (navigator.vibrate) navigator.vibrate(50); // Petite vibration si aligné
+    // Vibration (une seule fois pour ne pas vider la batterie)
+    if (navigator.vibrate && !this.hasVibrated) {
+      navigator.vibrate(50);
+      this.hasVibrated = true;
+    }
   } else {
     statusBadge.classList.remove("aligned");
     statusBadge.innerHTML = "🧭 Ajustez votre direction";
+    this.hasVibrated = false;
   }
 }
-
 // ==============================
 // CARTE LEAFLET (AVEC LIGNE DYNAMIQUE)
 // ==============================
@@ -159,42 +156,63 @@ function initLeafletMap(lat, lon) {
 }
 
 // ==============================
-// GESTION DES BOUTONS & OPTIONS
+// GESTION DES BOUTONS & OPTIONS (OPTIMISÉE)
 // ==============================
-if (calibrateBtn) {
-  calibrateBtn.addEventListener("click", async () => {
-    if (typeof DeviceOrientationEvent.requestPermission === "function") {
-      const permission = await DeviceOrientationEvent.requestPermission();
-      if (permission === "granted") {
-        window.addEventListener("deviceorientation", handleOrientation, true);
-      }
-    } else {
-      location.reload(); // Simple refresh pour les autres
-    }
-  });
-}
+const btnCompass = document.querySelector(".nav-btn:first-child"); // Prend le 1er bouton
+const mapContainer = document.querySelector(".qibla-map-container");
 
-// Gestion de l'option Réalité Augmentée (Simulation)
 if (btnAr) {
-  btnAr.addEventListener("click", () => {
-    isArMode = !isArMode;
-    if (isArMode) {
-      statusBadge.innerHTML = "📸 Mode AR activé (Caméra requise)";
-      btnAr.classList.add("active");
-      // Ici, tu pourrais activer l'accès caméra via WebRTC
-    } else {
+  btnAr.addEventListener("click", async () => {
+    isArMode = true;
+    const video = document.getElementById("ar-video");
+
+    btnAr.classList.add("active");
+    btnCompass.classList.remove("active");
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment" },
+      });
+      video.srcObject = stream;
+      video.style.display = "block";
+
+      if (mapContainer) mapContainer.style.display = "none";
+
+      // On rend l'interface semi-transparente pour voir à travers
+      const wrapper = document.querySelector(".qibla-content-wrapper");
+      if (wrapper) wrapper.style.backgroundColor = "rgba(0,0,0,0.2)";
+
+      statusBadge.innerHTML =
+        '<i class="fas fa-camera"></i> Mode AR : Visez l\'horizon';
+    } catch (err) {
+      statusBadge.innerHTML = "❌ Caméra non supportée ou refusée";
+      isArMode = false;
       btnAr.classList.remove("active");
-      getUserLocation();
+      btnCompass.classList.add("active");
     }
   });
 }
 
-// Navigation Tabs
-navButtons.forEach((btn) => {
-  btn.addEventListener("click", function () {
-    navButtons.forEach((b) => b.classList.remove("active"));
-    this.classList.add("active");
-  });
-});
+if (btnCompass) {
+  btnCompass.addEventListener("click", () => {
+    isArMode = false;
+    const video = document.getElementById("ar-video");
 
+    btnCompass.classList.add("active");
+    btnAr.classList.remove("active");
+
+    if (video && video.srcObject) {
+      video.srcObject.getTracks().forEach((track) => track.stop());
+      video.srcObject = null;
+    }
+    video.style.display = "none";
+
+    if (mapContainer) mapContainer.style.display = "block";
+
+    const wrapper = document.querySelector(".qibla-content-wrapper");
+    if (wrapper) wrapper.style.backgroundColor = "";
+
+    statusBadge.innerHTML = "🧭 Mode Boussole activé";
+  });
+}
 document.addEventListener("DOMContentLoaded", getUserLocation);
