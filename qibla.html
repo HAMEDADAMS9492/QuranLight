@@ -12,7 +12,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <link
-      href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Poppins:wght@300;400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Poppins:wght@300;400;600;800&display=swap"
       rel="stylesheet"
     />
     <link
@@ -24,7 +24,41 @@
     <link rel="stylesheet" href="assets/css/qibla.css" />
     <link rel="stylesheet" href="assets/css/theme-variables.css" />
   </head>
+
   <body class="qibla-theme">
+    <video
+      id="ar-video"
+      autoplay
+      playsinline
+      style="
+        display: none;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: -1;
+      "
+    ></video>
+
+    <div
+      id="ar-controls"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 9999;
+        pointer-events: none;
+      "
+    >
+      <button id="close-ar" class="close-ar-btn" style="pointer-events: auto">
+        <i class="fas fa-times"></i> Quitter le mode AR
+      </button>
+    </div>
+
     <header class="glass-panel main-header">
       <div class="navigation-top">
         <a href="index.html" class="floating-back-btn" title="Retour Accueil">
@@ -33,19 +67,9 @@
       </div>
 
       <div class="header-center-content">
-        <div class="header-title-wrapper">
-          <div
-            class="hero-intro-section"
-            style="display: flex; align-items: center; gap: 12px"
-          >
-            <div class="title-text-stack" style="align-items: center">
-              <h1 class="header-main-title">La Qibla</h1>
-            </div>
-            <i
-              class="fas fa-compass moon-logo"
-              style="font-size: 1.6rem; color: var(--mp-gold)"
-            ></i>
-          </div>
+        <div class="hero-intro-section">
+          <h1 class="header-main-title">La Qibla</h1>
+          <i class="fas fa-compass moon-logo"></i>
         </div>
       </div>
 
@@ -53,48 +77,41 @@
         <button
           class="action-icon-btn"
           onclick="window.location.reload();"
-          title="Actualiser la position"
+          title="Actualiser"
         >
           <i class="fas fa-rotate"></i>
         </button>
       </div>
     </header>
-    <div class="header-spacer" style="height: 85px"></div>
+
+    <div class="header-spacer"></div>
 
     <main class="main-container">
-  <div class="header-subtext">
-    <h2 class="arabic-title">القبلة المشرفة</h2>
-    
-    <div class="sub-divider"></div>
-    
-    <span class="french-translation">
-      La direction sacrée vers la Noble Kaaba
-    </span>
-  </div>
-  
-  </main>
+      <div class="header-subtext">
+        <h2 class="arabic-title">القبلة المشرفة</h2>
+        <div class="sub-divider"></div>
+        <span class="french-translation"
+          >La direction sacrée vers la Noble Kaaba</span
+        >
+      </div>
 
       <section class="qibla-content-wrapper">
         <div class="qibla-info-grid">
           <div class="info-card glass-morph">
-            <div class="card-icon">
-              <i class="fas fa-mobile-alt"></i>
-            </div>
+            <div class="card-icon"><i class="fas fa-mobile-alt"></i></div>
             <div class="card-data">
               <span class="value" id="device-angle">--°</span>
-              <span class="label">Angle Appareil</span>
+              <span class="label">Appareil</span>
             </div>
           </div>
 
           <div class="divider-gold"></div>
 
           <div class="info-card glass-morph gold-accent">
-            <div class="card-icon">
-              <i class="fas fa-kaaba gold-text"></i>
-            </div>
+            <div class="card-icon"><i class="fas fa-kaaba gold-text"></i></div>
             <div class="card-data">
               <span class="value gold-text" id="qibla-angle">--°</span>
-              <span class="label">Angle Qibla</span>
+              <span class="label">Qibla</span>
             </div>
           </div>
         </div>
@@ -102,50 +119,35 @@
         <div class="qibla-map-container glass-morph">
           <div class="map-header">
             <span class="loc-badge">
-              <i class="fas fa-location-arrow"></i>
-              Trajet direct vers La Mecque
+              <i class="fas fa-location-arrow"></i> Trajet direct vers la Kaaba
             </span>
-            <button
-              class="mini-calibrate-btn"
-              id="calibrate-btn"
-              title="Recalibrer"
-            >
+            <button class="mini-calibrate-btn" id="calibrate-btn">
               <i class="fas fa-sync-alt"></i>
             </button>
           </div>
-
-          <div id="qibla-map">
-            <div class="map-line-overlay" id="map-direction-line"></div>
-          </div>
+          <div id="qibla-map"></div>
         </div>
-        <video id="ar-video" autoplay playsinline style="display:none;
-         width:100%; height:100%; object-fit:cover; position:fixed; 
-         top:0; left:0; z-index:0;">
-         </video>
+
         <div class="compass-section">
           <div class="compass-wrapper">
-            <div class="compass-outer-ring">
-              <div id="qibla-display" class="compass-dial">
-                <div class="cardinal-points">
-                  <span class="n">N</span>
-                  <span class="e">E</span>
-                  <span class="s">S</span>
-                  <span class="w">O</span>
-                </div>
-
-                <div class="qibla-pointer-group">
-                  <div class="arrow-gold"></div>
-                  <div class="kaaba-center">
-                    <i class="fas fa-kaaba"></i>
-                  </div>
+            <div id="qibla-display" class="compass-dial">
+              <div class="cardinal-points">
+                <span class="n">N</span>
+                <span class="e">E</span>
+                <span class="s">S</span>
+                <span class="w">O</span>
+              </div>
+              <div class="qibla-pointer-group">
+                <div class="arrow-gold"></div>
+                <div class="kaaba-center">
+                  <i class="fas fa-kaaba"></i>
                 </div>
               </div>
             </div>
           </div>
 
           <div id="qibla-status" class="status-badge-premium">
-            <i class="fas fa-sync-alt fa-spin"></i>
-            Synchronisation du cap sacré…
+            <i class="fas fa-sync-alt fa-spin"></i> Initialisation...
           </div>
         </div>
 

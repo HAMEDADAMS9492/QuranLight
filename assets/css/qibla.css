@@ -11,7 +11,7 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 70px; /* Changé de 85px à 70px */
+  height: 70px;
   background: rgba(6, 34, 24, 0.95);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
@@ -25,10 +25,9 @@
 }
 
 .header-spacer {
-  height: 60px; /* Changé de 85px à 70px */
+  height: 70px; /* Aligné sur la hauteur du header */
 }
 
-/* Structure 3 colonnes pour centrage absolu */
 .navigation-top,
 .header-actions-right {
   flex: 1;
@@ -57,7 +56,7 @@
   background: rgba(176, 141, 87, 0.1);
   border: 1px solid rgba(176, 141, 87, 0.3);
   border-radius: 12px;
-  color: #f1d5a9; /* Or brillant */
+  color: #f1d5a9;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -75,34 +74,31 @@
 }
 
 .floating-back-btn span {
-  display: none; /* Cache le texte Accueil */
+  display: none;
 }
 
 /* ============================================================
-    EN-TÊTE : TITRE ET LOGO BOUSSOLE (MAJ : Blanc & Logo Large)
+    EN-TÊTE : TITRE ET LOGO BOUSSOLE
 ============================================================ */
 .hero-intro-section {
   display: flex;
   align-items: center;
-  gap: 12px; /* Un peu plus serré pour l'équilibre */
+  gap: 12px;
   white-space: nowrap;
 }
 
 .header-main-title {
-  font-family: "Poppins", sans-serif; /* Poppins rend mieux en gras/blanc que Amiri */
-  font-size: clamp(1.3rem, 5vw, 1.9rem); /* Légèrement agrandi */
-  font-weight: 800; /* Texte bien gras */
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(1.3rem, 5vw, 1.9rem);
+  font-weight: 800;
   margin: 0;
-  color: #ffffff; /* Blanc pur */
+  color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  /* On enlève le dégradé transparent pour un blanc solide plus lisible */
-  -webkit-background-clip: initial;
-  -webkit-text-fill-color: initial;
 }
 
 .moon-logo {
-  font-size: 2.2rem; /* Agrandissement du logo (était à 1.6rem) */
+  font-size: 2.2rem;
   background: linear-gradient(180deg, #f1d388 20%, #b08d57 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -112,11 +108,10 @@
 }
 
 /* ============================================================
-    CONTENU : TEXTE SACRÉ ET TRADUCTION (OPTIMISÉ)
+    CONTENU : TEXTE SACRÉ ET TRADUCTION
 ============================================================ */
 .header-subtext {
   text-align: center;
-  /* On réduit la marge du haut à 5px pour coller au header et on augmente celle du bas */
   margin: 5px auto 25px;
   padding: 0 20px;
   display: flex;
@@ -127,7 +122,6 @@
 
 .arabic-title {
   font-family: "Amiri", serif;
-  /* Taille agrandie : minimum 2.5rem jusqu'à 3.5rem */
   font-size: clamp(2.5rem, 10vw, 3.5rem);
   color: #f1d5a9;
   margin: 0;
@@ -136,43 +130,24 @@
 }
 
 .sub-divider {
-  width: 100px; /* Un peu plus large pour suivre l'agrandissement */
+  width: 100px;
   height: 1px;
   background: linear-gradient(90deg, transparent, #b08d57, transparent);
-  margin: 5px 0 12px; /* Rapproché du titre arabe */
+  margin: 5px 0 12px;
 }
 
 .french-translation {
   font-family: "Poppins", sans-serif;
-  /* Taille agrandie pour une meilleure lisibilité */
   font-size: clamp(1rem, 3vw, 1.2rem);
-  color: rgba(255, 255, 255, 0.9); /* Plus blanc pour contraster */
-  font-weight: 500; /* Un peu plus épais */
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 2px;
-  /* Espace supplémentaire après le premier bloc de texte */
   margin-bottom: 15px;
   max-width: 90%;
   line-height: 1.4;
 }
 
-/* ============================================================
-    RESPONSIVE (MIS À JOUR POUR LES NOUVELLES TAILLES)
-============================================================ */
-@media (max-width: 480px) {
-  .header-subtext {
-    margin: 0 auto 20px; /* Encore plus haut sur petit écran */
-  }
-
-  .arabic-title {
-    font-size: 2.8rem; /* Reste imposant même sur mobile */
-  }
-
-  .french-translation {
-    font-size: 0.9rem;
-    letter-spacing: 1.5px;
-  }
-}
 /* =========================
     STRUCTURE GÉNÉRALE
 ========================= */
@@ -183,7 +158,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px; /* Changé de 24px à 15px */
+  gap: 15px;
 }
 
 /* =========================
@@ -209,7 +184,7 @@
 
 .card-icon {
   font-size: 1.3rem;
-  color: var(--color-gold, #b08d57);
+  color: #b08d57;
   margin-bottom: 8px;
   opacity: 0.9;
 }
@@ -217,7 +192,7 @@
 .card-data .value {
   font-size: 2.8rem;
   font-weight: 900;
-  color: var(--color-gold, #b08d57);
+  color: #b08d57;
   line-height: 1;
   text-shadow: 0 0 15px rgba(176, 141, 87, 0.3);
 }
@@ -235,21 +210,16 @@
 .divider-gold {
   width: 1px;
   height: 60px;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    var(--color-gold, #b08d57),
-    transparent
-  );
+  background: linear-gradient(to bottom, transparent, #b08d57, transparent);
   opacity: 0.5;
 }
 
 /* =========================
-    MAP QIBLA
+    MAP QIBLA & MARQUEURS
 ========================= */
 .qibla-map-container {
   width: 100%;
-  height: 250px; /* Changé de 180px à 250px */
+  height: 250px;
   position: relative;
   overflow: hidden;
   border-radius: 22px;
@@ -264,8 +234,14 @@
   z-index: 1;
 }
 
-.leaflet-container {
-  background: #062218 !important;
+/* AGRANDISSEMENT LOGO KAABA DANS LA MAP */
+.kaaba-marker-icon {
+  font-size: 2.5rem !important; /* Taille augmentée */
+  color: #b08d57;
+  text-shadow: 0 0 15px rgba(176, 141, 87, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .map-header {
@@ -286,7 +262,7 @@
   padding: 8px 16px;
   border-radius: 100px;
   background: rgba(6, 34, 24, 0.85);
-  border: 1px solid var(--color-gold, #b08d57);
+  border: 1px solid #b08d57;
   color: #fff;
   backdrop-filter: blur(6px);
 }
@@ -295,19 +271,29 @@
   background: rgba(0, 0, 0, 0.7);
   border: 1px solid #b08d57;
   color: #b08d57;
-  width: 38px;
-  height: 38px;
+  width: 42px; /* Légèrement agrandi pour faciliter le clic */
+  height: 42px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
   backdrop-filter: blur(4px);
 }
 
+.mini-calibrate-btn:hover {
+  background: #b08d57;
+  color: #062218;
+}
+
+.mini-calibrate-btn:active i {
+  transform: rotate(180deg);
+  transition: 0.3s;
+}
+
 /* =========================
-    BOUSSOLE PREMIUM (Corrigée)
+    BOUSSOLE PREMIUM
 ========================= */
 .compass-section {
   width: 100%;
@@ -319,13 +305,11 @@
   padding: 20px 0;
 }
 
-/* 1. LE CADRAN TOTAL (Tourne selon le Nord magnétique via JS) */
 #qibla-display {
   width: 300px;
   height: 300px;
   border-radius: 50%;
   position: relative;
-  /* Ton design Emerald/Gold */
   background: radial-gradient(
       circle,
       rgba(20, 80, 55, 0.4),
@@ -336,20 +320,22 @@
   border: 8px solid #05140f;
   box-shadow: 0 0 0 2px rgba(176, 141, 87, 0.5),
     inset 0 0 80px rgba(0, 0, 0, 0.8), 0 25px 50px rgba(0, 0, 0, 0.6);
-  /* Transition fluide pour le mouvement du téléphone */
   transition: transform 0.1s ease-out;
   will-change: transform;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* 2. POINTS CARDINAUX (Fixés sur le cadran, ils tournent avec lui) */
 .cardinal-points span {
   position: absolute;
   font-weight: 900;
   font-size: 1.3rem;
   color: #ffffff;
   text-shadow: 0 0 10px rgba(0, 0, 0, 1);
+  z-index: 2;
 }
-/* Le N est rouge pour servir de repère */
+
 .cardinal-points .n {
   top: 15px;
   left: 50%;
@@ -372,7 +358,6 @@
   transform: translateY(-50%);
 }
 
-/* 3. GROUPE FLÈCHE (Positionné sur le cadran, tourne à l'angle de la Qibla) */
 .qibla-pointer-group {
   position: absolute;
   top: 0;
@@ -381,37 +366,37 @@
   height: 100%;
   z-index: 5;
   pointer-events: none;
+  transition: transform 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67);
 }
 
-/* Design de la flèche (Pointant vers le haut par défaut) */
 .arrow-gold {
   position: absolute;
   top: 50%;
   left: 50%;
   width: 0;
   height: 0;
-  /* On déplace le point d'ancrage en bas au centre pour la rotation */
   transform: translate(-50%, -100%);
   border-left: 12px solid transparent;
   border-right: 12px solid transparent;
   border-bottom: 125px solid #b08d57;
   filter: drop-shadow(0 0 10px rgba(176, 141, 87, 0.8));
+  transition: all 0.3s ease;
 }
 
-/* Animation "Aligned" pour la flèche */
-.status-badge-premium.aligned + .compass-wrapper .arrow-gold {
-  border-bottom-color: #2ecc71; /* Devient verte quand alignée */
-  filter: drop-shadow(0 0 15px rgba(46, 204, 113, 0.8));
+/* CORRECTIF LOGIQUE ALIGNEMENT */
+.status-badge-premium.aligned + .compass-wrapper .arrow-gold,
+.status-badge-premium.aligned ~ .compass-wrapper .arrow-gold {
+  border-bottom-color: #2ecc71 !important;
+  filter: drop-shadow(0 0 20px rgba(46, 204, 113, 0.9));
 }
 
-/* 4. LE CENTRE (KAABA) - Reste au milieu */
 .kaaba-center {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 50px;
-  height: 50px;
+  width: 55px;
+  height: 55px;
   background: #b08d57;
   border: 4px solid #062218;
   border-radius: 50%;
@@ -421,7 +406,9 @@
   box-shadow: 0 0 20px rgba(176, 141, 87, 0.6);
   z-index: 10;
   color: #062218;
+  font-size: 1.4rem;
 }
+
 /* =========================
     STATUT & FOOTER
 ========================= */
@@ -464,8 +451,47 @@
 
 .nav-btn.active {
   background: rgba(176, 141, 87, 0.1);
-  border-color: var(--color-gold, #b08d57);
-  color: var(--color-gold, #b08d57);
+  border-color: #b08d57;
+  color: #b08d57;
+}
+
+/* =========================
+    AR CONTROLS (BOUTON QUITTER)
+========================= */
+#ar-controls {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  z-index: 9999; /* Au-dessus de tout */
+  pointer-events: none;
+}
+
+.close-ar-btn {
+  position: absolute;
+  top: 90px; /* AJUSTÉ : Descendu pour être sous le header (70px + 20px de marge) */
+  right: 20px;
+  pointer-events: auto;
+  background: rgba(220, 38, 38, 0.9);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.close-ar-btn:active {
+  transform: scale(0.95);
 }
 
 /* ============================================================ */
@@ -481,23 +507,11 @@
     width: 380px;
     height: 380px;
   }
-  .header-main-title {
-    font-size: 2.2rem;
-  }
 }
 
 @media (max-width: 600px) {
   .header-main-title {
     font-size: 1.4rem;
-  }
-  .moon-logo {
-    font-size: 1.5rem;
-  }
-  .floating-back-btn span {
-    display: none;
-  }
-  .floating-back-btn {
-    padding: 10px;
   }
   #qibla-display {
     width: 280px;
@@ -520,9 +534,6 @@
 
 @media (max-height: 500px) and (orientation: landscape) {
   .header-spacer {
-    height: 70px;
-  }
-  .glass-panel.main-header {
     height: 70px;
   }
   .qibla-content-wrapper {

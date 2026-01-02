@@ -7,55 +7,48 @@
     <link rel="stylesheet" href="assets/css/style.css" />
     <link rel="stylesheet" href="assets/css/salat.css" />
     <link rel="stylesheet" href="assets/css/calendar_style.css" />
-    <link rel="stylesheet" href="assets/css/theme-variables.css">
+    <link rel="stylesheet" href="assets/css/theme-variables.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+   
   </head>
   <body class="salat-page">
     <div class="main-container">
-      <header
-        class="glass-panel"
-        style="
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 15px 20px;
-        "
-      >
-        <div class="navigation-top" style="padding: 0; margin: 0">
-          <a
-            href="index.html"
-            class="floating-back-btn"
-            style="transform: scale(0.8); transform-origin: left"
-          >
-            <i class="fas fa-arrow-left"></i>
-            <span>Accueil</span>
+      <header class="glass-panel main-header">
+        <div class="navigation-top">
+          <a href="index.html" class="floating-back-btn" title="Accueil">
+            <i class="fas fa-home"></i>
           </a>
         </div>
 
-        <div class="header-location-selector">
-          <span id="header-location">
-            <i class="fa-solid fa-location-dot"></i> Détection...
-          </span>
-          <div id="sun-status" class="method-badge">Calcul Automatique</div>
+        <div class="header-center-content">
+          <div class="header-location-selector">
+            <span id="header-location">
+              <i class="fa-solid fa-location-dot"></i> Détection...
+            </span>
+            <div id="sun-status" class="method-badge">Calcul Automatique</div>
+          </div>
         </div>
 
-        <button
-          id="sync-location-btn"
-          class="settings-icon"
-          style="
-            background: none;
-            border: none;
-            color: var(--gold);
-            cursor: pointer;
-          "
-          title="Mise à jour"
-        >
-          <i class="fas fa-sync-alt"></i>
-        </button>
+        <div class="header-actions-right">
+          <button
+            id="sync-location-btn"
+            class="action-icon-btn"
+            title="Mise à jour"
+          >
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
       </header>
+
+      <div class="header-spacer"></div>
+
+      <div class="page-title-area">
+        <span class="arabic-title">مَوَاقِيتُ الصَّلَاةِ</span>
+        <span class="french-subtitle">Horaires des Prières</span>
+      </div>
 
       <section class="prayer-header-summary">
         <div class="prayer-card-content">

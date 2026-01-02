@@ -19,6 +19,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
   </head>
+
   <body class="quran-theme">
     <header class="glass-panel main-header">
       <div class="navigation-top">
@@ -31,7 +32,7 @@
           <i class="fas fa-home"></i>
         </a>
         <a
-          href="quran.html"
+          href="#"
           class="floating-back-btn"
           id="btn-to-list"
           style="display: none"
@@ -48,7 +49,6 @@
             style="display: flex; flex-direction: column; align-items: center"
           >
             <h1 class="header-main-title" id="header-title">Le Saint Coran</h1>
-            <span class="arabic-mini" id="header-subtitle">القرآن الكريم</span>
           </div>
         </div>
       </div>
@@ -74,6 +74,7 @@
         />
       </div>
       <h2 class="brand-name">Le Noble Coran</h2>
+      <h2 class="brand-arabic-title">القرآن الكريم</h2>
       <p class="brand-tagline">Une guidance lumineuse, une lecture apaisante</p>
     </div>
 
@@ -88,77 +89,49 @@
           />
         </div>
       </div>
-
       <div class="surah-list-grid" id="surah-list"></div>
     </main>
 
-    <main class="quran-reader" id="quran-reader-view" style="display: none">
+    <main
+      class="quran-container quran-reader"
+      id="quran-reader-view"
+      style="display: none"
+    >
       <div class="surah-header-card">
-        <div class="ornament-top">
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Floral_ornament_v2.svg"
-            alt=""
-            class="floral-svg"
-          />
-        </div>
-
-        <div class="surah-info-content">
-          <span id="surah-number-name" class="surah-meta">SOURATE 001</span>
-          <h1 id="surah-arabic-name" class="arabic-title">الفاتحة</h1>
-        </div>
-
-        <div class="bismillah-container" id="bismillah-area">
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Basmala.svg/512px-Basmala.svg.png"
-            alt="Bismillah"
-            class="bismillah-img"
-          />
-        </div>
-
-        <div class="ornament-bottom">
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Floral_ornament_v2.svg"
-            alt=""
-            class="floral-svg rotated"
-          />
-        </div>
+        <h2 id="surah-number-name" class="surah-meta"></h2>
+        <h1 id="surah-arabic-name" class="arabic-title"></h1>
       </div>
 
+      <div id="bismillah-area"></div>
       <div id="ayat-display" class="ayat-container"></div>
-
-      <div class="reader-footer-spacer" style="height: 120px"></div>
     </main>
 
-    <footer
-      class="quran-controls-floating"
+    <div
       id="quran-controls-bar"
+      class="quran-controls-floating"
       style="display: none"
     >
       <div class="nav-controls">
-        <button class="control-btn prev-surah" title="Sourate Précédente">
+        <button class="control-btn prev-surah" title="Sourate précédente">
           <i class="fas fa-step-backward"></i>
         </button>
-
-        <button class="control-btn prev-ayah" title="Verset Précédent">
+        <button class="control-btn prev-ayah" title="Verset précédent">
           <i class="fas fa-chevron-left"></i>
         </button>
 
         <button class="play-main-btn listen-button">
-          <div class="play-icon-bg">
-            <i class="fas fa-play"></i>
-          </div>
+          <div class="play-icon-bg"><i class="fas fa-play"></i></div>
           <span>ÉCOUTER</span>
         </button>
 
-        <button class="control-btn next-ayah" title="Verset Suivant">
+        <button class="control-btn next-ayah" title="Verset suivant">
           <i class="fas fa-chevron-right"></i>
         </button>
-
-        <button class="control-btn next-surah" title="Sourate Suivante">
+        <button class="control-btn next-surah" title="Sourate suivante">
           <i class="fas fa-step-forward"></i>
         </button>
       </div>
-    </footer>
+    </div>
 
     <script src="assets/js/quran_logic.js"></script>
     <script src="assets/js/script.js"></script>

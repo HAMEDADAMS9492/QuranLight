@@ -60,6 +60,41 @@ body {
   color: #05140f;
   box-shadow: 0 5px 15px rgba(176, 141, 87, 0.4);
 }
+/* ============================================================
+    TITRE DE LA PAGE (TEXTE ARABE & FRANÇAIS)
+   ============================================================ */
+
+/* Conteneur global du titre situé sous la barre de navigation */
+.page-title-area {
+  text-align: center;
+  margin: 30px 0 15px; /* Espacement vertical : 30px haut, 15px bas */
+  padding: 0 20px;
+}
+
+/* Style du texte en Arabe (Doré et Premium) */
+.arabic-title {
+  font-family: "Amiri", serif;
+  font-size: 2.5rem; /* Taille imposante pour la calligraphie */
+  color: #b08d57; /* Couleur dorée signature */
+  margin-bottom: 8px;
+  display: block;
+  text-shadow: 0 0 15px rgba(176, 141, 87, 0.4); /* Effet lumineux doré */
+  font-weight: 700;
+}
+
+/* Style de la signification en Français (Blanc et Gras) */
+.french-subtitle {
+  font-size: 1.1rem; /* Taille lisible et équilibrée */
+  text-transform: uppercase; /* Majuscules pour un aspect Titre */
+  letter-spacing: 3px; /* Espacement des lettres pour plus d'élégance */
+  color: #ffffff; /* Blanc pur */
+  font-weight: 800; /* Force de trait maximale (très gras) */
+  display: block;
+  opacity: 1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Ombre portée pour détacher du fond */
+}
+
+/* ============================================================ */
 
 /* ============================================================
    1. HEADER & LOCALISATION
