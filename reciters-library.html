@@ -12,7 +12,7 @@
       href="https://fonts.googleapis.com/css2?family=Amiri&family=Inter:wght@400;700;900&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="assets/css/theme-variables.css">
+    <link rel="stylesheet" href="assets/css/theme-variables.css" />
 
     <style>
       :root {
@@ -857,6 +857,12 @@
       ];
       const recitersData = [
         {
+          id: "ar.afifmuhammadtaj",
+          name: "Afif Muhammad Taj",
+          ar: "عفيف محمد تاج",
+          img: "assets/image/afif.jpg",
+        },
+        {
           id: "ar.abdulbasitmurattal",
           name: "Abd Al-Basit",
           ar: "عبد الباسط عبد الصمد",
@@ -868,7 +874,6 @@
           ar: "عبد الرحمن السديس",
           img: "assets/image/sudais.jpg",
         },
-
         {
           id: "ar.alafasy",
           name: "Mishary Alafasy",
@@ -892,9 +897,10 @@
       let currentReciterId = "";
       let currentReciterName = "";
 
+      // 2. CORRECTION : Une seule fonction de chargement au démarrage
       window.onload = () => {
         renderReciters();
-        loadSurahsData(); // Charger les données de l'API dès le départ
+        loadSurahsData();
       };
 
       // 1. CHARGEMENT INITIAL DES DONNÉES API
@@ -998,24 +1004,29 @@
 
       // 5. SELECTION ET REDIRECTION VERS LE PLAYER
       function selectAudio(reciterId, surahNum, reciterName, surahName) {
+        // 1. On prépare d'abord le numéro à 3 chiffres (ex: 1 devient 001)
         const padded = surahNum.toString().padStart(3, "0");
         let url = "";
 
-        // LOGIQUE SERVEURS CORRIGÉE
-        if (reciterId === "ar.sudais")
+        // LOGIQUE SERVEURS CORRIGÉE (Version finale optimisée)
+        if (reciterId === "ar.afifmuhammadtaj") {
+          // Dossier exact vérifié : afif_mohammad_taj
+          url = `https://download.quranic.audio/quran/afif_mohammad_taj/${padded}.mp3`;
+        } else if (reciterId === "ar.abdulbasitmurattal") {
+          // Correction du chemin : le dossier sur le serveur 7 est "basit/murattal"
+          url = `https://server7.mp3quran.net/basit/murattal/${padded}.mp3`;
+        } else if (reciterId === "ar.sudais") {
           url = `https://server11.mp3quran.net/sds/${padded}.mp3`;
-        else if (reciterId === "ar.abdulbasitmurattal")
-          // Correction ici : Abdul Basit Murattal sur Server7 n'utilise pas le sous-dossier /murattal/
-          url = `https://server7.mp3quran.net/basit/${padded}.mp3`;
-        else if (reciterId === "ar.alafasy")
+        } else if (reciterId === "ar.alafasy") {
           url = `https://server8.mp3quran.net/afs/${padded}.mp3`;
-        else if (reciterId === "ar.hanirifai")
+        } else if (reciterId === "ar.hanirifai") {
           url = `https://server8.mp3quran.net/hani/${padded}.mp3`;
-        else if (reciterId === "ar.shatri")
+        } else if (reciterId === "ar.shatri") {
           url = `https://server11.mp3quran.net/shatri/${padded}.mp3`;
-        else
+        } else {
+          // Fallback pour les autres (utilise le numéro simple sans les zéros)
           url = `https://cdn.islamic.network/quran/audio-surah/128/${reciterId}/${surahNum}.mp3`;
-
+        }
         // Récupérer l'image du récitateur
         const reciter = recitersData.find((r) => r.id === reciterId);
         const imgPath = reciter ? reciter.img : "assets/image/Logo.jpg";

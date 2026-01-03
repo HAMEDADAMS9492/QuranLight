@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="no-referrer" />
     <title>Lecture Premium | Al-Quran</title>
     <link
       rel="stylesheet"
@@ -12,7 +13,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="assets/css/theme-variables.css">
+    <link rel="stylesheet" href="assets/css/theme-variables.css" />
     <style>
       /* ======================================================== */
       /* 1. CONFIGURATION DU THÈME & RESET                        */
@@ -452,6 +453,7 @@
         const num = parseInt(localStorage.getItem("currentSurahNum") || "1");
 
         if (url) {
+          // Utilisation du tableau surahNames (assurez-vous qu'il est défini globalement)
           document.getElementById("surah-title").innerText = `${num}. ${
             surahNames[num - 1]
           }`;
@@ -459,7 +461,9 @@
           document.getElementById("art").src =
             img || "assets/image/default-quran.jpg";
           audio.src = url;
-          audio.play().catch((e) => console.log("Lecture auto bloquée"));
+          audio
+            .play()
+            .catch((e) => console.log("Lecture auto bloquée ou erreur source"));
           updateUI();
         }
       }
@@ -510,23 +514,29 @@
         let reciterId = localStorage.getItem("currentReciterId");
         let newNum = currentNum + dir;
 
+        // Limites de l'index des sourates (1 à 114)
         if (newNum >= 1 && newNum <= 114) {
           const padded = newNum.toString().padStart(3, "0");
           let newUrl = "";
 
-          if (reciterId === "ar.abdulbasitmurattal")
+          // LOGIQUE DE NAVIGATION DES SERVEURS (Version corrigée pour Afif Taj)
+          if (reciterId === "ar.afifmuhammadtaj") {
+            // Correction du dossier : afif_mohammad_taj (avec un 'o')
+            newUrl = `https://download.quranic.audio/quran/afif_mohammad_taj/${padded}.mp3`;
+          } else if (reciterId === "ar.abdulbasitmurattal") {
             newUrl = `https://server7.mp3quran.net/basit/murattal/${padded}.mp3`;
-          else if (reciterId === "ar.sudais")
+          } else if (reciterId === "ar.sudais") {
             newUrl = `https://server11.mp3quran.net/sds/${padded}.mp3`;
-          else if (reciterId === "ar.alafasy")
+          } else if (reciterId === "ar.alafasy") {
             newUrl = `https://server8.mp3quran.net/afs/${padded}.mp3`;
-          else if (reciterId === "ar.hanirifai")
+          } else if (reciterId === "ar.hanirifai") {
             newUrl = `https://server8.mp3quran.net/hani/${padded}.mp3`;
-          else if (reciterId === "ar.shatri")
+          } else if (reciterId === "ar.shatri") {
             newUrl = `https://server11.mp3quran.net/shatri/${padded}.mp3`;
-          else
+          } else {
+            // Fallback pour les autres récitateurs via l'API Islamic Network
             newUrl = `https://cdn.islamic.network/quran/audio-surah/128/${reciterId}/${newNum}.mp3`;
-
+          }
           localStorage.setItem("player_url", newUrl);
           localStorage.setItem("currentSurahNum", newNum);
           loadTrack();

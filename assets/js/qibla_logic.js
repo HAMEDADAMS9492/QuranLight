@@ -3,6 +3,7 @@
 ========================================================== */
 
 let deviceHeading = 0;
+let smoothedHeading = 0; // Pour le lissage des mouvements
 let qiblaBearing = null;
 let lastRotation = 0;
 let map = null;
@@ -120,37 +121,51 @@ function handleOrientation(event) {
     heading = 360 - event.alpha;
   }
 
-  deviceHeading = heading;
-  if (deviceAngleEl) deviceAngleEl.textContent = `${Math.round(heading)}°`;
+  // Lissage du mouvement (Smoothing) pour éviter les tremblements
+  // On utilise un facteur de 0.2 pour une rotation fluide
+  smoothedHeading = smoothedHeading + 0.2 * (heading - smoothedHeading);
+  deviceHeading = smoothedHeading;
+
+  if (deviceAngleEl)
+    deviceAngleEl.textContent = `${Math.round(deviceHeading)}°`;
   requestAnimationFrame(updateUI);
 }
 
 function updateUI() {
   if (qiblaBearing === null) return;
 
+  // Rotation du cadran (Nord)
   const dialRotation = -deviceHeading;
   if (qiblaDisplay) {
-    qiblaDisplay.style.transform = `rotate(${dialRotation}deg)`;
+    // translateZ(0) active l'accélération matérielle GPU
+    qiblaDisplay.style.transform = `translateZ(0) rotate(${dialRotation}deg)`;
   }
 
+  // Rotation de l'aiguille de la Qibla
   const pointerGroup = document.querySelector(".qibla-pointer-group");
   if (pointerGroup) {
-    pointerGroup.style.transform = `rotate(${qiblaBearing}deg)`;
+    pointerGroup.style.transform = `translateZ(0) rotate(${qiblaBearing}deg)`;
   }
 
+  // Calcul de la différence pour l'alignement
   let diff = qiblaBearing - deviceHeading;
   let normalizedDiff = ((diff + 540) % 360) - 180;
-  const isAligned = Math.abs(normalizedDiff) < 8;
+  const isAligned = Math.abs(normalizedDiff) < 5; // Précision accrue à 5°
 
   if (isAligned) {
-    statusBadge.classList.add("aligned");
-    statusBadge.innerHTML = "🕋 Vous êtes face à la Qibla";
-    if (navigator.vibrate && !hasVibrated) {
-      navigator.vibrate(50);
-      hasVibrated = true;
+    if (!statusBadge.classList.contains("aligned")) {
+      statusBadge.classList.add("aligned");
+      if (qiblaDisplay) qiblaDisplay.classList.add("qibla-aligned-glow");
+
+      if (navigator.vibrate && !hasVibrated) {
+        navigator.vibrate(40);
+        hasVibrated = true;
+      }
     }
+    statusBadge.innerHTML = "🕋 Vous êtes face à la Qibla";
   } else {
     statusBadge.classList.remove("aligned");
+    if (qiblaDisplay) qiblaDisplay.classList.remove("qibla-aligned-glow");
     statusBadge.innerHTML = "🧭 Ajustez votre direction";
     hasVibrated = false;
   }
@@ -167,17 +182,15 @@ function initLeafletMap(lat, lon) {
     "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
   ).addTo(map);
 
-  // Marqueur Kaaba avec icône agrandie via la classe CSS
   const kaabaIcon = L.divIcon({
     html: '<i class="fas fa-kaaba"></i>',
-    className: "kaaba-marker-icon", // Utilise la classe CSS créée précédemment
+    className: "kaaba-marker-icon",
     iconSize: [40, 40],
     iconAnchor: [20, 20],
   });
 
   L.marker(kaabaCoords, { icon: kaabaIcon }).addTo(map);
 
-  // Marqueur Utilisateur
   L.circleMarker([lat, lon], {
     color: "#fff",
     fillColor: "#b08d57",
@@ -185,7 +198,6 @@ function initLeafletMap(lat, lon) {
     radius: 8,
   }).addTo(map);
 
-  // Ligne de direction
   L.polyline([[lat, lon], kaabaCoords], {
     color: "#b08d57",
     weight: 2,
@@ -193,15 +205,12 @@ function initLeafletMap(lat, lon) {
     opacity: 0.6,
   }).addTo(map);
 
-  // LOGIQUE DU BOUTON REFRESH / CALIBRATE
   if (calibrateBtn) {
     calibrateBtn.addEventListener("click", () => {
       if (userCoords) {
-        // Crée une zone englobant l'utilisateur et la Kaaba
         const bounds = L.latLngBounds([userCoords, kaabaCoords]);
         map.fitBounds(bounds, { padding: [50, 50] });
 
-        // Petit effet visuel de rotation sur l'icône
         const icon = calibrateBtn.querySelector("i");
         if (icon) {
           icon.style.transition = "transform 0.5s ease";
@@ -216,7 +225,6 @@ function initLeafletMap(lat, lon) {
 // ==============================
 // LOGIQUE AR (CAMÉRA & RETOUR)
 // ==============================
-
 function stopAR() {
   isArMode = false;
   const video = document.getElementById("ar-video");

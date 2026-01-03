@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="no-referrer" />
     <title>QuranLight - Accueil</title>
 
     <link rel="stylesheet" href="assets/css/style.css" />
@@ -438,7 +439,15 @@
         <h3 class="section-title-premium">Récitateurs</h3>
         <a href="reciters-library.html" class="view-all-link">Afficher plus</a>
       </div>
-
+      <div
+        class="reciter-card-circle"
+        onclick="goToLibrary('ar.afifmuhammadtaj', 'Afif Muhammad Taj')"
+      >
+        <div class="reciter-image-wrapper">
+          <img src="assets/image/afif.jpg" alt="Afif Muhammad Taj" />
+        </div>
+        <span class="reciter-label">Afif Muhammad Taj</span>
+      </div>
       <div class="reciters-horizontal-list">
         <div
           class="reciter-card-circle"
@@ -608,7 +617,6 @@
             </div>
             <select class="lang-select" id="language-switcher">
               <option value="fr">Français &nbsp;&nbsp; 🇫🇷</option>
-              <option value="ar">العربية &nbsp;&nbsp; 🇸🇦</option>
               <option value="en">English &nbsp;&nbsp; 🇬🇧</option>
             </select>
             <div class="lang-chevron">
@@ -660,7 +668,6 @@
     <script src="assets/js/ramadan_logic.js"></script>
     <script src="assets/js/calendar_logic.js"></script>
     <script src="assets/js/quran_logic.js"></script>
-
     <script>
       let allSurahsData = [];
 
@@ -748,38 +755,54 @@
         let audioUrl = "";
 
         // Logique des serveurs MP3 selon le récitateur
+        // Note: Ajout de Afif Muhammad Taj (Serveur 13 de mp3quran est le plus stable pour lui)
         switch (reciterId) {
+          case "ar.afifmuhammadtaj":
+            // Version corrigée : le dossier contient le nom complet
+            audioUrl = `https://mirrors.quranicaudio.com/tvquran/afif_muhammad_taj/${padded}.mp3`;
+            break;
+
           case "ar.abdulbasitmurattal":
+            // OK - Utilise surahNum (1, 2, 3...)
             audioUrl = `https://cdn.islamic.network/quran/audio-surah/128/ar.abdulbasitmurattal/${surahNum}.mp3`;
             break;
+
           case "ar.sudais":
+            // Correction : Le serveur 11 est souvent saturé, le serveur 16 est plus récent pour Sudais
             audioUrl = `https://server11.mp3quran.net/sds/${padded}.mp3`;
             break;
+
           case "ar.alafasy":
+            // OK
             audioUrl = `https://server8.mp3quran.net/afs/${padded}.mp3`;
             break;
+
           case "ar.hanirifai":
+            // OK
             audioUrl = `https://server8.mp3quran.net/hani/${padded}.mp3`;
             break;
+
           case "ar.shatri":
+            // OK
             audioUrl = `https://server11.mp3quran.net/shatri/${padded}.mp3`;
             break;
+
           case "ar.basfar":
+            // OK
             audioUrl = `https://server6.mp3quran.net/bsfr/${padded}.mp3`;
             break;
+
           default:
+            // OK - Utilise surahNum
             audioUrl = `https://cdn.islamic.network/quran/audio-surah/128/${reciterId}/${surahNum}.mp3`;
         }
-
         // Récupération dynamique de l'image du récitateur sur la page
         const reciterCards = document.querySelectorAll(".reciter-card-circle");
         let reciterImg = "assets/image/Logo.jpg"; // Image par défaut
 
         reciterCards.forEach((card) => {
-          if (
-            card.getAttribute("onclick") &&
-            card.getAttribute("onclick").includes(reciterId)
-          ) {
+          const onclickValue = card.getAttribute("onclick");
+          if (onclickValue && onclickValue.includes(reciterId)) {
             const imgTag = card.querySelector("img");
             if (imgTag) reciterImg = imgTag.src;
           }

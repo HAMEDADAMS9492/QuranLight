@@ -692,210 +692,154 @@
 }
 
 /* ======================================================== */
-
-/* 7. CONTRÔLES AUDIO (AJUSTÉ POUR 5 BOUTONS)               */
-
+/* 7. CONTRÔLES AUDIO (UNIVERSEL - 5 BOUTONS OPTIMISÉS)     */
 /* ======================================================== */
 
 .quran-controls-floating {
   position: fixed;
-
   bottom: 0;
-
   left: 0;
-
   width: 100%;
-
-  background: linear-gradient(to top, #000 85%, transparent);
-
+  /* Dégradé plus profond pour la lisibilité sur tout fond */
+  background: linear-gradient(
+    to top,
+    #000 80%,
+    rgba(0, 0, 0, 0.9) 90%,
+    transparent
+  );
   backdrop-filter: blur(15px);
-
-  padding: 20px 0 40px 0;
-
+  -webkit-backdrop-filter: blur(15px);
+  padding: 15px 0 env(safe-area-inset-bottom, 25px) 0; /* Gère l'encoche du bas des mobiles */
   border-top: 1px solid rgba(176, 141, 87, 0.3);
-
   z-index: 1000;
+  box-sizing: border-box;
 }
 
 .nav-controls {
   display: flex;
-
   justify-content: center;
-
   align-items: center;
-
-  gap: 25px; /* Réduit de 45px à 25px pour accueillir 5 boutons */
-
-  max-width: 700px;
-
+  /* Utilisation de clamp pour un espacement fluide entre 8px et 25px */
+  gap: clamp(8px, 3vw, 25px);
+  max-width: 800px;
   margin: 0 auto;
+  padding: 0 10px;
+  box-sizing: border-box;
 }
 
 .play-main-btn {
   background: transparent;
-
   border: none;
-
   color: white;
-
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
-
   cursor: pointer;
-
   transition: all 0.3s ease;
+  flex-shrink: 0; /* Empêche le bouton play de s'écraser */
 }
 
 .play-icon-bg {
-  width: 75px;
-
-  height: 75px;
-
-  background: var(--mp-green-surface);
-
+  width: clamp(60px, 15vw, 75px); /* Taille dynamique */
+  height: clamp(60px, 15vw, 75px);
+  background: var(--mp-green-surface, #062218);
   border: 2px solid var(--mp-gold);
-
   border-radius: 50%;
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
-  font-size: 1.6rem;
-
+  font-size: 1.5rem;
   color: var(--mp-gold-bright);
-
   position: relative;
-
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
-
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Stabilisation de l'icône interne pour éviter les sauts visuels */
+.play-icon-bg i {
+  width: 1.5rem;
+  text-align: center;
+  display: block;
 }
 
 .play-icon-bg::before {
   content: "";
-
   position: absolute;
-
   width: 100%;
-
   height: 100%;
-
   border-radius: 50%;
-
   border: 1px solid var(--mp-gold);
-
   animation: pulse-gold 2s infinite;
-
   z-index: -1;
 }
 
 .play-main-btn:hover .play-icon-bg {
-  transform: scale(1.1);
-
+  transform: scale(1.05);
   background: var(--mp-gold);
-
-  color: black;
-
-  box-shadow: 0 0 30px rgba(176, 141, 87, 0.6);
+  color: #000;
 }
 
 .play-main-btn span {
-  margin-top: 12px;
-
-  font-size: 0.75rem;
-
+  margin-top: 8px;
+  font-size: 0.65rem;
   font-weight: 700;
-
-  letter-spacing: 3px;
-
+  letter-spacing: 1.5px;
   color: var(--mp-gold-bright);
-
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .control-btn {
   background: rgba(176, 141, 87, 0.1);
-
   border: 1px solid rgba(176, 141, 87, 0.2);
-
-  width: 50px;
-
-  height: 50px;
-
+  width: clamp(40px, 10vw, 50px); /* Taille dynamique */
+  height: clamp(40px, 10vw, 50px);
   border-radius: 50%;
-
-  color: var(--mp-gold-bright); /* Assuré en or brillant */
-
-  font-size: 1.1rem;
-
+  color: var(--mp-gold-bright);
+  font-size: 1rem;
   cursor: pointer;
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
 .control-btn:hover:not(:disabled) {
   background: var(--mp-gold);
-
-  color: black;
-
+  color: #000;
   border-color: var(--mp-gold);
-
-  transform: translateY(-2px);
 }
 
 .control-btn:disabled {
   opacity: 0.1;
-
-  cursor: default;
+  cursor: not-allowed;
 }
 
 @keyframes pulse-gold {
   0% {
     transform: scale(1);
-
     opacity: 0.8;
   }
-
   100% {
-    transform: scale(1.5);
-
+    transform: scale(1.4);
     opacity: 0;
   }
 }
 
 /* Loader Doré */
-
 .loader-container {
   text-align: center;
-
   padding: 100px 0;
 }
 
 .gold-spinner {
-  width: 50px;
-
-  height: 50px;
-
-  border: 4px solid rgba(176, 141, 87, 0.1);
-
-  border-top: 4px solid var(--mp-gold);
-
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(176, 141, 87, 0.1);
+  border-top: 3px solid var(--mp-gold);
   border-radius: 50%;
-
   animation: spin 1s linear infinite;
-
   margin: 0 auto;
 }
 
@@ -905,93 +849,79 @@
   }
 }
 
-/* Adaptabilité Mobile (Optimisé pour 5 boutons) */
+/* --- ADAPTABILITÉ MOBILE UNIVERSELLE --- */
 
 @media (max-width: 600px) {
   .back-btn {
     top: 10px;
-
     left: 10px;
-
     padding: 8px 12px;
-
     font-size: 0.7rem;
   }
 
   .quran-brand-header {
-    padding-top: 100px;
+    padding-top: 80px;
   }
-
   .surah-premium-card {
-    padding: 20px;
+    padding: 15px;
   }
-
   .surah-name-en {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
-
   .surah-name-ar {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
   }
-
   .arabic-title {
-    font-size: 2.8rem;
+    font-size: 2.4rem;
   }
-
   .arabic-text {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
   }
-
   .main-logo-gold {
-    height: 140px;
+    height: 110px;
   }
 
   .surah-number-wrapper {
-    min-width: 45px;
-
-    height: 45px;
-
-    margin-right: 15px;
+    min-width: 40px;
+    height: 40px;
+    margin-right: 12px;
   }
 
   .basmala-text {
-    font-size: 2.2rem;
+    font-size: 1.8rem;
   }
-
   .istidha-text {
-    font-size: 1.5rem;
-  }
-
-  .play-icon-bg {
-    width: 65px;
-
-    height: 65px;
-
     font-size: 1.3rem;
   }
 
+  /* Navigation flottante en bas (Ajustement serré pour petits écrans) */
   .nav-controls {
-    gap: 12px;
-
-    padding: 0 10px;
-  } /* Gap réduit au minimum pour mobile */
-
-  .control-btn {
-    width: 42px;
-
-    height: 42px;
-
-    font-size: 0.9rem;
+    gap: 8px; /* Espace minimal pour garantir que les 5 boutons restent sur une ligne */
   }
 
   .play-main-btn span {
-    font-size: 0.6rem;
-
-    letter-spacing: 1.5px;
+    font-size: 0.55rem;
+    letter-spacing: 0.5px;
   }
 
   .glass-panel.main-header {
-    height: 75px;
+    height: 70px;
+  }
+}
+
+/* Protection pour les écrans ultra-étroits (ex: Galaxy Fold plié) */
+@media (max-width: 350px) {
+  .nav-controls {
+    gap: 4px;
+  }
+  .control-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 0.8rem;
+  }
+  .play-icon-bg {
+    width: 55px;
+    height: 55px;
   }
 }
 

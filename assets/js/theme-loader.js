@@ -1,9 +1,8 @@
 /**
  * THEME LOADER - QuranLight
- * Ce script est optimisé pour éviter le "flash" blanc/vert au chargement.
+ * Optimisé pour une exécution immédiate sans flash visuel.
  */
 (function () {
-  // 1. Récupérer les préférences
   const getPrefs = () => {
     try {
       return JSON.parse(localStorage.getItem("quranlight_prefs")) || {};
@@ -14,20 +13,37 @@
 
   const apply = (theme) => {
     const root = document.documentElement;
-    const body = document.body;
 
-    // On ne gère plus que le thème "dark"
     if (theme === "dark") {
-      if (body) body.classList.add("theme-dark");
+      // Applique l'attribut sur l'élément racine (HTML) immédiatement
+      root.setAttribute("data-theme", "dark");
       root.classList.add("theme-dark");
+
+      // Si le body est déjà disponible, on lui ajoute la classe aussi
+      if (document.body) {
+        document.body.classList.add("theme-dark");
+      }
+    } else {
+      // Sécurité : on nettoie si le thème est emerald
+      root.removeAttribute("data-theme");
+      root.classList.remove("theme-dark");
+      if (document.body) document.body.classList.remove("theme-dark");
     }
   };
 
   const settings = getPrefs();
 
-  // On n'exécute la logique que si le thème est défini et n'est pas "emerald" (le thème par défaut)
+  // EXÉCUTION IMMÉDIATE (sur l'élément <html> qui existe déjà)
+  if (settings.theme) {
+    // On applique sur le root tout de suite pour bloquer le flash
+    if (settings.theme === "dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+      document.documentElement.classList.add("theme-dark");
+    }
+  }
+
+  // SURVEILLANCE DU BODY (pour finaliser l'application dès qu'il apparaît)
   if (settings.theme && settings.theme !== "emerald") {
-    // 2. Observer l'apparition du Document pour appliquer le thème ASAP
     const observer = new MutationObserver(() => {
       if (document.body) {
         apply(settings.theme);
@@ -37,9 +53,7 @@
 
     observer.observe(document.documentElement, { childList: true });
 
-    // 3. Sécurité au cas où le body est déjà là
-    if (document.body) {
-      apply(settings.theme);
-    }
+    // Sécurité si déjà chargé
+    if (document.body) apply(settings.theme);
   }
 })();

@@ -431,3 +431,98 @@
     transform: translateY(0);
   }
 }
+/* --- SECTION RESPONSIVE UNIVERSELLE --- */
+
+/* Ajustements pour Tablettes et petits écrans (iPad, etc.) */
+@media (max-width: 768px) {
+  .calendar-container {
+    padding: 20px;
+    margin: 10px auto;
+    width: 92%;
+  }
+}
+
+/* Ajustements spécifiques Mobile (iPhone 15 Pro, Android récents) */
+@media (max-width: 480px) {
+  /* En-tête plus compact pour libérer de l'espace vertical */
+  .glass-panel.main-header {
+    height: 70px;
+    padding: 0 12px;
+  }
+  .header-spacer {
+    height: 70px;
+  }
+
+  /* Ajustement du titre pour éviter le chevauchement */
+  .header-main-title {
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+  }
+
+  .moon-logo {
+    display: none;
+  } /* On cache pour l'équilibre visuel */
+
+  /* Le Calendrier */
+  .calendar-container {
+    padding: 15px 10px; /* Réduction des bords internes */
+    width: 95%;
+    border-radius: 15px;
+  }
+
+  .date-hijri {
+    font-size: 1.4rem; /* Un peu plus petit pour tenir sur une ligne */
+  }
+
+  /* La Grille - C'est ici que le réglage iPhone se joue */
+  .calendar-grid {
+    gap: 6px; /* Espace réduit entre les cases pour éviter le débordement */
+  }
+
+  .weekdays {
+    margin-bottom: 10px;
+  }
+
+  .main-txt {
+    font-size: 0.6rem; /* Abréviations des jours plus petites */
+  }
+
+  .arabic-txt {
+    display: none; /* Obligatoire sur mobile pour la clarté */
+  }
+
+  .day {
+    border-radius: 6px;
+    /* On utilise l'aspect-ratio mais on s'assure que le texte ne dépasse pas */
+    padding: 4px 0;
+  }
+
+  .gregorian-num {
+    font-size: 0.9rem;
+  }
+
+  .hijri-num {
+    font-size: 0.6rem;
+  }
+
+  /* Section Événements */
+  .events-section {
+    padding: 15px;
+    width: 95%;
+  }
+
+  .event-card {
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Gestion très petits écrans (iPhone SE) */
+@media (max-width: 340px) {
+  .calendar-grid {
+    gap: 4px;
+  }
+  .header-main-title {
+    font-size: 0.8rem;
+  }
+}
