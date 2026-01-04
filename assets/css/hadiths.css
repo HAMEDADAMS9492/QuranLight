@@ -1,5 +1,5 @@
 /* ======================================================== */
-/* 1. CONFIGURATION DU THÈME HADITHS (PREMIUM DARK)         */
+/* 1. CONFIGURATION DU THÈME HADITHS (PREMIUM)              */
 /* ======================================================== */
 :root {
   --mp-green-bg: #060e0a;
@@ -11,6 +11,19 @@
   --font-ar: "Amiri", serif;
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --header-height: 85px;
+}
+
+/* ADAPTATION AU THÈME CLAIR (Si activé via la classe .light-theme sur le body) */
+body.light-theme {
+  --mp-green-bg: #f4f7f6;
+  --mp-green-surface: #ffffff;
+  --text-main: #1a2a24;
+  --text-muted: rgba(0, 0, 0, 0.5);
+  background-image: linear-gradient(
+    to bottom,
+    rgba(176, 141, 87, 0.1),
+    transparent
+  );
 }
 
 body {
@@ -25,10 +38,11 @@ body {
     transparent
   );
   background-attachment: fixed;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* ======================================================== */
-/* 2. HEADER FIXE GLASS PANEL (BARRE DE TÂCHES)            */
+/* 2. HEADER FIXE GLASS PANEL                              */
 /* ======================================================== */
 .glass-panel.main-header {
   position: fixed;
@@ -39,7 +53,7 @@ body {
   background: rgba(6, 14, 10, 0.95);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  border-bottom: 2px solid var(--mp-gold); /* Harmonisé avec vos autres pages */
+  border-bottom: 2px solid var(--mp-gold);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -48,67 +62,62 @@ body {
   box-sizing: border-box;
 }
 
+body.light-theme .glass-panel.main-header {
+  background: rgba(255, 255, 255, 0.95);
+}
+
 .header-spacer {
   height: var(--header-height);
 }
 
-/* Alignement des blocs pour garantir le centrage du milieu */
 .navigation-top,
 .header-actions-right {
   display: flex;
   align-items: center;
-  flex: 1; /* Alloue un espace égal à gauche et à droite */
+  flex: 1;
 }
 
 .header-actions-right {
-  justify-content: flex-end; /* Pousse le bouton refresh à droite */
+  justify-content: flex-end;
 }
 
 .header-center-content {
-  flex: 0 1 auto; /* Le centre ne prend que la place nécessaire */
+  flex: 0 1 auto;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
 }
 
-/* Bouton Retour Premium (Icône seule) */
-.floating-back-btn {
+.floating-back-btn,
+.action-icon-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 45px; /* Format carré comme les autres pages */
+  width: 45px;
   height: 45px;
   background: rgba(176, 141, 87, 0.1);
   border: 1px solid rgba(176, 141, 87, 0.3);
   border-radius: 12px;
   color: var(--mp-gold-bright);
   text-decoration: none;
-  transition: var(--transition-premium, all 0.3s ease);
+  transition: var(--transition);
+  cursor: pointer;
 }
 
-.floating-back-btn i {
-  font-size: 1.2rem;
-}
-
-.floating-back-btn:hover {
+.floating-back-btn:hover,
+.action-icon-btn:hover {
   background: var(--mp-gold);
-  color: #060e0a;
+  color: #060e0a !important;
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(176, 141, 87, 0.3);
 }
 
-/* Cache le texte Accueil s'il est présent dans le HTML */
-.floating-back-btn span {
-  display: none;
-}
-
-/* Titre Central Dynamique */
 .header-main-title {
   font-family: "Poppins", sans-serif;
   font-size: clamp(1.1rem, 4vw, 1.5rem);
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text-main);
   text-transform: uppercase;
   letter-spacing: 2px;
   margin: 0;
@@ -122,40 +131,8 @@ body {
   margin-left: 10px;
 }
 
-/* Bouton Refresh à droite */
-.action-icon-btn {
-  background: rgba(176, 141, 87, 0.1);
-  border: 1px solid rgba(176, 141, 87, 0.3);
-  color: var(--mp-gold-bright);
-  width: 45px; /* Aligné sur la taille du bouton retour */
-  height: 45px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: var(--transition-premium, all 0.3s ease);
-}
-
-.action-icon-btn:hover {
-  background: var(--mp-gold);
-  color: #060e0a;
-  transform: translateY(-2px);
-}
-
-/* Correction responsive pour éviter que le titre ne soit écrasé */
-@media (max-width: 480px) {
-  .header-main-title {
-    font-size: 1rem;
-    letter-spacing: 1px;
-  }
-  .moon-logo {
-    display: none;
-  }
-}
-
 /* ======================================================== */
-/* 3. CONTAINER & CONTENU                                   */
+/* 3. CONTAINER & RECHERCHE                                 */
 /* ======================================================== */
 .legal-page-container {
   max-width: 800px;
@@ -168,7 +145,6 @@ body {
   text-align: center;
   margin-bottom: 30px;
 }
-
 .header-sub {
   color: var(--mp-gold);
   font-style: italic;
@@ -177,13 +153,11 @@ body {
   margin-top: 10px;
 }
 
-/* Barre de Recherche */
 .search-bar {
   position: relative;
   max-width: 500px;
   margin: 30px auto;
 }
-
 .search-bar i {
   position: absolute;
   left: 20px;
@@ -198,17 +172,12 @@ body {
   background: var(--mp-green-surface);
   border: 1px solid rgba(176, 141, 87, 0.2);
   border-radius: 12px;
-  color: white;
+  color: var(--text-main);
   font-size: 1rem;
   box-sizing: border-box;
   outline: none;
 }
 
-.search-bar input:focus {
-  border-color: var(--mp-gold);
-}
-
-/* Filtres */
 .filter-tabs {
   display: flex;
   justify-content: center;
@@ -236,7 +205,7 @@ body {
 }
 
 /* ======================================================== */
-/* 4. CARTES DES HADITHS                                    */
+/* 4. CARTES DES HADITHS (ADAPTÉES AU JS)                   */
 /* ======================================================== */
 .hadiths-grid {
   display: flex;
@@ -250,12 +219,46 @@ body {
   border-radius: 15px;
   padding: 25px 30px;
   transition: var(--transition);
+  position: relative;
+  overflow: hidden;
 }
 
 .hadith-card:hover {
   border-color: var(--mp-gold);
   background: rgba(176, 141, 87, 0.03);
   transform: translateY(-3px);
+}
+
+.hadith-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.badge {
+  background: rgba(176, 141, 87, 0.15);
+  color: var(--mp-gold);
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.copy-btn {
+  background: transparent;
+  border: none;
+  color: var(--mp-gold);
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: 0.2s;
+  padding: 5px;
+}
+
+.copy-btn:hover {
+  transform: scale(1.2);
+  color: var(--mp-gold-bright);
 }
 
 .hadith-arabic {
@@ -270,7 +273,7 @@ body {
 
 .hadith-french {
   font-size: 1.05rem;
-  color: #ffffff;
+  color: var(--text-main);
   line-height: 1.6;
   font-weight: 700;
   padding-left: 15px;
@@ -281,19 +284,39 @@ body {
   margin-top: 15px;
   font-size: 0.8rem;
   color: var(--mp-gold);
-  opacity: 0.7;
+  opacity: 0.8;
   font-weight: 600;
 }
 
+.hadith-ref i {
+  margin-right: 5px;
+}
+/* ======================================================== */
+/* MODIFICATION DU FOOTER (COPYRIGHT)                       */
+/* ======================================================== */
 .legal-footer-info {
   text-align: center;
-  margin-top: 40px;
-  font-size: 0.8rem;
+  margin-top: 50px;
+  padding: 20px 0;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+
+  /* Utilisation des variables pour s'adapter aux thèmes */
   color: var(--text-muted);
+  border-top: 1px solid rgba(176, 141, 87, 0.1);
+
+  width: 100%;
+  display: block;
 }
 
+/* Ajustement spécifique pour le thème clair si nécessaire */
+body.light-theme .legal-footer-info {
+  color: #666666; /* Un gris un peu plus lisible sur fond blanc */
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
 /* ======================================================== */
-/* 5. RESPONSIVE OPTIMISÉ                                   */
+/* 5. RESPONSIVE & ANIMATIONS                               */
 /* ======================================================== */
 @keyframes fadeIn {
   from {
@@ -306,52 +329,60 @@ body {
   }
 }
 
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
 @media (max-width: 768px) {
   .header-main-title {
     font-size: 1.2rem;
   }
-  .moon-logo {
-    font-size: 1.3rem;
+  .legal-page-container {
+    padding: 0 15px;
   }
 }
 
 @media (max-width: 600px) {
   .glass-panel.main-header {
     padding: 0 10px;
+    height: 75px;
   }
-
-  /* Réduction du texte bouton retour pour gagner de la place */
-  .floating-back-btn span {
-    display: none;
+  .header-spacer {
+    height: 75px;
   }
-
-  .floating-back-btn {
-    width: 42px;
-    height: 42px;
-    padding: 0;
-    justify-content: center;
+  .floating-back-btn,
+  .action-icon-btn {
+    width: 40px;
+    height: 40px;
   }
-
-  /* Adaptation du titre si toujours trop long */
   .header-main-title {
-    font-size: 1.1rem;
+    font-size: 1rem;
     letter-spacing: 1px;
   }
-
   .hadith-card {
     padding: 20px;
   }
-
   .hadith-arabic {
     font-size: 1.5rem;
+  }
+  .hadith-french {
+    font-size: 0.95rem;
   }
 }
 
 @media (max-width: 380px) {
   .header-main-title {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
-  .header-center-content {
-    gap: 5px;
+  .tab-btn {
+    padding: 6px 12px;
+    font-size: 0.65rem;
   }
 }

@@ -1,11 +1,11 @@
 /**
  * HADITHS LOGIC - QuranLight
- * Base de données locale de 45 Hadiths (15 par catégorie)
+ * Base de données locale de 60 Hadiths (20 par catégorie)
  */
 
 const hadithDatabase = [
     // ==========================================
-    // CATEGORIE: NAWAWI (15 Hadiths)
+    // CATEGORIE: NAWAWI (20 Hadiths)
     // ==========================================
     { id: 1, cat: "nawawi", arabic: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ", french: "Les actions ne valent que par les intentions.", ref: "40 Nawawi, 1" },
     { id: 2, cat: "nawawi", arabic: "الدِّينُ النَّصِيحَةُ", french: "La religion est la sincérité (le bon conseil).", ref: "40 Nawawi, 7" },
@@ -22,9 +22,14 @@ const hadithDatabase = [
     { id: 13, cat: "nawawi", arabic: "الظُّلْمُ ظُلُمَاتٌ يَوْمَ الْقِيَامَةِ", french: "L'injustice sera ténèbres au Jour de la Résurrection.", ref: "40 Nawawi, 24" },
     { id: 14, cat: "nawawi", arabic: "اللَّهُ فِي عَوْنِ الْعَبْدِ مَا كَانَ الْعَبْدُ فِي عَوْنِ أَخِيهِ", french: "Allah aide Son serviteur tant que celui-ci aide son frère.", ref: "40 Nawawi, 36" },
     { id: 15, cat: "nawawi", arabic: "لا تَحَاسَدُوا وَلا تَنَاجَشُوا", french: "Ne vous enviez pas, ne vous haïssez pas.", ref: "40 Nawawi, 35" },
+    { id: 46, cat: "nawawi", arabic: "الدُّنْيَا مَزْرَعَةُ الآخِرَةِ", french: "Ce bas-monde est le champ de culture de l'au-delà.", ref: "40 Nawawi (Sagesse)" },
+    { id: 47, cat: "nawawi", arabic: "الْحَلالُ بَيِّنٌ وَالْحَرَامُ بَيِّنٌ", french: "Le licite est clair et l'illicite est clair.", ref: "40 Nawawi, 6" },
+    { id: 48, cat: "nawawi", arabic: "فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ", french: "Qu'il dise du bien ou qu'il se taise.", ref: "40 Nawawi, 15" },
+    { id: 49, cat: "nawawi", arabic: "يَا عِبَادِي إِنِّي حَرَّمْتُ الظُّلْمَ عَلَى نَفْسِي", french: "Ô Mes serviteurs ! Je Me suis interdit l'injustice.", ref: "40 Nawawi, 24" },
+    { id: 50, cat: "nawawi", arabic: "احْفَظِ اللَّهَ يَحْفَظْكَ", french: "Préserve Allah, Il te préservera.", ref: "40 Nawawi, 19" },
 
     // ==========================================
-    // CATEGORIE: BUKHARI (15 Hadiths)
+    // CATEGORIE: BUKHARI (20 Hadiths)
     // ==========================================
     { id: 16, cat: "bukhari", arabic: "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ", french: "Le meilleur d'entre vous est celui qui apprend le Coran et l'enseigne.", ref: "Sahih Bukhari" },
     { id: 17, cat: "bukhari", arabic: "يَسِّرُوا وَلا تُعَسِّرُوا", french: "Facilitez les choses et ne les rendez pas difficiles.", ref: "Sahih Bukhari" },
@@ -41,9 +46,14 @@ const hadithDatabase = [
     { id: 28, cat: "bukhari", arabic: "الصِّيَامُ جُنَّةٌ", french: "Le jeûne est un bouclier.", ref: "Sahih Bukhari" },
     { id: 29, cat: "bukhari", arabic: "أَحَبُّ الأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ", french: "L'œuvre la plus aimée d'Allah est la plus régulière, même si elle est petite.", ref: "Sahih Bukhari" },
     { id: 30, cat: "bukhari", arabic: "السَّاعِي عَلَى الأَرْمَلَةِ وَالْمِسْكِينِ كَالْمُجَاهِدِ فِي سَبِيلِ اللَّهِ", french: "Celui qui s'occupe de la veuve et du pauvre est comme le combattant sur le sentier d'Allah.", ref: "Sahih Bukhari" },
+    { id: 51, cat: "bukhari", arabic: "الآيَةُ الْمُنَافِقِ ثَلاثٌ", french: "Les signes de l'hypocrite sont au nombre de trois.", ref: "Sahih Bukhari" },
+    { id: 52, cat: "bukhari", arabic: "تَبَسُّمُكَ فِي وَجْهِ أَخِيكَ لَكَ صَدَقَةٌ", french: "Ton sourire face à ton frère est une aumône.", ref: "Sahih Bukhari (Sens)" },
+    { id: 53, cat: "bukhari", arabic: "إِنَّ الصِّدْقَ يَهْدِي إِلَى الْبِرِّ", french: "La vérité mène à la piété.", ref: "Sahih Bukhari" },
+    { id: 54, cat: "bukhari", arabic: "لا تُمِيتُوا الْقُلُوبَ بِكَثْرَةِ الطَّعَامِ", french: "Ne faites pas mourir les cœurs par l'excès de nourriture.", ref: "Sahih Bukhari (Sagesse)" },
+    { id: 55, cat: "bukhari", arabic: "سِبَابُ الْمُسْلِمِ فُسُوقٌ", french: "Insulter un musulman est un acte de perversité.", ref: "Sahih Bukhari" },
 
     // ==========================================
-    // CATEGORIE: MUSLIM (15 Hadiths)
+    // CATEGORIE: MUSLIM (20 Hadiths)
     // ==========================================
     { id: 31, cat: "muslim", arabic: "الطُّهُورُ شَطْرُ الإِيمَانِ", french: "La propreté est la moitié de la foi.", ref: "Sahih Muslim" },
     { id: 32, cat: "muslim", arabic: "كُلُّ مَعْرُوفٍ صَدَقَةٌ", french: "Chaque bonne action est une aumône.", ref: "Sahih Muslim" },
@@ -59,7 +69,12 @@ const hadithDatabase = [
     { id: 42, cat: "muslim", arabic: "حُجِبَتِ النَّارُ بِالشَّهَوَاتِ وَحُجِبَتِ الْجَنَّةُ بِالْمَكَارِهِ", french: "L'Enfer est voilé par les plaisirs et le Paradis par les épreuves.", ref: "Sahih Muslim" },
     { id: 43, cat: "muslim", arabic: "مَنْ قَرَأَ حَرْفًا مِنْ كِتَابِ اللَّهِ فَلَهُ بِهِ حَسَنَةٌ", french: "Quiconque lit une lettre du Livre d'Allah a pour cela une bonne action.", ref: "Sahih Muslim (Sens)" },
     { id: 44, cat: "muslim", arabic: "خَيْرُ الصَّدَقَةِ مَا كَانَ عَنْ ظَهْرِ غِنًى", french: "La meilleure aumône est celle faite par celui qui est riche (qui a le nécessaire).", ref: "Sahih Muslim" },
-    { id: 45, cat: "muslim", arabic: "الصَّلَوَاتُ الْخَمْسُ كَفَّارَاتٌ لِمَا بَيْنَهُنَّ", french: "Les cinq prières quotidiennes sont une expiation pour ce qui les sépare.", ref: "Sahih Muslim" }
+    { id: 45, cat: "muslim", arabic: "الصَّلَوَاتُ الْخَمْسُ كَفَّارَاتٌ لِمَا بَيْنَهُنَّ", french: "Les cinq prières quotidiennes sont une expiation pour ce qui les sépare.", ref: "Sahih Muslim" },
+    { id: 56, cat: "muslim", arabic: "أَحَبُّ الْبِلادِ إِلَى اللَّهِ مَسَاجِدُهَا", french: "Les lieux les plus aimés d'Allah sont les mosquées.", ref: "Sahih Muslim" },
+    { id: 57, cat: "muslim", arabic: "مَنْ غَشَّ فَلَيْسَ مِنِّي", french: "Celui qui nous trompe n'est pas des nôtres.", ref: "Sahih Muslim" },
+    { id: 58, cat: "muslim", arabic: "يَا عِبَادِي كُلُّكُمْ ضَالٌّ إِلا مَنْ هَدَيْتُهُ", french: "Ô Mes serviteurs ! Vous êtes tous égarés, sauf celui que Je guide.", ref: "Sahih Muslim" },
+    { id: 59, cat: "muslim", arabic: "لا تَدْخُلُوا الْجَنَّةَ حَتَّى تَحَابُّوا", french: "Vous n'entrerez pas au Paradis tant que vous ne vous aimerez pas.", ref: "Sahih Muslim" },
+    { id: 60, cat: "muslim", arabic: "الْيَدُ الْعُلْيَا خَيْرٌ مِنَ الْيَدِ السُّفْلَى", french: "La main qui donne est meilleure que celle qui reçoit.", ref: "Sahih Muslim" }
 ];
 
 const displayContainer = document.getElementById('hadiths-display');
@@ -76,7 +91,8 @@ function renderHadiths(filter = 'all', keyword = '') {
         const matchesCat = (filter === 'all' || h.cat === filter);
         const matchesKey = (h.french.toLowerCase().includes(keyword.toLowerCase()) || 
                             h.ref.toLowerCase().includes(keyword.toLowerCase()) ||
-                            h.cat.toLowerCase().includes(keyword.toLowerCase()));
+                            h.cat.toLowerCase().includes(keyword.toLowerCase()) ||
+                            h.arabic.includes(keyword));
         return matchesCat && matchesKey;
     });
 
@@ -87,7 +103,7 @@ function renderHadiths(filter = 'all', keyword = '') {
 
     filteredList.forEach(h => {
         const card = `
-            <div class="hadith-card">
+            <div class="hadith-card" style="animation: fadeIn 0.5s ease forwards;">
                 <div class="hadith-header">
                     <span class="badge">${h.cat.toUpperCase()}</span>
                     <button class="copy-btn" onclick="copyHadith('${h.french.replace(/'/g, "\\'")}')" title="Copier le texte">
@@ -104,23 +120,60 @@ function renderHadiths(filter = 'all', keyword = '') {
 }
 
 /**
- * Fonction de copie dans le presse-papier
+ * Fonction de copie dans le presse-papier avec notification élégante (Toast)
  */
 window.copyHadith = (text) => {
     navigator.clipboard.writeText(text).then(() => {
-        // Optionnel : Un petit toast ou une notification plus élégante qu'une alerte
-        alert("Hadith copié !");
+        showToast("Hadith copié dans le presse-papier !");
     }).catch(err => {
         console.error('Erreur lors de la copie : ', err);
     });
 };
 
 /**
- * Écouteur pour la barre de recherche
+ * Système de notification (Toast)
  */
+function showToast(message) {
+    const existingToast = document.querySelector('.quranlight-toast');
+    if (existingToast) existingToast.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'quranlight-toast';
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--mp-gold, #b08d57);
+        color: #fff;
+        padding: 12px 24px;
+        border-radius: 50px;
+        z-index: 9999;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.9rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        animation: slideUpFade 0.3s ease;
+    `;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => toast.remove(), 500);
+    }, 2500);
+}
+
+/**
+ * Écouteur pour la barre de recherche (avec petit délai pour performance)
+ */
+let searchTimeout;
 searchInput.addEventListener('input', (e) => {
-    const activeBtn = document.querySelector('.tab-btn.active');
-    renderHadiths(activeBtn.dataset.cat, e.target.value);
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        const activeBtn = document.querySelector('.tab-btn.active');
+        renderHadiths(activeBtn.dataset.cat, e.target.value);
+    }, 200);
 });
 
 /**

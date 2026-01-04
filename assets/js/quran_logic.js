@@ -885,9 +885,14 @@ function openSurah(num) {
   loadSurahData(num, false);
 }
 
+// ============================================================
+// 3. CHARGEMENT ET RENDU (SYSTÈME D'APPRENTISSAGE)
+// ============================================================
+
 async function loadSurahData(surahNumber, shouldAutoPlay = false) {
   const ayatDisplay = document.getElementById("ayat-display");
 
+  // Arrêt de l'audio en cours et réinitialisation
   globalAudio.pause();
   globalAudio.removeAttribute("src");
   globalAudio.load();
@@ -897,19 +902,23 @@ async function loadSurahData(surahNumber, shouldAutoPlay = false) {
   currentAyahIndex = 0;
   updatePlayButtonUI(false);
 
+  // Affichage du loader
   if (ayatDisplay) {
     ayatDisplay.innerHTML = `<div class="loader-container"><div class="gold-spinner"></div></div>`;
   }
 
   try {
-    const [resAr, resFr, resAudio] = await Promise.all([
+    // RÉCUPÉRATION DES 4 FLUX (Arabe, Français, Latin/Phonétique, Audio)
+    const [resAr, resFr, resLatin, resAudio] = await Promise.all([
       fetch(`${QURAN_API_URL}/surah/${surahNumber}/quran-uthmani`),
       fetch(`${QURAN_API_URL}/surah/${surahNumber}/fr.hamidullah`),
+      fetch(`${QURAN_API_URL}/surah/${surahNumber}/en.transliteration`),
       fetch(`${QURAN_API_URL}/surah/${surahNumber}/${DEFAULT_RECITER_ID}`),
     ]);
 
     const arData = await resAr.json();
     const frData = await resFr.json();
+    const latinData = await resLatin.json();
     const audioData = await resAudio.json();
 
     if (arData.status === "OK" && audioData.status === "OK") {
@@ -917,36 +926,47 @@ async function loadSurahData(surahNumber, shouldAutoPlay = false) {
       currentAyahs = audioData.data.ayahs;
       document.title = `${arData.data.englishName} - QuranLight`;
 
-      renderReaderView(arData.data, frData.data, audioData.data);
+      // Envoi des données vers la fonction de rendu
+      renderReaderView(
+        arData.data,
+        frData.data,
+        latinData.data,
+        audioData.data
+      );
+
       updateNavigationButtons();
       setupGlobalAudio(currentAyahs[0].audio);
 
       if (shouldAutoPlay) playWithIntro();
     }
   } catch (error) {
-    console.error("Erreur:", error);
-    if (ayatDisplay)
-      ayatDisplay.innerHTML = `<p class="error-msg">Erreur de connexion.</p>`;
+    console.error("Erreur de chargement:", error);
+    if (ayatDisplay) {
+      ayatDisplay.innerHTML = `<p class="error-msg">Une erreur est survenue lors du chargement de la sourate.</p>`;
+    }
   }
 }
 
-function renderReaderView(ar, fr, audio) {
+function renderReaderView(ar, fr, latin, audio) {
   const headerCard = document.querySelector(".surah-header-card");
+
+  // 1. Rendu de l'entête (Header)
   let headerHTML = `
         <h2 class="surah-meta">SOURATE ${ar.number}</h2>
         <h1 class="arabic-title">${ar.name}</h1>
     `;
 
+  // Gestion de l'Istidha et de la Basmala (Alphabet latin inclus pour l'apprentissage)
   if (ar.number !== 9) {
     headerHTML += `
             <div class="sacred-formulas">
                 <div class="formula-group">
                     <p class="istidha-text">أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ</p>
-                    <p class="formula-translation">Je cherche protection auprès d’Allah contre Satan le maudit</p>
+                    <p class="formula-translation">A'ūdhu billāhi minash-shaitānir-rajīm</p>
                 </div>
                 <div class="formula-group">
                     <p class="basmala-text">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
-                    <p class="formula-translation">Au nom d’Allah, le Tout Miséricordieux, le Très Miséricordieux</p>
+                    <p class="formula-translation">Bismillāhir-rahmānir-rahīm</p>
                 </div>
                 <div class="formula-divider"></div>
             </div>`;
@@ -954,16 +974,20 @@ function renderReaderView(ar, fr, audio) {
 
   if (headerCard) headerCard.innerHTML = headerHTML;
 
+  // 2. Préparation de la zone des versets
   const ayatDisplay = document.getElementById("ayat-display");
   if (!ayatDisplay) return;
   ayatDisplay.innerHTML = "";
 
+  // 3. Boucle de génération des versets (Ayats)
   ar.ayahs.forEach((ayah, index) => {
     const ayahCard = document.createElement("div");
     ayahCard.classList.add("ayah-card");
     ayahCard.setAttribute("data-index", index);
+
     let arabicText = ayah.text;
 
+    // Nettoyage de la Basmala automatique dans le texte pour les sourates (sauf Fatiha)
     if (ar.number !== 1 && index === 0) {
       arabicText = arabicText
         .replace("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ", "")
@@ -977,13 +1001,16 @@ function renderReaderView(ar, fr, audio) {
                     <i class="far fa-play-circle play-v-btn" onclick="playSingleAyah(${index})"></i>
                 </div>
             </div>
+            
             <p class="arabic-text">${arabicText}</p>
+            
+            <p class="latin-text">${latin.ayahs[index].text}</p>
+            
             <p class="translation-text">${fr.ayahs[index].text}</p>
         `;
     ayatDisplay.appendChild(ayahCard);
   });
 }
-
 // ============================================================
 // 4. AUDIO ET NAVIGATION
 // ============================================================

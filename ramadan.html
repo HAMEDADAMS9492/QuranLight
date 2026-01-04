@@ -14,42 +14,47 @@
     />
   </head>
   <body class="ramadan-page">
-   <header class="glass-panel main-header">
-  <div class="navigation-top">
-    <a href="index.html" class="floating-back-btn" title="Retour Accueil">
-      <i class="fas fa-home"></i>
-    </a>
-  </div>
-
-  <div class="header-center-content">
-    <div class="header-title-wrapper">
-      <div class="hero-intro-section" style="display: flex; align-items: center; gap: 12px">
-        <h1 class="header-main-title">Ramadan</h1>
-        <i class="fas fa-moon moon-logo" style="font-size: 1.5rem;"></i>
+    <header class="glass-panel main-header">
+      <div class="navigation-top">
+        <a href="index.html" class="floating-back-btn" title="Retour Accueil">
+          <i class="fas fa-home"></i>
+        </a>
       </div>
-    </div>
-  </div>
 
-  <div class="header-actions-right">
-    <button id="refresh-ramadan" class="action-icon-btn" onclick="location.reload()" title="Actualiser">
-      <i class="fas fa-rotate"></i>
-    </button>
-  </div>
-</header>
+      <div class="header-center-content">
+        <div class="header-title-wrapper">
+          <div
+            class="hero-intro-section"
+            style="display: flex; align-items: center; gap: 12px"
+          >
+            <h1 class="header-main-title">Ramadan</h1>
+            <i class="fas fa-moon moon-logo" style="font-size: 1.5rem"></i>
+          </div>
+        </div>
+      </div>
 
-<div class="header-spacer"></div>
+      <div class="header-actions-right">
+        <button
+          id="refresh-ramadan"
+          class="action-icon-btn"
+          onclick="location.reload()"
+          title="Actualiser"
+        >
+          <i class="fas fa-rotate"></i>
+        </button>
+      </div>
+    </header>
 
-<main class="main-container">
-  <div class="header-subtext">
-    <h2 class="arabic-title-large">رمضان مبارك</h2>
-    
-    <div class="sub-divider"></div>
-    
-    <div class="hero-intro-section-footer">
-      <p class="french-translation">Mois sacré de jeûne et de piété</p>
-    </div>
-  </div>
-</main>
+    <div class="header-spacer"></div>
+
+    <main class="main-container">
+      <div class="header-subtext">
+        <h2 class="arabic-title-large">رمضان مبارك</h2>
+        <div class="sub-divider"></div>
+        <div class="hero-intro-section-footer">
+          <p class="french-translation">Mois sacré de jeûne et de piété</p>
+        </div>
+      </div>
 
       <div class="events-section">
         <div id="ramadan-info" class="info-highlight-box">
@@ -64,14 +69,14 @@
         </div>
 
         <div id="countdown-container" class="countdown-banner">
-    <span id="countdown-label">Prochain Iftar dans</span>
-    <div id="countdown-timer">00:00:00</div>
-    <div class="timer-units">
-      <span>HEURES</span>
-      <span>MINUTES</span>
-      <span>SECONDES</span>
-    </div>
-  </div>
+          <span id="countdown-label">Prochain Iftar dans</span>
+          <div id="countdown-timer">00:00:00</div>
+          <div class="timer-units">
+            <span>HEURES</span>
+            <span>MINUTES</span>
+            <span>SECONDES</span>
+          </div>
+        </div>
 
         <div class="options-grid">
           <div class="option-card active" data-target="section-calendar">
@@ -95,6 +100,18 @@
             <h2 class="section-title">Calendrier</h2>
             <p class="header-sub">Horaires précis Imsak & Iftar</p>
           </div>
+          <div id="ramadan-countdown-notification" class="notif-ramadan">
+            <div class="notif-content">
+              <div class="notif-icon">🌙</div>
+              <div class="notif-text">
+                <span class="notif-title">Ramadan approche !</span>
+                <span class="notif-subtitle"
+                  >Plus que <span id="days-until-ramadan">--</span> jours
+                  restants</span
+                >
+              </div>
+            </div>
+          </div>
           <div id="monthly-events-list">
             <div class="loading-state">
               <i class="fas fa-spinner fa-spin"></i>
@@ -114,12 +131,27 @@
         <div id="section-checklist" class="module-content">
           <div class="section-header">
             <h2 class="section-title">Suivi Spirituel</h2>
-            <p class="header-sub">Mes objectifs du jour</p>
+
+            <div class="date-navigator">
+              <button onclick="changeChecklistDate(-1)" class="nav-btn">
+                <i class="fas fa-chevron-left"></i>
+              </button>
+              <div id="current-checklist-date-display">
+                <span id="chk-day-fr">--</span>
+                <small id="chk-date-detailed">--</small>
+              </div>
+              <button onclick="changeChecklistDate(1)" class="nav-btn">
+                <i class="fas fa-chevron-right"></i>
+              </button>
+            </div>
           </div>
+
           <div id="checklist-container"></div>
         </div>
+
+        <div id="ramadan-footer"></div>
       </div>
-    </div>
+    </main>
 
     <script src="assets/js/ramadan_logic.js"></script>
     <script src="assets/js/theme-loader.js"></script>

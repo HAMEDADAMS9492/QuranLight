@@ -267,29 +267,99 @@
   backdrop-filter: blur(6px);
 }
 
+/* ============================================================
+    BOUTON D'ACTIVATION / CALIBRATION (ÉDITION LUXE)
+============================================================ */
 .mini-calibrate-btn {
-  background: rgba(0, 0, 0, 0.7);
-  border: 1px solid #b08d57;
-  color: #b08d57;
-  width: 42px; /* Légèrement agrandi pour faciliter le clic */
-  height: 42px;
+  width: 55px; /* Un peu plus grand pour l'aspect "instrument" */
+  height: 55px;
+  /* Fond dégradé imitant le métal précieux */
+  background: radial-gradient(
+    circle at center,
+    #1a4a35 0%,
+    var(--emerald-dark) 100%
+  );
+  border: 2px solid var(--gold);
   border-radius: 50%;
+  color: var(--gold);
+  font-size: 1.3rem;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(4px);
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5),
+    inset 0 0 10px rgba(176, 141, 87, 0.3);
+  overflow: hidden;
+  z-index: 10;
 }
+
+/* Effet de reflet rotatif (Simule l'or brossé) */
+.mini-calibrate-btn::after {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    rgba(255, 215, 0, 0.1) 15%,
+    transparent 30%,
+    transparent 100%
+  );
+  animation: rotateReflet 4s linear infinite;
+  pointer-events: none;
+}
+
+/* Style de l'icône */
+.mini-calibrate-btn i {
+  z-index: 2;
+  filter: drop-shadow(0 0 8px var(--gold-glow));
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- INTERACTIONS --- */
 
 .mini-calibrate-btn:hover {
-  background: #b08d57;
-  color: #062218;
+  transform: scale(1.1);
+  border-color: var(--gold-bright);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.6), 0 0 15px var(--gold-glow);
 }
 
+/* Effet de clic physique */
+.mini-calibrate-btn:active {
+  transform: scale(0.92);
+  background: var(--emerald-dark);
+}
+
+/* Animation de rotation de l'icône au clic */
 .mini-calibrate-btn:active i {
   transform: rotate(180deg);
-  transition: 0.3s;
+}
+
+/* --- NOUVELLES ANIMATIONS --- */
+
+@keyframes rotateReflet {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Animation optionnelle si tu ajoutes .loading via JS */
+.mini-calibrate-btn.loading i {
+  animation: spinIcon 1s infinite linear;
+}
+
+@keyframes spinIcon {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* =========================
@@ -363,7 +433,7 @@
   transform: translateY(-50%);
 }
 
-/* Groupe Aiguille */
+/* Groupe Aiguille - Optimisé pour la réactivité */
 .qibla-pointer-group {
   position: absolute;
   top: 0;
@@ -372,8 +442,8 @@
   height: 100%;
   z-index: 5;
   pointer-events: none;
-  /* Transition spécifique au transform pour la fluidité */
-  transition: transform 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+  /* Réduction à 0.15s pour que l'aiguille suive ton mouvement en temps réel */
+  transition: transform 0.15s cubic-bezier(0.1, 0, 0.2, 1);
   will-change: transform;
 }
 
@@ -475,89 +545,177 @@
   transform: translateY(-2px);
 }
 
-/* =========================
-    AR MODE (AMÉLIORÉ)
-========================= */
+/* ============================================================
+    AR MODE (RÉALITÉ AUGMENTÉE - ÉDITION PROFESSIONNELLE)
+============================================================ */
+
+/* 1. LA VIDÉO (Arrière-plan) */
 #ar-video {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  z-index: -1; /* Derrière tout */
+  z-index: -1;
   display: none;
+  /* Effet de filtre pour faire ressortir l'UI Gold */
+  filter: brightness(0.7) contrast(1.2);
 }
 
+/* 2. LE HUD (Interface de visée) */
 #ar-controls {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2001; /* Au-dessus du header */
+  inset: 0;
+  z-index: 2001;
   pointer-events: none;
   display: none;
+  /* Grille de scan subtile */
+  background: radial-gradient(circle, transparent 20%, rgba(0, 0, 0, 0.3) 100%);
 }
 
-/* Viseur central pour le mode AR */
-#ar-controls::after {
+/* VISEUR CENTRAL HI-TECH */
+#ar-controls::after,
+#ar-controls::before {
   content: "";
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 60px;
-  height: 60px;
-  border: 2px solid rgba(176, 141, 87, 0.5);
   border-radius: 50%;
   pointer-events: none;
-  animation: ar-pulse 2s infinite;
 }
 
-@keyframes ar-pulse {
-  0% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0.8;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1.5);
-    opacity: 0;
-  }
+/* Cercle extérieur pulsant */
+#ar-controls::after {
+  width: 120px;
+  height: 120px;
+  border: 1px solid var(--gold);
+  border-style: dashed;
+  animation: ar-spin 10s linear infinite;
+  opacity: 0.5;
 }
 
+/* Point central de précision */
+#ar-controls::before {
+  width: 10px;
+  height: 10px;
+  background: var(--gold-bright);
+  box-shadow: 0 0 15px var(--gold-glow);
+  animation: ar-blink 1s infinite alternate;
+}
+
+/* CROIX DE VISÉE (Lignes horizontales et verticales) */
+.ar-crosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 250px;
+  height: 250px;
+  pointer-events: none;
+}
+
+.ar-crosshair::before,
+.ar-crosshair::after {
+  content: "";
+  position: absolute;
+  background: var(--gold);
+  opacity: 0.3;
+}
+
+.ar-crosshair::before {
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+} /* Ligne H */
+.ar-crosshair::after {
+  left: 50%;
+  top: 0;
+  width: 1px;
+  height: 100%;
+} /* Ligne V */
+
+/* 3. BOUTON FERMER (REPOSITIONNÉ ET PREMIUM) */
 .close-ar-btn {
   position: absolute;
-  top: 100px; /* Sous le header mobile */
+  top: 100px; /* Descendu pour éviter la barre de tâche */
   right: 20px;
   pointer-events: auto;
-  background: rgba(220, 38, 38, 0.9);
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.6);
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  padding: 10px 20px;
+  border-radius: 30px;
   font-family: "Poppins", sans-serif;
-  font-weight: 700;
-  font-size: 0.85rem;
-  letter-spacing: 1px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
   backdrop-filter: blur(10px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+  -webkit-backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   gap: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  z-index: 2100;
 }
 
-.close-ar-btn:active {
-  transform: scale(0.9);
+.close-ar-btn:hover {
+  background: var(--gold);
+  color: #062218; /* Emerald dark pour le contraste au survol */
+  transform: translateY(-2px);
+}
+
+.close-ar-btn i {
+  font-size: 1rem;
+}
+
+/* 4. ANIMATIONS */
+@keyframes ar-spin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes ar-blink {
+  from {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+/* TEXTE D'INSTRUCTION AR */
+.ar-instruction {
+  position: absolute;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-align: center;
+  width: 85%;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+  opacity: 0.9;
+  font-weight: 600;
 }
 
 /* ============================================================ */
-/* RESPONSIVE UNIFIÉ                                            */
+/* RESPONSIVE UNIFIÉ (ADAPTATION TOUS ÉCRANS)                   */
 /* ============================================================ */
 
-/* Desktop & Tablettes */
+/* --- Tablettes et écrans larges --- */
 @media (min-width: 1024px) {
   .qibla-content-wrapper {
     max-width: 800px;
@@ -565,7 +723,7 @@
   }
 }
 
-/* Mobile Standard */
+/* --- Mobile Standard (iPhone, Android) --- */
 @media (max-width: 600px) {
   .compass-section {
     padding: 10px 0;
@@ -582,37 +740,94 @@
     font-size: 0.8rem;
   }
 
+  /* Positionnement ajusté pour le header mobile */
   .close-ar-btn {
     top: 90px;
     right: 15px;
     padding: 10px 18px;
   }
+
+  .header-main-title {
+    font-size: 1.4rem;
+  }
+
+  .arabic-title {
+    font-size: 2.8rem;
+  }
 }
 
-/* Petits Mobiles (iPhone SE, etc.) */
+/* --- Petits Mobiles (iPhone SE, etc.) --- */
 @media (max-width: 360px) {
   .qibla-nav-footer {
     gap: 10px;
   }
+
   .nav-btn span {
     font-size: 0.7rem;
   }
+
+  .qibla-info-grid {
+    padding: 15px 10px;
+  }
+
+  .card-data .value {
+    font-size: 2.2rem;
+  }
+
+  #qibla-display {
+    width: 230px;
+    height: 230px;
+  }
 }
 
-/* Mode Paysage (Landscape) */
-@media (max-height: 500px) and (orientation: landscape) {
+/* --- Mode Paysage (Landscape) - Optimisation de l'espace vertical --- */
+@media (max-height: 550px) and (orientation: landscape) {
+  .header-spacer,
+  .glass-panel.main-header {
+    height: 60px;
+  }
+
   .compass-section {
     padding: 0;
   }
+
   #qibla-display {
     width: 180px;
     height: 180px;
   }
+
   .status-badge-premium {
-    margin-top: 10px;
+    margin: 10px auto;
     padding: 5px 15px;
   }
+
+  .french-translation {
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+  }
+
   .close-ar-btn {
     top: 20px;
+    padding: 8px 16px;
+  }
+
+  .ar-instruction {
+    bottom: 20px;
+  }
+}
+
+/* --- Gestion des encoches (Notch) pour iPhone X et + --- */
+@supports (padding: env(safe-area-inset-top)) {
+  .glass-panel.main-header {
+    padding-top: env(safe-area-inset-top);
+    height: calc(70px + env(safe-area-inset-top));
+  }
+
+  .header-spacer {
+    height: calc(70px + env(safe-area-inset-top));
+  }
+
+  .close-ar-btn {
+    top: calc(100px + env(safe-area-inset-top));
   }
 }

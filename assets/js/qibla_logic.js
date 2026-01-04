@@ -134,38 +134,44 @@ function handleOrientation(event) {
 function updateUI() {
   if (qiblaBearing === null) return;
 
-  // Rotation du cadran (Nord)
-  const dialRotation = -deviceHeading;
+  // 1. LE CADRAN RESTE FIXE
+  // On s'assure que le qiblaDisplay n'a plus de rotation pour que le 'N' reste en haut
   if (qiblaDisplay) {
-    // translateZ(0) active l'accélération matérielle GPU
-    qiblaDisplay.style.transform = `translateZ(0) rotate(${dialRotation}deg)`;
+    qiblaDisplay.style.transform = `translateZ(0) rotate(0deg)`;
   }
 
-  // Rotation de l'aiguille de la Qibla
+  // 2. SEULE L'AIGUILLE TOURNE
+  // Calcul de l'angle relatif : (Direction Kaaba - Orientation du téléphone)
   const pointerGroup = document.querySelector(".qibla-pointer-group");
   if (pointerGroup) {
-    pointerGroup.style.transform = `translateZ(0) rotate(${qiblaBearing}deg)`;
+    // On calcule l'angle final que l'aiguille doit prendre par rapport au 'N' fixe
+    const finalRotation = qiblaBearing - deviceHeading;
+    
+    // Application de la rotation avec accélération matérielle
+    pointerGroup.style.transform = `translateZ(0) rotate(${finalRotation}deg)`;
   }
 
-  // Calcul de la différence pour l'alignement
+  // 3. GESTION DE L'ALIGNEMENT (PRÉCISION)
   let diff = qiblaBearing - deviceHeading;
+  // Normalisation de l'angle entre -180 et 180 pour un calcul propre
   let normalizedDiff = ((diff + 540) % 360) - 180;
-  const isAligned = Math.abs(normalizedDiff) < 5; // Précision accrue à 5°
+  const isAligned = Math.abs(normalizedDiff) < 5; 
 
   if (isAligned) {
     if (!statusBadge.classList.contains("aligned")) {
       statusBadge.classList.add("aligned");
-      if (qiblaDisplay) qiblaDisplay.classList.add("qibla-aligned-glow");
-
+      // Optionnel : Ajout d'une lueur dorée plus forte sur l'aiguille quand aligné
+      if (pointerGroup) pointerGroup.style.filter = "drop-shadow(0 0 15px #2ecc71)";
+      
       if (navigator.vibrate && !hasVibrated) {
         navigator.vibrate(40);
         hasVibrated = true;
       }
     }
-    statusBadge.innerHTML = "🕋 Vous êtes face à la Qibla";
+    statusBadge.innerHTML = "🕋 Vous êtes face à la Kaaba";
   } else {
     statusBadge.classList.remove("aligned");
-    if (qiblaDisplay) qiblaDisplay.classList.remove("qibla-aligned-glow");
+    if (pointerGroup) pointerGroup.style.filter = "drop-shadow(0 0 10px rgba(176, 141, 87, 0.8))";
     statusBadge.innerHTML = "🧭 Ajustez votre direction";
     hasVibrated = false;
   }

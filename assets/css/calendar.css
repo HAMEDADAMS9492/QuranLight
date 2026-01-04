@@ -442,9 +442,19 @@
   }
 }
 
-/* Ajustements spécifiques Mobile (iPhone 15 Pro, Android récents) */
+/* --- SECTION RESPONSIVE UNIVERSELLE --- */
+
+@media (max-width: 768px) {
+  .calendar-container {
+    padding: 20px;
+    margin: 10px auto;
+    width: 92%;
+    box-sizing: border-box; /* Assure que le padding ne fait pas déborder le conteneur */
+  }
+}
+
+/* Ajustements spécifiques Mobile (iPhone, Android) */
 @media (max-width: 480px) {
-  /* En-tête plus compact pour libérer de l'espace vertical */
   .glass-panel.main-header {
     height: 70px;
     padding: 0 12px;
@@ -453,76 +463,74 @@
     height: 70px;
   }
 
-  /* Ajustement du titre pour éviter le chevauchement */
   .header-main-title {
     font-size: 0.95rem;
     letter-spacing: 0.5px;
   }
 
-  .moon-logo {
-    display: none;
-  } /* On cache pour l'équilibre visuel */
-
-  /* Le Calendrier */
   .calendar-container {
-    padding: 15px 10px; /* Réduction des bords internes */
-    width: 95%;
+    padding: 15px 8px; /* Réduction du padding latéral pour gagner de la place */
+    width: 96%;
     border-radius: 15px;
+    box-sizing: border-box;
   }
 
-  .date-hijri {
-    font-size: 1.4rem; /* Un peu plus petit pour tenir sur une ligne */
-  }
-
-  /* La Grille - C'est ici que le réglage iPhone se joue */
-  .calendar-grid {
-    gap: 6px; /* Espace réduit entre les cases pour éviter le débordement */
-  }
-
+  /* Grille : Gap réduit pour éviter la sortie de page */
+  .calendar-grid,
   .weekdays {
-    margin-bottom: 10px;
+    gap: 4px; /* Gap identique pour l'alignement parfait */
+    width: 100%;
   }
 
   .main-txt {
-    font-size: 0.6rem; /* Abréviations des jours plus petites */
+    font-size: 0.55rem;
   }
 
-  .arabic-txt {
-    display: none; /* Obligatoire sur mobile pour la clarté */
-  }
-
+  /* Correction de la superposition dans la case */
   .day {
-    border-radius: 6px;
-    /* On utilise l'aspect-ratio mais on s'assure que le texte ne dépasse pas */
-    padding: 4px 0;
+    padding: 6px 0 12px 0; /* Plus d'espace en bas pour le point */
+    min-height: 45px;
+    justify-content: flex-start; /* Aligne les chiffres vers le haut */
   }
 
   .gregorian-num {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    line-height: 1;
   }
 
   .hijri-num {
-    font-size: 0.6rem;
+    font-size: 0.55rem;
+    margin-top: 2px;
   }
 
-  /* Section Événements */
+  /* Positionnement du point (White Day) pour éviter la superposition */
+  .day.white-day::after {
+    font-size: 0.8rem; /* Plus petit sur mobile */
+    bottom: 2px; /* Fixé tout en bas de la case */
+    line-height: 1;
+  }
+
+  .date-hijri {
+    font-size: 1.3rem;
+  }
+
   .events-section {
+    width: 96%;
     padding: 15px;
-    width: 95%;
-  }
-
-  .event-card {
-    padding: 12px;
-    font-size: 0.9rem;
+    box-sizing: border-box;
   }
 }
 
-/* Gestion très petits écrans (iPhone SE) */
+/* Écrans ultra-compacts (iPhone SE) */
 @media (max-width: 340px) {
-  .calendar-grid {
-    gap: 4px;
+  .calendar-grid,
+  .weekdays {
+    gap: 2px;
   }
   .header-main-title {
     font-size: 0.8rem;
+  }
+  .gregorian-num {
+    font-size: 0.75rem;
   }
 }

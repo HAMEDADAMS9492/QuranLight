@@ -718,7 +718,7 @@
                         <span class="surah-name-fr">${surah.englishName}</span>
                         <span class="surah-sub-info">${
                           surah.revelationType
-                        } • ${surah.numberOfAyahs} AYATS</span>
+                        } • ${surah.numberOfAyahs} VERSETS</span>
                     </div>
                     <div class="surah-name-ar">${surah.name}</div>
                 </div>
@@ -758,9 +758,9 @@
         // Note: Ajout de Afif Muhammad Taj (Serveur 13 de mp3quran est le plus stable pour lui)
         switch (reciterId) {
           case "ar.afifmuhammadtaj":
-            // Version corrigée : le dossier contient le nom complet
-            audioUrl = `https://mirrors.quranicaudio.com/tvquran/afif_muhammad_taj/${padded}.mp3`;
-            break;
+    // Version corrigée : le dossier contient le nom complet
+    audioUrl = `https://mirrors.quranicaudio.com/tvquran/afif_muhammad_taj/${padded}.mp3`;
+    break;
 
           case "ar.abdulbasitmurattal":
             // OK - Utilise surahNum (1, 2, 3...)
