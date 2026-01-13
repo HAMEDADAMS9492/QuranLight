@@ -1,27 +1,27 @@
+/* =============================================== */
 /* --- assets/css/style.css (GLOBAL + Header + Sidebar + Index + Footer) --- */
+/* =============================================== */
 
 /* =============================================== */
-/* 1. POLICES & VARIABLES GLOBALES                 */
+/* 1. IMPORTS & VARIABLES GLOBALES                 */
 /* =============================================== */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap");
+
 :root {
   --color-gold: var(--gold, #b08d57);
   --color-gold-light: var(--gold-bright, #d4bc96);
   --color-emerald-abyssal: var(--emerald-dark, #05140f);
-
   --header-height: 70px;
   --sidebar-width: 280px;
-
   --text-main: #ffffff;
   --text-muted: #bebebe;
   --bg-surface: var(--card-bg, rgba(13, 34, 27, 0.85));
-
   --glass-border: 1px solid var(--border-light, rgba(176, 141, 87, 0.2));
   --transition-speed: 0.3s ease-in-out;
 }
 
 /* =============================================== */
-/* 2. RESET DE BASE                                */
+/* 2. RESET & BASE STYLES                         */
 /* =============================================== */
 * {
   box-sizing: border-box;
@@ -29,12 +29,21 @@
   padding: 0;
 }
 
+html,
+body {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   font-family: "Inter", sans-serif;
   min-height: 100vh;
   color: var(--text-main);
   line-height: 1.6;
-
   /* --- MIX PREMIUM : DÉGRADÉ EMERALD GOLD + TEXTURE --- */
   /* Ici, la 2e couleur émeraude est plus vibrante et le bas devient bronze/gold */
   background: url("https://www.transparenttextures.com/patterns/dark-matter.png"),
@@ -48,14 +57,19 @@ body {
   background-repeat: repeat, no-repeat;
   background-attachment: fixed;
   background-size: auto, cover;
-
   /* Suppression du blur sur le body pour la performance et la netteté */
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
 
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: var(--transition-speed);
+}
+
 /* =============================================== */
-/* 3. STRUCTURE PRINCIPALE                         */
+/* 3. STRUCTURE PRINCIPALE                        */
 /* =============================================== */
 .main-container {
   /* Calcul dynamique de l'espace haut basé sur la barre de navigation */
@@ -68,14 +82,8 @@ body {
   margin: 0 auto;
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
-  transition: var(--transition-speed);
-}
-
 /* =============================================== */
-/* 3. HEADER FLOTTANT GLASS                        */
+/* 4. HEADER FLOTTANT GLASS                       */
 /* =============================================== */
 .glass-panel {
   position: fixed;
@@ -143,25 +151,8 @@ a {
   display: block;
 }
 
-/* Barre de progression de prière (Accueil) */
-.progress-container {
-  width: 100%;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  overflow: hidden;
-  margin-top: 10px;
-}
-
-#prayer-progress-bar {
-  height: 100%;
-  background: linear-gradient(90deg, var(--color-gold), #fff);
-  width: 0%;
-  transition: width 1s ease-in-out;
-}
-
 /* =============================================== */
-/* 4. SIDEBAR PREMIUM (EMERALD & GOLD THEME)       */
+/* 5. SIDEBAR PREMIUM (EMERALD & GOLD THEME)      */
 /* =============================================== */
 .sidebar {
   position: fixed;
@@ -280,8 +271,9 @@ a {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(0, 0, 0, 0.2);
 }
+
 /* =============================================== */
-/* 5. BLOC ACCUEIL + BARRE DE PROGRESSION          */
+/* 6. BLOC ACCUEIL + BARRE DE PROGRESSION         */
 /* =============================================== */
 .home-date-time-block {
   width: 95%;
@@ -304,7 +296,6 @@ a {
   position: relative;
   overflow: hidden;
 }
-
 .home-date-time-block .gregorian-date {
   font-size: 1.1rem; /* Plus petit pour le prestige */
   font-weight: 600;
@@ -360,6 +351,23 @@ a {
   margin-top: 5px;
 }
 
+/* Barre de progression de prière (Accueil) */
+.progress-container {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+#prayer-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-gold), #fff);
+  width: 0%;
+  transition: width 1s ease-in-out;
+}
+
 /* Styles de la barre de progression */
 .prayer-progress-container {
   width: 100%;
@@ -378,6 +386,7 @@ a {
   border-radius: 10px;
   transition: width 1s linear;
 }
+
 /* ======================================================== */
 /* 6. BLOC DE RAPPELS (VERSION MASTERPIECE)                 */
 /* ======================================================== */
@@ -647,211 +656,199 @@ a {
     height: 65px;
   }
 }
+
 /* =============================================== */
-/* 8. FOOTER EMERAUDE PROFOND (OPTIMISÉ)           */
+/* 8. FOOTER EMERAUDE PROFOND (OPTIMISÉ V2)        */
 /* =============================================== */
 .footer {
-  /* Correction : On utilise une seule déclaration pour le fond */
-  /* Mélange d'un vert émeraude riche et d'une opacité maîtrisée */
+  /* Optimisation : fond unique + performance */
   background: linear-gradient(
     180deg,
-    var(--emerald-mid) 0%,
-    var(--emerald-dark) 100%
+    var(--emerald-mid, rgba(16, 95, 63, 0.95)) 0%,
+    var(--emerald-dark, rgba(5, 20, 15, 0.98)) 100%
   );
 
-  /* Structure et Espacement */
-  padding: 60px 25px 40px;
-  margin-top: 70px;
+  /* Structure optimisée */
+  padding: clamp(40px, 8vw, 60px) clamp(20px, 4vw, 25px) 30px;
+  margin-top: clamp(50px, 10vh, 70px);
 
-  /* Bordures arrondies Premium */
+  /* Bordures premium + performance */
   border-radius: 50px 50px 0 0;
+  border-top: 2px solid rgba(255, 193, 7, 0.25);
 
-  /* Liseré d'Or pour souligner le haut du footer */
-  border-top: 2px solid rgba(255, 193, 7, 0.3);
-
-  /* Effet de profondeur (Glassmorphism + Lueur interne) */
+  /* Glassmorphism optimisé */
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 
-  /* Le secret pour faire ressortir le vert : lueur interne */
-  box-shadow: inset 0 1px 30px rgba(16, 95, 63, 0.4),
-    /* Lueur verte interne */ 0 -15px 40px rgba(0, 0, 0, 0.5); /* Ombre portée externe */
+  /* Ombres optimisées pour GPU */
+  box-shadow: inset 0 1px 30px rgba(16, 95, 63, 0.3),
+    0 -15px 40px rgba(0, 0, 0, 0.4);
 
   color: #ffffff;
   position: relative;
   overflow: hidden;
+
+  /* Accessibilité */
+  font-family: "Poppins", -apple-system, sans-serif;
 }
 
-/* --- OPTIMISATION DES LIENS --- */
-.footer-links a {
-  color: rgba(255, 255, 255, 0.8) !important;
-  font-weight: 500;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.footer-links a:hover {
-  color: var(--color-gold) !important;
-  opacity: 1;
-  transform: translateX(8px); /* Petit décalage élégant au survol */
-}
-
-/* --- SECTION FOOTER : AJUSTEMENT COMPLET --- */
-
+/* --- GRID RESPONSIVE OPTIMISÉ --- */
 .footer-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: clamp(25px, 5vw, 40px);
   max-width: 1200px;
   margin: 0 auto;
 }
 
-/* Titres des colonnes (Navigation, Réseaux, etc.) */
+/* --- TITRES SECTION (Cohérence visuelle) --- */
 .footer-section h4 {
-  color: var(--color-gold);
-  font-size: 0.95rem;
+  color: var(--color-gold, #b08d57);
+  font-size: clamp(0.85rem, 2.5vw, 0.95rem);
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 25px;
-  opacity: 0.9;
+  letter-spacing: 1.8px;
+  margin: 0 0 clamp(18px, 4vw, 25px) 0;
+  position: relative;
 }
 
-/* --- BRANDING FOOTER (Logo + Nom) --- */
+/* Ligne décorative sous les titres */
+.footer-section h4::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 35px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-gold, #b08d57), transparent);
+}
 
+/* --- BRANDING (Animation GPU) --- */
 .footer-brand {
-  /* Utilisation de ta classe HTML existante */
   display: flex;
   align-items: center;
-  gap: 18px; /* Espace légèrement augmenté pour laisser respirer l'aura */
-  margin-bottom: 22px;
+  gap: clamp(12px, 3vw, 18px);
+  margin-bottom: clamp(15px, 4vw, 22px);
 }
 
 .footer-logo {
-  width: 52px;
-  height: 52px;
+  width: clamp(44px, 10vw, 52px);
+  height: clamp(44px, 10vw, 52px);
   border-radius: 50%;
-  /* Bordure double effet : Or avec une lueur interne */
-  border: 2px solid var(--color-gold);
-  box-shadow: 0 0 20px rgba(176, 141, 87, 0.25),
-    inset 0 0 10px rgba(176, 141, 87, 0.2);
+  border: 2px solid var(--color-gold, #b08d57);
+  box-shadow: 0 0 20px rgba(176, 141, 87, 0.3),
+    inset 0 0 12px rgba(176, 141, 87, 0.15);
   flex-shrink: 0;
   object-fit: cover;
-  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  will-change: transform;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .footer-brand:hover .footer-logo {
-  transform: rotate(10deg) scale(1.05); /* Animation subtile au survol du groupe */
+  transform: rotate(360deg) scale(1.08);
 }
 
 .footer-app-name {
   font-family: "Amiri", serif;
-  font-size: 1.65rem;
+  font-size: clamp(1.4rem, 5vw, 1.65rem);
   font-weight: 800;
-  /* Blanc cassé avec un très léger dégradé vers le gris perle pour donner du relief */
-  background: linear-gradient(to bottom, #ffffff 0%, #d1d1d1 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #f1d5a9 50%, #d4b085 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-
-  letter-spacing: 0.8px;
-  line-height: 1;
-  cursor: pointer;
-
-  /* Ajustement vertical précis */
-  transform: translateY(-2px);
-
-  transition: all 0.4s ease;
-  /* Lueur spirituelle signature */
-  filter: drop-shadow(0 0 5px rgba(176, 141, 87, 0.3));
+  background-clip: text;
+  letter-spacing: 0.5px;
+  line-height: 1.1;
+  filter: drop-shadow(0 0 8px rgba(176, 141, 87, 0.4));
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .footer-brand:hover .footer-app-name {
-  filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.6));
-  letter-spacing: 1.2px; /* Léger écartement des lettres au survol */
+  filter: drop-shadow(0 0 15px rgba(176, 141, 87, 0.7));
+  letter-spacing: 1px;
 }
 
 .footer-desc {
-  font-size: 0.92rem;
-  font-weight: 400;
-  color: rgba(
-    255,
-    255,
-    255,
-    0.75
-  ); /* Blanc doux pour ne pas voler la vedette au nom */
-  line-height: 1.7;
-  max-width: 280px; /* Évite que la description ne s'étale trop */
-  border-left: 2px solid var(--color-gold); /* Rappel du thème sur le côté */
-  padding-left: 15px;
-  margin-top: 12px;
+  font-size: clamp(0.85rem, 2.5vw, 0.92rem);
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.6;
+  max-width: 280px;
+  border-left: 2px solid rgba(176, 141, 87, 0.4);
+  padding-left: clamp(12px, 3vw, 15px);
+  margin: 0;
 }
 
-/* --- NAVIGATION & LIENS --- */
-.footer-links nav {
+/* --- LIENS ET NAVIGATION --- */
+.footer-links nav,
+.social-links-vertical {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: clamp(8px, 2vw, 12px);
 }
 
 .footer-links a,
 .social-links-vertical a {
-  color: #ffffff !important;
-  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: clamp(0.9rem, 2.2vw, 1rem);
   font-weight: 500;
   text-decoration: none;
-  transition: all 0.3s ease;
+  padding: 8px 0;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
-/* On ne décale que les liens de texte, pas les icônes sociales */
-.footer-links a:hover {
-  color: var(--color-gold) !important;
-  transform: translateX(8px);
+.footer-links a:hover,
+.social-links-vertical a:hover {
+  color: var(--color-gold, #b08d57);
+  background: rgba(176, 141, 87, 0.1);
+  padding-left: 12px;
+  transform: translateX(4px);
 }
 
 .social-links-vertical a:hover {
-  color: var(--color-gold) !important;
-  transform: scale(
-    1.1
-  ); /* Un léger zoom plutôt qu'un décalage pour les réseaux */
+  transform: scale(1.05);
 }
 
-/* Icônes dans les liens */
+/* Icônes sociales */
 .footer-links a i,
 .social-links-vertical a i {
-  color: var(--color-gold);
-  width: 20px;
+  width: 18px;
   text-align: center;
-  transition: transform 0.3s ease;
-}
-/* --- LE SELECTEUR DE LANGUE AMÉLIORÉ --- */
-.footer-lang {
-  min-width: 200px;
+  font-size: 1rem;
+  color: var(--color-gold, #b08d57);
+  filter: drop-shadow(0 0 4px rgba(176, 141, 87, 0.4));
 }
 
+/* --- SELECTEUR LANGUE SIMPLE & ÉLÉGANT --- */
 .lang-selector-wrapper {
   position: relative;
-  display: flex;
+  display: inline-flex; /* Changé de flex à inline-flex pour éviter qu'il prenne toute la largeur */
   align-items: center;
-  background: rgba(255, 255, 255, 0.15); /* Fond blanc translucide */
-  border: 1.5px solid rgba(255, 193, 7, 0.4); /* Bordure or légère */
-  border-radius: 50px; /* Bordure totalement ronde */
-  padding: 8px 20px;
-  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* Compatibilité Safari */
+  border: 1px solid rgba(176, 141, 87, 0.4);
+  border-radius: 20px;
+  padding: 8px 16px; /* Ajusté pour un look plus équilibré */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
 }
 
-.lang-selector-wrapper:hover {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: var(--color-gold);
-  box-shadow: 0 0 15px rgba(255, 193, 7, 0.2);
+.lang-selector-wrapper:hover,
+.lang-selector-wrapper:focus-within {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--color-gold, #b08d57);
+  box-shadow: 0 4px 20px rgba(176, 141, 87, 0.15);
+  transform: translateY(-1px); /* Petit effet de levée au survol */
 }
 
 .lang-icon-box {
-  color: var(--color-gold);
-  font-size: 1.2rem;
-  margin-right: 12px;
+  color: var(--color-gold, #b08d57);
+  font-size: 1rem;
+  margin-right: 10px;
   display: flex;
   align-items: center;
 }
@@ -860,51 +857,87 @@ a {
   background: transparent;
   border: none;
   color: #ffffff;
-  font-size: 1rem;
-  font-weight: 700;
-  width: 100%;
+  font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
-  outline: none;
-  appearance: none; /* Supprime le style par défaut du navigateur */
+  padding-right: 25px; /* Espace pour le chevron */
+  appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  padding-right: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  outline: none; /* Supprime le contour par défaut */
+  width: 100%;
 }
 
-/* Style des options (quand on clique) */
+/* Note: Le style des <option> est très limité par les navigateurs */
 .lang-select option {
-  background-color: #0f4f34; /* Ton vert de marque */
-  color: white;
-  padding: 15px;
-  font-weight: 600;
+  background: #022c22; /* Ton émeraude foncé */
+  color: #ffffff;
+  padding: 10px;
 }
 
 .lang-chevron {
   position: absolute;
-  right: 20px;
-  color: var(--color-gold);
-  font-size: 0.8rem;
-  pointer-events: none; /* Laisse passer le clic vers le select */
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%); /* Centrage vertical parfait */
+  color: var(--color-gold, #b08d57);
+  font-size: 0.75rem;
+  transition: transform 0.3s ease;
+  pointer-events: none;
 }
 
-/* Animation au focus */
+/* Rotation du chevron quand le select est ouvert ou au survol */
+.lang-selector-wrapper:hover .lang-chevron,
 .lang-select:focus + .lang-chevron {
-  transform: rotate(180deg);
-  transition: 0.3s;
+  transform: translateY(-50%) rotate(180deg);
 }
 
-/* Copyright Section */
+/* --- FOOTER BOTTOM --- */
 .footer-bottom {
-  margin-top: 50px;
-  padding-top: 25px;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: clamp(40px, 10vw, 60px);
+  padding: 25px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   text-align: center;
 }
 
 .footer-bottom p {
-  font-size: 1rem;
-  color: #ffffff;
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
+  color: rgba(255, 255, 255, 0.7);
   letter-spacing: 0.5px;
+  margin: 0;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+
+  .footer-desc {
+    border-left: none;
+    border-top: 1px solid rgba(176, 141, 87, 0.2);
+    padding: 20px 0 0 0;
+    margin: 0 auto;
+    max-width: 400px;
+  }
+
+  /* Centrer le sélecteur de langue sur mobile */
+  .footer-lang {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer {
+    padding: 50px 15px 30px;
+    border-radius: 40px 40px 0 0;
+  }
 }
 
 /* ============================================================ */
@@ -913,7 +946,6 @@ a {
 /* Effet : Balayage de lumière au survol (Shine Effect)         */
 /* ============================================================ */
 
-/* --- CONFIGURATION DES CONTENEURS ÉLIGIBLES --- */
 .module-card,
 .home-date-time-block,
 .ramadan-card {
@@ -958,6 +990,7 @@ a {
   border-color: var(--color-gold) !important;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 193, 7, 0.2);
 }
+
 /* ======================================================== */
 /* 10- SECTION RÉCITATEURS (PURE LUXE & SYMÉTRIE)           */
 /* ======================================================== */
@@ -1041,33 +1074,42 @@ a {
   box-shadow: 0 0 15px rgba(176, 141, 87, 0.3);
 }
 
-/* --- LISTE DES RÉCITATEURS --- */
+/* --- LISTE DES RÉCITATEURS (MODIFIÉE POUR L'ALIGNEMENT) --- */
 .reciters-horizontal-list {
   display: flex;
-  justify-content: center;
+  flex-direction: row; /* Force la ligne */
+  flex-wrap: nowrap; /* Empêche le retour à la ligne */
+  justify-content: flex-start; /* Commence à gauche pour le scroll */
+  align-items: flex-start; /* Aligne tous les sommets de cartes */
   overflow-x: auto;
-  gap: 40px;
-  padding: 20px 20px 40px;
+  gap: 30px;
+  padding: 30px 20px; /* Padding haut augmenté pour laisser l'espace au hover */
   scrollbar-width: none;
-  /* Correction pour éviter les sauts de scroll */
   -webkit-overflow-scrolling: touch;
+}
+
+/* Centrer si peu d'éléments, sinon scroll */
+@media (min-width: 900px) {
+  .reciters-horizontal-list {
+    justify-content: center;
+  }
 }
 
 .reciters-horizontal-list::-webkit-scrollbar {
   display: none;
 }
 
-/* --- CARTES ORBES (AGRANDIES) --- */
+/* --- CARTES ORBES (MODIFIÉES POUR LA SYMÉTRIE) --- */
 .reciter-card-circle {
   flex: 0 0 140px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
   cursor: pointer;
-  /* STABILISATION : On définit une zone de hit constante */
-  padding: 15px 0;
+  padding: 0; /* Reset padding pour éviter les décalages */
+  margin: 0;
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  /* On évite que le texte bouge tout le bloc */
   backface-visibility: hidden;
   transform: translateZ(0);
 }
@@ -1086,7 +1128,6 @@ a {
   );
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
   margin-bottom: 15px;
-  /* Transition fluide pour le changement de gradient */
   transition: transform 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
 }
 
@@ -1096,7 +1137,7 @@ a {
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid #05140f;
-  pointer-events: none; /* L'image ne doit pas bloquer l'event */
+  pointer-events: none;
 }
 
 .reciter-label {
@@ -1110,8 +1151,7 @@ a {
   transition: color 0.4s ease, transform 0.4s ease;
 }
 
-/* --- EFFET HOVER ÉPURÉ & STABILISÉ --- */
-/* On survole la CARTE, mais on anime les ÉLÉMENTS INTERNES pour éviter le bug de position */
+/* --- EFFET HOVER --- */
 .reciter-card-circle:hover .reciter-image-wrapper {
   transform: translateY(-10px) scale(1.08);
   box-shadow: 0 20px 40px rgba(176, 141, 87, 0.3);
@@ -1124,17 +1164,569 @@ a {
 }
 
 .reciter-card-circle:hover .reciter-label {
-  transform: translateY(-5px);
   color: var(--color-gold-light);
   opacity: 1;
 }
+/* ======================================================================== */
+/* 11. RESPONSIVE MASTER : OPTIMISATION UNIVERSELLE RECITATEURS ET CHATBOT */
+/* ======================================================================== */
+
+/* --- OPTIMISATION DU PANNEAU DES SOURATES --- */
+#surahPanel {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at top, #0d3a27 0%, #05140f 100%);
+  z-index: 2000;
+  display: none;
+  flex-direction: column;
+  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.surah-search-wrapper {
+  padding: 15px 20px;
+  background: rgba(5, 20, 15, 0.6);
+  border-bottom: 1px solid rgba(176, 141, 87, 0.1);
+}
+
+.surah-list {
+  overflow-y: auto;
+  padding: 15px;
+  flex-grow: 1;
+  scrollbar-width: none;
+}
+.surah-list::-webkit-scrollbar {
+  display: none;
+}
+
+.surah-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 18px;
+  margin-bottom: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(176, 141, 87, 0.1);
+  border-radius: 18px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.surah-item:hover {
+  background: rgba(176, 141, 87, 0.12);
+  border-color: var(--color-gold);
+  transform: scale(1.01);
+}
+
+.surah-item .number-box {
+  width: 38px;
+  height: 38px;
+  background: rgba(176, 141, 87, 0.15);
+  border: 1px solid rgba(176, 141, 87, 0.3);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-gold-light);
+  font-weight: 800;
+  font-size: 0.85rem;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+.surah-info-main {
+  flex-grow: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.surah-text-left {
+  display: flex;
+  flex-direction: column;
+}
+.surah-name-fr {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+.surah-sub-info {
+  font-size: 0.75rem;
+  color: var(--color-gold-light);
+  opacity: 0.8;
+  text-transform: uppercase;
+}
+.surah-name-ar {
+  font-family: "Amiri", serif;
+  font-size: 1.3rem;
+  color: var(--color-gold-light);
+  text-align: right;
+}
+
+/* L'iframe ne fait que la taille de la boule par défaut */
+iframe[src="chatbot.html"] {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 110px !important; /* Taille de la boule + aura */
+  height: 110px !important;
+  border: none;
+  z-index: 9999;
+  transition: all 0.3s ease;
+  pointer-events: auto !important;
+}
+
+/* Classe ajoutée quand le chat est ouvert */
+iframe.chat-opened {
+  width: 380px !important;
+  height: 550px !important;
+}
+
+/* 3. On utilise un sélecteur ultra-précis pour les cartes */
+.reciters-horizontal-list {
+  position: relative;
+  z-index: 10; /* On fait passer les récitateurs au-dessus du vide de l'iframe */
+}
+
+.reciter-card-circle {
+  position: relative;
+  z-index: 11;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  pointer-events: auto !important; /* Force la détection de la souris */
+}
+
+/* --- SPLASH SCREEN SYSTEM --- */
+#splash-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, #0a2d20, #051d14);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999; /* Priorité absolue sur tout le reste */
+  transition: opacity 0.8s ease, visibility 0.8s;
+}
+
+.splash-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo-wrapper-splash {
+  position: relative;
+  padding: 5px;
+  background: linear-gradient(135deg, #b08d57, #fbbf24);
+  border-radius: 50%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(176, 141, 87, 0.3);
+  opacity: 0;
+  transform: scale(0.8);
+  animation: premiumReveal 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.main-logo-splash {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  border: 3px solid #051d14;
+}
+
+.brand-name-splash {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin: 20px 0 0;
+  letter-spacing: 2px;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(to right, #fff, #fbbf24, #fff);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shineText 4s linear infinite;
+}
+
+.loader-container-splash {
+  margin-top: 40px;
+  width: 180px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.loader-bar-splash {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(to right, #b08d57, #fbbf24);
+  animation: loadingProgress 3.5s ease-in-out forwards;
+}
+
+.version-splash {
+  position: absolute;
+  bottom: 40px;
+  font-size: 0.8rem;
+  letter-spacing: 4px;
+  color: rgba(255, 255, 255, 0.3);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.splash-tagline {
+  color: #ffffff;
+  font-size: 0.75rem;
+  margin-top: 10px; /* Espace ajouté pour décoller du titre */
+  margin-bottom: 25px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: fadeIn 1.2s forwards 1s;
+}
+/* Cache l'iframe du chatbot tant que le splash est là */
+iframe[src="chatbot.html"] {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+/* Montre le chatbot uniquement quand le splash a disparu */
+.splash-finished iframe[src="chatbot.html"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* Animations */
+@keyframes premiumReveal {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes shineText {
+  to {
+    background-position: 200% center;
+  }
+}
+@keyframes loadingProgress {
+  to {
+    width: 100%;
+  }
+}
+
+.hide-splash {
+  opacity: 0;
+  visibility: hidden;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px); /* Petit mouvement vers le haut */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 /* ============================================================ */
-/* 11. RESPONSIVE MASTER : OPTIMISATION UNIVERSELLE           */
-/* (Tablettes, Mobiles, Écrans étroits)                       */
+/* 12. SECTION "L'ÉCHO DE L'OUMMA" - HARMONISÉE PREMIUM       */
 /* ============================================================ */
 
-/* --- TABLETTES ET GRANDS MOBILES (768px et moins) --- */
+/* --- Conteneur principal (Optimisation Background & Transition) --- */
+.news-section {
+  padding: 40px 0 60px 0; /* Augmentation du padding bas pour aérer avant le footer */
+  margin-top: 20px;
+
+  /* Dégradé sophistiqué : 
+     1. On part du vert abyssal (Emerald)
+     2. On descend vers une nuance presque noire pour la profondeur
+     3. On finit sur une touche de bg-surface pour fusionner avec le footer
+  */
+  background: linear-gradient(
+    180deg,
+    var(--color-emerald-abyssal) 0%,
+    rgba(2, 8, 6, 1) 50%,
+    rgba(13, 34, 27, 0.4) 100%
+  );
+
+  border-top: var(--glass-border);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Optionnel : Ajout d'une lueur subtile en bas de section pour le relief */
+.news-section::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-gold),
+    transparent
+  );
+  opacity: 0.15;
+}
+
+/* --- En-tête et titre --- */
+.section-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  flex-wrap: wrap;
+}
+
+.section-title-premium {
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  /* Harmonisation avec le doré du root */
+  background: linear-gradient(
+    90deg,
+    var(--color-gold),
+    #fff,
+    var(--color-gold)
+  );
+  background-size: 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientSlide 6s infinite linear;
+}
+
+@keyframes gradientSlide {
+  0% {
+    background-position: 0%;
+  }
+  100% {
+    background-position: 200%;
+  }
+}
+
+/* --- Filtres Modernes (pills) --- */
+.news-filters {
+  display: flex;
+  gap: 12px;
+  margin: 20px 0 10px 0;
+  overflow-x: auto;
+  padding: 5px 20px;
+  scrollbar-width: none;
+}
+
+.news-filters::-webkit-scrollbar {
+  display: none;
+}
+
+.filter-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: var(--glass-border);
+  color: var(--text-muted);
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-speed);
+  white-space: nowrap;
+}
+
+.filter-btn:hover {
+  border-color: var(--color-gold-light);
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.filter-btn.active {
+  background: var(--color-gold);
+  color: var(--color-emerald-abyssal); /* Contraste sur fond doré */
+  border-color: var(--color-gold);
+  box-shadow: 0 4px 15px rgba(176, 141, 87, 0.4);
+  font-weight: 700;
+}
+
+/* --- Conteneur d'articles (scroll fluide) --- */
+.news-container-fluid {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 20px 20px 40px 20px;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+}
+
+.news-container-fluid::-webkit-scrollbar {
+  display: none;
+}
+
+/* --- Cartes d'articles (Style Glassmorphism) --- */
+.modern-news-card {
+  min-width: 290px;
+  max-width: 290px;
+  background: var(--bg-surface);
+  border-radius: 24px;
+  border: var(--glass-border);
+  position: relative;
+  overflow: hidden;
+  scroll-snap-align: center;
+  transition: var(--transition-speed);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  /* CORRECTION CLIC : */
+  cursor: pointer;
+  z-index: 1;
+}
+
+.modern-news-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--color-gold-light);
+  background: rgba(20, 50, 40, 0.95);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+}
+
+/* --- Image principale --- */
+.news-img-box {
+  width: 100%;
+  height: 190px;
+  overflow: hidden;
+  position: relative;
+  /* CORRECTION : L'image ne doit pas bloquer le clic */
+  z-index: 0;
+}
+
+.news-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+.modern-news-card:hover .news-img-box img {
+  transform: scale(1.15);
+}
+
+/* --- Badge Catégorie --- */
+.category-tag {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(5, 20, 15, 0.8); /* Rappel emerald abyssal */
+  backdrop-filter: blur(5px);
+  color: var(--color-gold-light);
+  padding: 5px 14px;
+  border-radius: 12px;
+  font-size: 0.6rem;
+  letter-spacing: 0.8px;
+  font-weight: 800;
+  text-transform: uppercase;
+  border: 1px solid var(--color-gold);
+  z-index: 2;
+}
+
+/* --- Contenu de la carte --- */
+.news-info-overlay {
+  padding: 20px;
+  /* Dégradé fluide vers le fond de carte */
+  background: linear-gradient(
+    to top,
+    var(--color-emerald-abyssal) 60%,
+    transparent 100%
+  );
+  margin-top: -60px;
+  position: relative;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* CORRECTION : S'assure que le contenu est au dessus et laisse passer le clic vers la carte */
+  z-index: 2;
+  pointer-events: none;
+}
+
+.read-time {
+  font-size: 0.7rem;
+  color: var(--color-gold-light);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.news-h4 {
+  margin: 12px 0;
+  font-size: 1.1rem;
+  line-height: 1.4;
+  color: var(--text-main);
+  font-weight: 600;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* --- Lien de pied de carte --- */
+.news-footer-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  /* CORRECTION : On redonne la main au clic ici pour le texte spécifique */
+  pointer-events: auto;
+}
+
+.news-link-text {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-gold);
+  text-decoration: none;
+  transition: var(--transition-speed);
+}
+
+.news-link-text:hover {
+  color: var(--color-gold-light);
+  text-shadow: 0 0 10px rgba(176, 141, 87, 0.5);
+}
+
+.news-arrow {
+  font-size: 0.9rem;
+  color: var(--color-gold);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modern-news-card:hover .news-arrow {
+  transform: translateX(8px);
+  color: var(--color-gold-light);
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .section-title-premium {
+    font-size: 1.4rem;
+  }
+  .modern-news-card {
+    min-width: 260px;
+  }
+}
+/* ============================================================ */
+/* 13. RESPONSIVE MASTER : OPTIMISATION UNIVERSELLE           */
+/* ============================================================ */
+
 @media (max-width: 768px) {
   .main-container {
     padding-top: calc(var(--header-height) + 15px) !important;
@@ -1324,14 +1916,153 @@ a {
     letter-spacing: 2px;
   }
 }
+/* =============================================== */
+/* 14. MODE SOMBRE GLOBAL - HARMONIEUX & ÉPURÉ    */
+/* =============================================== */
 
-/* --- SÉCURITÉ ANTI-DÉBORDEMENT ET LISSAGE --- */
-html,
-body {
-  overflow-x: hidden;
-  width: 100%;
-  position: relative;
-  scroll-behavior: smooth;
-  -webkit-font-smoothing: antialiased;
-  -webkit-text-size-adjust: 100%;
+/* === BASE & ARRIÈRE-PLAN === */
+:root.theme-dark body,
+body.theme-dark {
+  background: url("https://www.transparenttextures.com/patterns/dark-matter.png"),
+    linear-gradient(to bottom, #1a1a1a 0%, #0f0f0f 100%) !important;
+  color: #e0e0e0 !important;
+}
+
+/* === SIDEBAR SOMBRE (Menu latéral) === */
+body.theme-dark #sidebar {
+  background: linear-gradient(180deg, #1e1e1e 0%, #121212 100%) !important;
+  border-right: 1px solid rgba(197, 160, 89, 0.2) !important;
+}
+
+body.theme-dark .sidebar-header {
+  background: radial-gradient(
+    circle,
+    rgba(176, 141, 87, 0.1) 0%,
+    transparent 100%
+  ) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+body.theme-dark .nav-item {
+  color: rgba(240, 240, 240, 0.8) !important;
+}
+
+body.theme-dark .nav-item:hover {
+  background: rgba(255, 255, 255, 0.03) !important;
+  color: var(--color-gold-light) !important;
+}
+
+body.theme-dark .nav-item.active {
+  background: linear-gradient(
+    90deg,
+    rgba(176, 141, 87, 0.15) 0%,
+    transparent 100%
+  ) !important;
+  color: var(--color-gold-light) !important;
+  border-left: 4px solid var(--color-gold-light) !important;
+}
+
+body.theme-dark .nav-item i {
+  color: var(--color-gold-light) !important;
+}
+
+/* Sidebar Footer (Paramètres & À propos) */
+body.theme-dark .sidebar-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* === FOOTER PRINCIPAL === */
+body.theme-dark .footer {
+  background: #161616 !important;
+  border-top: 1px solid rgba(197, 160, 89, 0.2) !important;
+  color: #b0b0b0 !important;
+}
+
+body.theme-dark .footer-app-name {
+  color: var(--color-gold-light) !important;
+}
+
+body.theme-dark .footer-section h4 {
+  color: var(--color-gold-light) !important;
+}
+
+body.theme-dark .footer-links a,
+body.theme-dark .footer-desc {
+  color: rgba(230, 230, 230, 0.7) !important;
+}
+
+body.theme-dark .footer-links a:hover {
+  color: var(--color-gold-light) !important;
+}
+
+/* Réseaux Sociaux & Sélecteur de langue */
+body.theme-dark .social-links-vertical a {
+  color: rgba(255, 255, 255, 0.7) !important;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+body.theme-dark .lang-select {
+  background: #222 !important;
+  color: #fff !important;
+  border: 1px solid rgba(197, 160, 89, 0.3) !important;
+}
+
+body.theme-dark .footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* === COMPOSANTS DE L'INTERFACE === */
+
+/* Header & Panels */
+body.theme-dark .glass-panel {
+  background: rgba(20, 20, 20, 0.9) !important;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(197, 160, 89, 0.2);
+}
+
+/* Bloc Date & Heure */
+body.theme-dark .home-date-time-block {
+  background-image: linear-gradient(
+      rgba(10, 10, 10, 0.85),
+      rgba(10, 10, 10, 0.95)
+    ),
+    var(--home-bg-image) !important;
+  border: 1px solid rgba(197, 160, 89, 0.15);
+}
+
+/* Prochaine prière */
+body.theme-dark .next-prayer-info {
+  background: rgba(30, 30, 30, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Cartes de modules (Grille) */
+body.theme-dark .module-card {
+  background: rgba(35, 35, 35, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+body.theme-dark .module-label {
+  color: #e0e0e0 !important;
+}
+
+/* Rappel quotidien / Citations */
+body.theme-dark .daily-reminder-card {
+  background: linear-gradient(145deg, #1e1e1e, #141414) !important;
+  border: 1px solid rgba(197, 160, 89, 0.2) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.theme-dark .quote-arabic {
+  color: var(--color-gold-light) !important;
+}
+
+body.theme-dark .quote-french {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Overlay Sidebar */
+body.theme-dark #sidebar-overlay {
+  background: rgba(0, 0, 0, 0.8) !important;
 }

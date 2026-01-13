@@ -18,29 +18,64 @@ async function initRamadanApp() {
           const lat = p.coords.latitude;
           const lon = p.coords.longitude;
           let cityName = "Ma Position";
+
           try {
             const geoRes = await fetch(
               `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`
             );
             const geoData = await geoRes.json();
             const a = geoData.address;
-            let city = a.city || a.town || a.village || a.municipality || "";
-            let country = a.country || "";
-            cityName =
-              city && country
-                ? `${city}, ${country}`
-                : city || country || "Position inconnue";
+
+            // 1. Extraction des composants (Logique de ton autre classe)
+            const country = a.country || "";
+            let city =
+              a.city ||
+              a.town ||
+              a.village ||
+              a.municipality ||
+              a.county ||
+              a.state ||
+              "";
+
+            // 2. Traitement spécifique (Cas comme Abuja)
+            if (
+              city.toLowerCase().includes("municipal") ||
+              city.toLowerCase().includes("area council")
+            ) {
+              city = a.city_district || a.suburb || a.town || "Abuja";
+            }
+
+            // 3. Nettoyage des prépositions
+            city = city.replace(/^(du |de |de la |des |the )/gi, "").trim();
+
+            // 4. Formatage STRICT : "Ville, Pays"
+            if (
+              city &&
+              country &&
+              city.toLowerCase() !== country.toLowerCase()
+            ) {
+              cityName = `${city}, ${country}`;
+            } else if (!city) {
+              cityName = country || "Ma Position";
+            } else {
+              cityName = city;
+            }
           } catch (e) {
-            console.error("Geo error");
+            console.error("Geo error", e);
           }
+
+          // On retourne l'objet avec les noms de variables attendus par la suite du code
           res({ lat, lon, city: cityName });
         },
+        // Fallback Paris si refus GPS
         () => res({ lat: 48.8566, lon: 2.3522, city: "Paris, France" }),
-        { timeout: 5000 }
+        { enableHighAccuracy: true, timeout: 15000 }
       );
     });
 
-    document.getElementById("location-display").innerText = locationData.city;
+    // Mise à jour de l'UI avec le nom formaté
+    const locDisplay = document.getElementById("location-display");
+    if (locDisplay) locDisplay.innerText = locationData.city;
 
     const now = new Date();
     const currentMonth = now.getMonth() + 1;
@@ -55,24 +90,27 @@ async function initRamadanApp() {
     const hijriYear = hijriDate.year;
     const hijriMonthNumber = parseInt(hijriDate.month.number);
 
-    document.getElementById("hijri-ramadan-year").innerText = hijriYear + "H";
+    const hijriYearEl = document.getElementById("hijri-ramadan-year");
+    if (hijriYearEl) hijriYearEl.innerText = hijriYear + "H";
 
     // --- LOGIQUE DE NOTIFICATION ---
     const notificationBox = document.getElementById(
       "ramadan-countdown-notification"
     );
-    if (hijriMonthNumber < 9) {
-      // Date estimée du 1er Ramadan (12 Mars 2026)
-      const ramadanStartDate = new Date(2026, 2, 12); // Mois 2 car Janvier=0
-      const diffInMs = ramadanStartDate - now;
-      const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
+    if (notificationBox) {
+      if (hijriMonthNumber < 9) {
+        const ramadanStartDate = new Date(2026, 2, 12);
+        const diffInMs = ramadanStartDate - now;
+        const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
 
-      if (diffInDays > 0) {
-        notificationBox.style.display = "block";
-        document.getElementById("days-until-ramadan").innerText = diffInDays;
+        if (diffInDays > 0) {
+          notificationBox.style.display = "block";
+          const daysEl = document.getElementById("days-until-ramadan");
+          if (daysEl) daysEl.innerText = diffInDays;
+        }
+      } else {
+        notificationBox.style.display = "none";
       }
-    } else {
-      notificationBox.style.display = "none";
     }
 
     // --- LOGIQUE D'AFFICHAGE DU CALENDRIER ---
@@ -284,55 +322,92 @@ function startCountdown(todayTimings, tomorrowTimings) {
 }
 
 // 4. MODULE CHECK-LIST
-function setupChecklist() {
-  const container = document.getElementById("checklist-container");
-  const tasks = [
-    "Les 5 prières quotidiennes",
-    "Lecture du Coran (portion du jour)",
-    "Prière du Tarawih",
-    "Acte de charité ou bonne action",
-  ];
+const CHECKLIST_STORAGE_KEY = "ramadan_checklist";
 
-  const today = new Date().toDateString();
-  let savedData = JSON.parse(localStorage.getItem("ramadan_checklist")) || {
-    date: today,
-    items: [],
-  };
+const TASKS = [
+  "Les 5 prières quotidiennes",
+  "Lecture du Coran (portion du jour)",
+  "Prière du Tarawih",
+  "Acte de charité ou bonne action",
+];
 
-  if (savedData.date !== today) {
-    savedData = { date: today, items: [] };
-  }
-
-  container.innerHTML = tasks
-    .map(
-      (task, index) => `
-        <div class="checklist-item ${
-          savedData.items.includes(index) ? "checked" : ""
-        }" onclick="toggleTask(${index})">
-            <span>${task}</span>
-            <div class="check-box"><i class="fas fa-check"></i></div>
-        </div>
-    `
-    )
-    .join("");
+function getTodayKey() {
+  return new Date().toDateString();
 }
 
-window.toggleTask = function (index) {
-  const today = new Date().toDateString();
-  let savedData = JSON.parse(localStorage.getItem("ramadan_checklist")) || {
-    date: today,
-    items: [],
-  };
+function loadChecklistData() {
+  const today = getTodayKey();
+  const raw = localStorage.getItem(CHECKLIST_STORAGE_KEY);
 
-  if (savedData.items.includes(index)) {
-    savedData.items = savedData.items.filter((i) => i !== index);
-  } else {
-    savedData.items.push(index);
+  if (!raw) {
+    return { date: today, items: [] };
   }
 
-  localStorage.setItem("ramadan_checklist", JSON.stringify(savedData));
+  let parsed;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return { date: today, items: [] };
+  }
+
+  // Si la date a changé, on repart sur une nouvelle liste
+  if (parsed.date !== today) {
+    return { date: today, items: [] };
+  }
+
+  return parsed;
+}
+
+function saveChecklistData(data) {
+  localStorage.setItem(CHECKLIST_STORAGE_KEY, JSON.stringify(data));
+}
+
+function setupChecklist() {
+  const container = document.getElementById("checklist-container");
+  if (!container) return;
+
+  const savedData = loadChecklistData();
+
+  container.innerHTML = TASKS.map((task, index) => {
+    const isChecked = savedData.items.includes(index);
+
+    return `
+      <div 
+        class="checklist-item ${isChecked ? "checked" : ""}" 
+        data-index="${index}"
+      >
+        <span>${task}</span>
+        <div class="check-box"><i class="fas fa-check"></i></div>
+      </div>
+    `;
+  }).join("");
+
+  // Évènement sur le container (délégation) au lieu de onclick inline
+  container.addEventListener("click", handleChecklistClick, { once: true });
+}
+
+function handleChecklistClick(event) {
+  const item = event.target.closest(".checklist-item");
+  if (!item) return;
+
+  const index = Number(item.getAttribute("data-index"));
+  toggleTask(index);
+}
+
+function toggleTask(index) {
+  const data = loadChecklistData();
+
+  if (data.items.includes(index)) {
+    data.items = data.items.filter((i) => i !== index);
+  } else {
+    data.items.push(index);
+  }
+
+  saveChecklistData(data);
   setupChecklist();
-};
+}
+
+
 
 // 5. MODULE DOUAS
 function renderDouas() {

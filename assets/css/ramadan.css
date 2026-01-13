@@ -407,15 +407,16 @@
 /* ============================================================ */
 /* 6. MODULE CALENDRIER – LUXURY EDITION (DATE & TIMES)         */
 /* ============================================================ */
-/* Style de la notification Ramadan - Version Or Sombre & Royal */
+/* Style de la notification Ramadan - Version Or Sombre & Royal Optimisée */
 .notif-ramadan {
-  display: none; /* Géré par le JS */
-  /* Background Or Sombre Royal avec dégradé radial */
+  display: none; /* Affiché par JS */
   background: radial-gradient(circle at top left, #2c2412, #1a150a, #0d0b05);
-  border: 1.5px solid rgba(212, 175, 55, 0.4); /* Bordure en Or véritable */
-  border-radius: 24px;
-  padding: 18px 30px;
-  margin: 15px 20px 30px 20px;
+  border: 1.5px solid rgba(212, 175, 55, 0.4);
+  border-radius: 20px;
+  padding: clamp(15px, 4vw, 25px) clamp(20px, 5vw, 40px);
+  margin: 15px auto; /* Centrage horizontal */
+  max-width: 90%; /* Évite de toucher les bords sur mobile */
+  width: fit-content;
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7),
     inset 0 0 15px rgba(212, 175, 55, 0.1);
   backdrop-filter: blur(15px);
@@ -424,7 +425,7 @@
   animation: fadeInSmooth 1s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Petit effet de reflet doré qui passe sur la bannière */
+/* Effet de reflet doré */
 .notif-ramadan::after {
   content: "";
   position: absolute;
@@ -435,11 +436,12 @@
   background: linear-gradient(
     45deg,
     transparent,
-    rgba(212, 175, 55, 0.05),
+    rgba(212, 175, 55, 0.08),
     transparent
   );
   transform: rotate(45deg);
-  animation: shimmer 6s infinite;
+  animation: shimmer 8s infinite linear;
+  pointer-events: none;
 }
 
 .notif-content {
@@ -447,29 +449,31 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 25px;
+  gap: clamp(15px, 3vw, 30px);
   position: relative;
-  z-index: 1; /* Passe au dessus du reflet */
+  z-index: 1;
 }
 
 .notif-icon {
-  font-size: 2.8rem; /* Agrandissement de l'icône */
+  font-size: clamp(2rem, 5vw, 3rem); /* Taille adaptative */
   color: #ffd700;
   filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6));
   animation: moonPulse 4s infinite ease-in-out;
+  flex-shrink: 0;
 }
 
 .notif-text {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  text-align: left;
 }
 
 .notif-title {
   color: #ffffff;
   font-weight: 800;
-  font-size: 1.4rem; /* Texte beaucoup plus grand */
-  letter-spacing: 1.5px;
+  font-size: clamp(1.1rem, 3vw, 1.5rem); /* Titre adaptatif */
+  letter-spacing: 1px;
   margin-bottom: 4px;
   text-transform: uppercase;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
@@ -477,20 +481,42 @@
 
 .notif-subtitle {
   color: rgba(255, 255, 255, 0.9);
-  font-size: 1.1rem; /* Texte agrandi */
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
   font-weight: 400;
+  line-height: 1.4;
 }
 
 #days-until-ramadan {
-  color: #ffd700; /* Or brillant */
+  color: #ffd700;
   font-weight: 900;
-  font-size: 1.3rem; /* Compteur imposant */
-  text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+  font-size: 1.1em;
+  text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
   background: linear-gradient(90deg, #ffd700, #fff3b0, #ffd700);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: goldShine 3s linear infinite;
+}
+
+/* --- RESPONSIVE DESIGN --- */
+
+@media (max-width: 600px) {
+  .notif-content {
+    flex-direction: column; /* Empilement vertical sur mobile */
+    text-align: center;
+    gap: 15px;
+  }
+
+  .notif-text {
+    align-items: center; /* Centre le texte sur mobile */
+    text-align: center;
+  }
+
+  .notif-ramadan {
+    padding: 20px;
+    margin: 10px;
+    width: auto;
+  }
 }
 
 /* --- ANIMATIONS --- */
@@ -513,7 +539,7 @@
 @keyframes fadeInSmooth {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(15px);
   }
   to {
     opacity: 1;
@@ -524,12 +550,12 @@
 @keyframes moonPulse {
   0%,
   100% {
-    transform: scale(1) rotate(0deg);
+    transform: scale(1);
     filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3));
   }
   50% {
-    transform: scale(1.15) rotate(-5deg);
-    filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.7));
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.6));
   }
 }
 /* Carte principale : Style Capsule Solide */

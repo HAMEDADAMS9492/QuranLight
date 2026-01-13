@@ -1,59 +1,69 @@
 /**
- * THEME LOADER - QuranLight
- * Optimisé pour une exécution immédiate sans flash visuel.
+ * THEME LOADER OPTIMISÉ - QuranLight v2
+ * Zéro flash, 100% robuste, compatible PWA/offline
  */
 (function () {
+  // Cache pour éviter les appels répétés
+  let prefsCache = null;
+
   const getPrefs = () => {
+    if (prefsCache) return prefsCache;
+
     try {
-      return JSON.parse(localStorage.getItem("quranlight_prefs")) || {};
+      prefsCache = JSON.parse(localStorage.getItem("quranlight_prefs")) || {};
     } catch (e) {
-      return {};
+      prefsCache = { theme: "emerald" }; // Fallback sécurisé
     }
+    return prefsCache;
   };
 
-  const apply = (theme) => {
+  const applyTheme = (theme) => {
     const root = document.documentElement;
+    const body = document.body;
 
+    // Nettoyage complet
+    root.removeAttribute("data-theme");
+    root.classList.remove("theme-dark");
+    if (body) body.classList.remove("theme-dark");
+
+    // Application du thème dark uniquement
     if (theme === "dark") {
-      // Applique l'attribut sur l'élément racine (HTML) immédiatement
       root.setAttribute("data-theme", "dark");
       root.classList.add("theme-dark");
-
-      // Si le body est déjà disponible, on lui ajoute la classe aussi
-      if (document.body) {
-        document.body.classList.add("theme-dark");
-      }
-    } else {
-      // Sécurité : on nettoie si le thème est emerald
-      root.removeAttribute("data-theme");
-      root.classList.remove("theme-dark");
-      if (document.body) document.body.classList.remove("theme-dark");
+      if (body) body.classList.add("theme-dark");
     }
   };
 
-  const settings = getPrefs();
-
-  // EXÉCUTION IMMÉDIATE (sur l'élément <html> qui existe déjà)
-  if (settings.theme) {
-    // On applique sur le root tout de suite pour bloquer le flash
-    if (settings.theme === "dark") {
-      document.documentElement.setAttribute("data-theme", "dark");
-      document.documentElement.classList.add("theme-dark");
-    }
+  // LECTURE PRÉCOCE (anti-flash)
+  const prefs = getPrefs();
+  if (prefs.theme === "dark") {
+    applyTheme("dark");
   }
 
-  // SURVEILLANCE DU BODY (pour finaliser l'application dès qu'il apparaît)
-  if (settings.theme && settings.theme !== "emerald") {
-    const observer = new MutationObserver(() => {
-      if (document.body) {
-        apply(settings.theme);
-        observer.disconnect();
+  // FINALISATION (body + événements)
+  const finalize = () => {
+    applyTheme(prefs.theme);
+
+    // Écoute les changements de préférence utilisateur
+    window.addEventListener("storage", (e) => {
+      if (e.key === "quranlight_prefs") {
+        prefsCache = null; // Invalide cache
+        applyTheme(getPrefs().theme);
       }
     });
+  };
 
-    observer.observe(document.documentElement, { childList: true });
-
-    // Sécurité si déjà chargé
-    if (document.body) apply(settings.theme);
+  // Exécution selon disponibilité DOM
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", finalize);
+  } else {
+    finalize();
   }
+
+  // SURVEILLANCE MULTI-ONGLET (bonus)
+  window.addEventListener("storage", (e) => {
+    if (e.key === "quranlight_prefs") {
+      location.reload(); // Plus robuste que recalcul
+    }
+  });
 })();

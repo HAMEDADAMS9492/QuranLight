@@ -194,6 +194,13 @@
         border-right: 4px solid var(--gold-primary);
       }
 
+      /* === Réponses du bot avec bouton de redirection === */
+      .bot-response-content {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
       /* --- Bouton de Redirection --- */
       .redirect-container {
         margin-top: 12px;
@@ -218,6 +225,8 @@
         font-size: 13px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         transition: all 0.3s ease;
+        width: 100%;
+        justify-content: center;
       }
 
       .redirect-confirm-btn:hover {
@@ -356,11 +365,19 @@
           height: 60px;
         }
       }
+      .chatbot-toggle {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 999999; /* assure que rien ne passe par-dessus */
+      }
     </style>
   </head>
   <body>
     <div id="chatbot-container">
-      <div id="chatbot-window" class="chatbot-window">
+      <!-- 🪶 Fenêtre principale du chatbot - masquée au départ -->
+      <div id="chatbot-window" class="chatbot-window" style="display: none">
+        <!-- En-tête -->
         <div class="chatbot-header">
           <div class="header-info">
             <i class="fas fa-mosque"></i>
@@ -369,6 +386,7 @@
               <p id="ui-subtitle">Guidance Spirituelle</p>
             </div>
           </div>
+          <!-- Boutons de langue et fermeture -->
           <div class="header-actions">
             <button
               class="lang-btn active"
@@ -386,13 +404,16 @@
           </div>
         </div>
 
+        <!-- Zone des messages -->
         <div class="chatbot-messages" id="chat-messages"></div>
 
+        <!-- Zone de saisie & envoi -->
         <div class="input-area">
           <input
             type="text"
             id="user-input"
             placeholder="Posez votre question..."
+            autocomplete="off"
           />
           <button class="send-btn" id="send-msg">
             <i class="fas fa-paper-plane"></i>
@@ -400,259 +421,12 @@
         </div>
       </div>
 
-      <div class="chatbot-toggle" id="open-chat">
-        <img src="assets/image/Logo.jpg" alt="Logo" />
+      <!-- 🔘 Bouton flottant pour ouvrir le chatbot -->
+      <div class="chatbot-toggle" id="open-chat" title="Ouvrir Chatbot">
+        <img src="assets/image/Logo.jpg" alt="Logo QuranLight" />
       </div>
     </div>
-
-    <script>
-      const chatWindow = document.getElementById("chatbot-window");
-      const openBtn = document.getElementById("open-chat");
-      const closeBtn = document.getElementById("close-chat");
-      const sendBtn = document.getElementById("send-msg");
-      const userInput = document.getElementById("user-input");
-      const messagesArea = document.getElementById("chat-messages");
-
-      let currentLang = "FR";
-
-      const data = {
-        FR: {
-          welcome:
-            "As-salamu alaykum 👋 Je suis votre assistant QuranLight. Comment puis-je vous aider ?",
-          subtitle: "Guidance Spirituelle",
-          placeholder: "Exprimez-vous ici...",
-          typing: "QuranLight réfléchit...",
-          options: [
-            {
-              id: "coran",
-              text: "Lire le Noble Coran",
-              icon: "fa-book-open",
-              url: "quran.html",
-            },
-            {
-              id: "priere",
-              text: "Horaires de Prière",
-              icon: "fa-clock",
-              url: "salat.html",
-            },
-            {
-              id: "hadith",
-              text: "Hadiths du Jour",
-              icon: "fa-quote-left",
-              url: "hadiths.html",
-            },
-            {
-              id: "qibla",
-              text: "Direction de la Qibla",
-              icon: "fa-compass",
-              url: "qibla.html",
-            },
-          ],
-          actionResponses: {
-            coran:
-              "Le Coran est une lumière et une guidée pour l'âme. Accédez à la lecture ici :",
-            priere:
-              "La prière est le lien entre le serviteur et son Créateur. Voici les horaires :",
-            hadith:
-              "Plongez dans les enseignements et sagesses du Prophète (psl) :",
-            qibla:
-              "Pour vous orienter avec précision vers la Kaaba, utilisez notre boussole :",
-          },
-          smartResponses: [
-            {
-              keywords: ["salam", "bonjour", "salut"],
-              msg: "Wa Alaykum As-Salam ! Heureux de vous retrouver. En quoi puis-je vous éclairer aujourd'hui ?",
-            },
-            {
-              keywords: ["merci", "shukran"],
-              msg: "Barakallahu feek ! C'est un honneur de vous accompagner dans votre cheminement.",
-            },
-          ],
-          fallback:
-            "Je n'ai pas bien saisi. Pourriez-vous reformuler votre demande ou choisir l'une des options ci-dessus ?",
-        },
-        EN: {
-          welcome:
-            "As-salamu alaykum 👋 I am your QuranLight assistant. How can I help you?",
-          subtitle: "Spiritual Guidance",
-          placeholder: "Type here...",
-          typing: "QuranLight is thinking...",
-          options: [
-            {
-              id: "coran",
-              text: "Read Noble Quran",
-              icon: "fa-book-open",
-              url: "quran.html",
-            },
-            {
-              id: "priere",
-              text: "Prayer Timings",
-              icon: "fa-clock",
-              url: "salat.html",
-            },
-            {
-              id: "hadith",
-              text: "Hadiths of the Day",
-              icon: "fa-quote-left",
-              url: "hadiths.html",
-            },
-            {
-              id: "qibla",
-              text: "Qibla Direction",
-              icon: "fa-compass",
-              url: "qibla.html",
-            },
-          ],
-          actionResponses: {
-            coran:
-              "The Quran is a light and guidance for the soul. Access the reading here:",
-            priere:
-              "Prayer is the link between the servant and the Creator. Here are the timings:",
-            hadith: "Dive into the teachings and wisdom of the Prophet (pbuh):",
-            qibla:
-              "To orient yourself precisely towards the Kaaba, use our compass:",
-          },
-          smartResponses: [
-            {
-              keywords: ["salam", "hello", "hi"],
-              msg: "Wa Alaykum As-Salam! Happy to see you. How can I assist your spiritual journey today?",
-            },
-          ],
-          fallback:
-            "I didn't quite catch that. Could you please rephrase or pick an option above?",
-        },
-      };
-
-      function changeLang(lang) {
-        currentLang = lang;
-        const btnFr = document.getElementById("btn-fr");
-        const btnEn = document.getElementById("btn-en");
-        if (btnFr) btnFr.classList.toggle("active", lang === "FR");
-        if (btnEn) btnEn.classList.toggle("active", lang === "EN");
-
-        document.getElementById("ui-subtitle").innerText = data[lang].subtitle;
-        userInput.placeholder = data[lang].placeholder;
-        renderInitialState();
-      }
-
-      function renderInitialState() {
-        messagesArea.innerHTML = `
-      <div class="msg bot-msg">${data[currentLang].welcome}</div>
-      <div class="options-list">
-        ${data[currentLang].options
-          .map(
-            (opt) => `
-          <button class="option-button" onclick="handleAction('${opt.id}', '${opt.text}', '${opt.url}')">
-            <span>${opt.text}</span>
-            <i class="fas ${opt.icon}"></i>
-          </button>
-        `
-          )
-          .join("")}
-      </div>
-      <div id="typing" class="typing" style="display:none">${
-        data[currentLang].typing
-      }</div>
-    `;
-      }
-
-      /* ===================================================
-     ACTION : RÉPONSE ADAPTÉE AVEC BOUTON PERSONNALISÉ
-  ====================================================== */
-      function handleAction(id, label, url) {
-        appendMessage(label, "user");
-        showTyping(true);
-
-        setTimeout(() => {
-          showTyping(false);
-
-          const introText = data[currentLang].actionResponses[id];
-          // Ici, on utilise "label" (le texte de l'option) directement pour le bouton
-          const responseHtml = `
-        <div class="bot-response-content">
-          ${introText}
-          <div class="redirect-container">
-            <button class="redirect-confirm-btn" onclick="redirectTo('${url}')">
-              ${label} <i class="fas fa-arrow-right"></i>
-            </button>
-          </div>
-        </div>
-      `;
-
-          appendMessage(responseHtml, "bot");
-        }, 850);
-      }
-
-      function redirectTo(url) {
-        // Redirection de la page parente
-        if (window.parent && window.parent !== window) {
-          window.parent.location.href = url;
-        } else {
-          window.location.href = url;
-        }
-      }
-
-      function processSmartResponse(input) {
-        const text = input.toLowerCase();
-        const smartRes = data[currentLang].smartResponses;
-        for (let item of smartRes) {
-          if (item.keywords.some((key) => text.includes(key))) {
-            return item.msg;
-          }
-        }
-        return data[currentLang].fallback;
-      }
-
-      function appendMessage(content, side) {
-        const msg = document.createElement("div");
-        msg.className = `msg ${side}-msg`;
-        msg.innerHTML = content;
-        const typingElem = document.getElementById("typing");
-        if (typingElem) {
-          messagesArea.insertBefore(msg, typingElem);
-        } else {
-          messagesArea.appendChild(msg);
-        }
-        messagesArea.scrollTop = messagesArea.scrollHeight;
-      }
-
-      function showTyping(status) {
-        const t = document.getElementById("typing");
-        if (t) t.style.display = status ? "block" : "none";
-        messagesArea.scrollTop = messagesArea.scrollHeight;
-      }
-
-      sendBtn.onclick = () => {
-        const val = userInput.value.trim();
-        if (!val) return;
-
-        appendMessage(val, "user");
-        userInput.value = "";
-        showTyping(true);
-
-        setTimeout(() => {
-          showTyping(false);
-          appendMessage(processSmartResponse(val), "bot");
-        }, 1000);
-      };
-
-      userInput.onkeypress = (e) => {
-        if (e.key === "Enter") sendBtn.click();
-      };
-
-      openBtn.onclick = () => {
-        chatWindow.style.display = "flex";
-        openBtn.style.display = "none";
-        window.parent.postMessage("openChat", "*");
-      };
-
-      closeBtn.onclick = () => {
-        chatWindow.style.display = "none";
-        openBtn.style.display = "flex";
-        window.parent.postMessage("closeChat", "*");
-      };
-
-      renderInitialState();
-    </script>
+    <script src="assets/js/script.js"></script>
+    <script src="assets/js/chatbot.js"></script>
   </body>
 </html>

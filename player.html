@@ -96,28 +96,28 @@
         justify-content: center;
         align-items: center;
         min-height: 0;
-        padding: 10px 0; /* Ajoute un peu d'espace pour que l'image ne touche pas le header */
+        padding: 10px 0;
       }
 
       .album-art {
         width: 100%;
-        max-width: clamp(250px, 90vw, 380px); /* Plus large */
+        max-width: clamp(250px, 90vw, 380px);
 
-        /* MODIFICATIONS CLÉS ICI : */
         height: auto;
-        max-height: 80dvh; /* Augmente la hauteur maximale à 50% de l'écran */
-        aspect-ratio: auto; /* Supprime le format carré pour laisser l'image monter */
+        max-height: 80dvh;
+        aspect-ratio: auto;
 
         border-radius: 20px;
         box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9);
-        object-fit: cover; /* Garde les proportions de l'image sans la déformer */
+        object-fit: cover;
         animation: scaleIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
       }
+
       /* ======================================================== */
       /* 5. INFO ZONE                                             */
       /* ======================================================== */
       .info-container {
-        padding: 12px 0; /* Légèrement réduit pour gagner de l'espace */
+        padding: 12px 0;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -209,7 +209,7 @@
       }
 
       .play-circle {
-        width: clamp(65px, 18vw, 80px); /* Cercle play légèrement plus grand */
+        width: clamp(65px, 18vw, 80px);
         height: clamp(65px, 18vw, 80px);
         background: white;
         border-radius: 50%;
@@ -238,27 +238,212 @@
         text-transform: uppercase;
         flex-shrink: 0;
       }
+      /* ======================================================== */
+      /* 8. ANIMATIONS & RESPONSIVE COMPLET (OPTIMISÉ)           */
+      /* ======================================================== */
 
-      /* ======================================================== */
-      /* 8. ANIMATIONS & RESPONSIVE                               */
-      /* ======================================================== */
+      /* Animations fluides améliorées */
       @keyframes scaleIn {
         from {
           opacity: 0;
-          transform: scale(0.9);
+          transform: scale(0.9) translateY(20px);
         }
         to {
           opacity: 1;
-          transform: scale(1);
+          transform: scale(1) translateY(0);
         }
       }
 
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-6px);
+        }
+      }
+
+      /* ======================================================== */
+      /* RESPONSIVE COMPREHENSIF - TOUS LES ÉCRANS               */
+      /* ======================================================== */
+
+      /* Tablettes portrait / Petits écrans (768px et moins) */
+      @media (max-width: 768px) {
+        .player-container {
+          padding: 12px;
+          margin: 8px;
+          border-radius: 20px;
+        }
+
+        .header {
+          padding: 12px 0;
+          gap: 8px;
+        }
+
+        .header span {
+          font-size: 0.7rem;
+        }
+
+        .album-art {
+          max-width: 85vw;
+          border-radius: 24px;
+        }
+      }
+
+      /* Écrans petits (480px et moins) - Galaxy Fold, iPhone SE */
+      @media (max-width: 480px) {
+        .player-container {
+          padding: 10px;
+          margin: 4px;
+        }
+
+        .header i {
+          font-size: 1.1rem;
+          padding: 6px;
+        }
+
+        .info-text h1 {
+          font-size: 1.3rem;
+        }
+
+        .info-text p {
+          font-size: 0.85rem;
+        }
+      }
+
+      /* Hauteurs réduites (iPhone 12 mini, petits écrans) */
       @media (max-height: 700px) {
         .album-art {
-          max-height: 30dvh;
+          max-height: 28dvh;
         }
+
         .main-btns {
-          padding: 10px 0 15px;
+          padding: 12px 0 18px;
+          gap: 12px;
+        }
+
+        .info-container {
+          padding: 12px 0;
+        }
+
+        .art-wrapper {
+          padding: 8px 0;
+        }
+      }
+
+      /* Très petits écrans (iPhone SE 2016, petits Android) */
+      @media (max-height: 650px) and (max-width: 375px) {
+        .album-art {
+          max-height: 25dvh;
+          max-width: 80vw;
+        }
+
+        .play-circle {
+          width: 60px !important;
+          height: 60px !important;
+        }
+
+        .main-btns {
+          gap: 8px;
+          padding: 10px 0 16px;
+        }
+
+        .secondary-btn,
+        .step-btn {
+          padding: 8px;
+        }
+
+        .progress-container {
+          margin-bottom: 12px;
+        }
+      }
+
+      /* Safe Area iPhone (encoche, gesture bar) */
+      @supports (padding: max(0px)) {
+        .player-container {
+          padding-bottom: max(20px, env(safe-area-inset-bottom));
+        }
+      }
+
+      /* Landscape forcé (tous petits écrans) */
+      @media (max-height: 500px) and (orientation: landscape) {
+        .player-container {
+          flex-direction: row;
+          padding: 12px;
+          gap: 12px;
+        }
+
+        .art-wrapper {
+          flex: 1;
+          max-height: 100%;
+        }
+
+        .album-art {
+          max-height: 90%;
+          border-radius: 16px;
+        }
+
+        .controls-wrapper,
+        .info-container,
+        .header {
+          flex-shrink: 0;
+          padding: 8px 0;
+        }
+
+        .main-btns {
+          flex-direction: column;
+          gap: 8px;
+          padding: 8px 0;
+        }
+      }
+
+      /* Accessibilité - Mouvement réduit */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+
+        .album-art {
+          animation: none;
+        }
+      }
+
+      /* High DPI écrans (Retina, 4K) */
+      @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+        .album-art {
+          image-rendering: -webkit-optimize-contrast;
+          image-rendering: crisp-edges;
+        }
+
+        #progress-range::-webkit-slider-thumb {
+          box-shadow: 0 4px 20px rgba(176, 141, 87, 0.6);
+        }
+      }
+
+      /* Mode focus (grosses tailles pour malvoyants) */
+      @media (prefers-contrast: high) {
+        .play-circle {
+          border: 3px solid var(--gold);
+        }
+
+        .header i,
+        .secondary-btn,
+        .step-btn {
+          border: 2px solid var(--text-muted);
+          padding: 10px;
+        }
+      }
+
+      /* Écrans ultra-larges (tablettes landscape > 768px) */
+      @media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
+        .player-container {
+          max-width: 600px;
+          border-radius: 32px;
         }
       }
     </style>
@@ -448,14 +633,17 @@
 
       function loadTrack() {
         const url = localStorage.getItem("player_url");
-        const artist = localStorage.getItem("player_artist");
+        const artist = localStorage.getItem("player_artist") || "Récitateur";
         const img = localStorage.getItem("player_img");
-        const num = parseInt(localStorage.getItem("currentSurahNum") || "1");
+        const num = parseInt(
+          localStorage.getItem("currentSurahNum") || "1",
+          10
+        );
 
         if (url) {
-          // Utilisation du tableau surahNames (assurez-vous qu'il est défini globalement)
+          const safeIndex = num >= 1 && num <= 114 ? num - 1 : 0;
           document.getElementById("surah-title").innerText = `${num}. ${
-            surahNames[num - 1]
+            surahNames[safeIndex] || "Sourate"
           }`;
           document.getElementById("reciter-name").innerText = artist;
           document.getElementById("art").src =
@@ -463,13 +651,21 @@
           audio.src = url;
           audio
             .play()
-            .catch((e) => console.log("Lecture auto bloquée ou erreur source"));
+            .catch(() => console.log("Lecture auto bloquée ou erreur source"));
           updateUI();
         }
       }
 
       playBtn.addEventListener("click", () => {
-        audio.paused ? audio.play() : audio.pause();
+        if (audio.paused) {
+          audio
+            .play()
+            .catch(() =>
+              console.log("Erreur de lecture (play) ou blocage navigateur")
+            );
+        } else {
+          audio.pause();
+        }
         updateUI();
       });
 
@@ -484,7 +680,7 @@
       }
 
       audio.addEventListener("timeupdate", () => {
-        if (!isNaN(audio.duration)) {
+        if (!isNaN(audio.duration) && audio.duration > 0) {
           const percent = (audio.currentTime / audio.duration) * 100;
           progress.value = percent;
           progress.style.background = `linear-gradient(to right, white ${percent}%, rgba(255,255,255,0.2) ${percent}%)`;
@@ -494,13 +690,15 @@
       });
 
       progress.addEventListener("input", () => {
-        const seekTime = (progress.value / 100) * audio.duration;
-        audio.currentTime = seekTime;
+        if (!isNaN(audio.duration) && audio.duration > 0) {
+          const seekTime = (progress.value / 100) * audio.duration;
+          audio.currentTime = seekTime;
+        }
       });
 
       function formatTime(seconds) {
-        const min = Math.floor(seconds / 60);
-        const sec = Math.floor(seconds % 60);
+        const min = Math.floor(seconds / 60) || 0;
+        const sec = Math.floor(seconds % 60) || 0;
         return `${min}:${sec < 10 ? "0" + sec : sec}`;
       }
 
@@ -509,7 +707,8 @@
 
       function changeSurah(dir) {
         let currentNum = parseInt(
-          localStorage.getItem("currentSurahNum") || "1"
+          localStorage.getItem("currentSurahNum") || "1",
+          10
         );
         let reciterId = localStorage.getItem("currentReciterId");
         let newNum = currentNum + dir;
@@ -519,11 +718,8 @@
           const padded = newNum.toString().padStart(3, "0");
           let newUrl = "";
 
-          // LOGIQUE DE NAVIGATION DES SERVEURS (Version corrigée pour Afif Taj)
-          if (reciterId === "ar.afifmuhammadtaj") {
-            // Correction du dossier : afif_mohammad_taj (avec un 'o')
-            newUrl = `https://download.quranic.audio/quran/afif_mohammad_taj/${padded}.mp3`;
-          } else if (reciterId === "ar.abdulbasitmurattal") {
+          // LOGIQUE DE NAVIGATION DES SERVEURS (cohérente avec tes autres pages)
+          if (reciterId === "ar.abdulbasitmurattal") {
             newUrl = `https://server7.mp3quran.net/basit/murattal/${padded}.mp3`;
           } else if (reciterId === "ar.sudais") {
             newUrl = `https://server11.mp3quran.net/sds/${padded}.mp3`;
@@ -533,10 +729,12 @@
             newUrl = `https://server8.mp3quran.net/hani/${padded}.mp3`;
           } else if (reciterId === "ar.shatri") {
             newUrl = `https://server11.mp3quran.net/shatri/${padded}.mp3`;
+          } else if (reciterId === "ar.basfar") {
+            newUrl = `https://server6.mp3quran.net/bsfr/${padded}.mp3`;
           } else {
-            // Fallback pour les autres récitateurs via l'API Islamic Network
             newUrl = `https://cdn.islamic.network/quran/audio-surah/128/${reciterId}/${newNum}.mp3`;
           }
+
           localStorage.setItem("player_url", newUrl);
           localStorage.setItem("currentSurahNum", newNum);
           loadTrack();

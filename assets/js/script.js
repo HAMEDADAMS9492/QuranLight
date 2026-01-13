@@ -21,9 +21,18 @@ function initDateTime() {
 
   // 1. On définit les noms des mois en phonétique
   const moisArabe = [
-    "mouharram", "safar", "rabi' al-awwal", "rabi' ath-thani",
-    "joumada al-oula", "joumada ath-thania", "rajab", "cha'bane",
-    "ramadan", "chawwal", "dhou al-qi'da", "dhou al-hijja"
+    "mouharram",
+    "safar",
+    "rabi' al-awwal",
+    "rabi' ath-thani",
+    "joumada al-oula",
+    "joumada ath-thania",
+    "rajab",
+    "cha'bane",
+    "ramadan",
+    "chawwal",
+    "dhou al-qi'da",
+    "dhou al-hijja",
   ];
 
   // 2. Fonction de calcul manuel (Algorithme Koweitien/Standard)
@@ -32,12 +41,18 @@ function initDateTime() {
     let l = jd - 1948440 + 10632;
     let n = Math.floor((l - 1) / 10631);
     l = l - 10631 * n + 354;
-    let j = (Math.floor((10985 - l) / 5316)) * (Math.floor((50 * l) / 17719)) + (Math.floor(l / 5670)) * (Math.floor((43 * l) / 15238));
-    l = l - (Math.floor((30 - j) / 15)) * (Math.floor((17719 * j) / 50)) - (Math.floor(j / 16)) * (Math.floor((15238 * j) / 43)) + 29;
+    let j =
+      Math.floor((10985 - l) / 5316) * Math.floor((50 * l) / 17719) +
+      Math.floor(l / 5670) * Math.floor((43 * l) / 15238);
+    l =
+      l -
+      Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50) -
+      Math.floor(j / 16) * Math.floor((15238 * j) / 43) +
+      29;
     let month = Math.floor((24 * l) / 709);
     let day = l - Math.floor((709 * month) / 24);
     let year = 30 * n + j - 30;
-    
+
     // Ajustement de -1 jour souvent nécessaire pour Umm al-Qura
     // Tu peux changer day - 1 si besoin selon la lune
     return { day: day, month: month - 1, year: year };
@@ -48,22 +63,30 @@ function initDateTime() {
 
     // Heure
     timeEl.textContent = now.toLocaleTimeString("fr-FR", {
-      hour: "2-digit", minute: "2-digit", second: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
     });
 
     // Date Grégorienne (Ex: MERCREDI 31 DÉCEMBRE)
-    gregEl.textContent = now.toLocaleDateString("fr-FR", {
-      weekday: "long", day: "numeric", month: "long",
-    }).toUpperCase();
+    gregEl.textContent = now
+      .toLocaleDateString("fr-FR", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+      })
+      .toUpperCase();
 
     // Date Hijri calculée SANS le navigateur
     const h = getHijriDate(now);
-    
+
     // Résultat forcé : "11 rajab 1447 AH"
     hijriEl.textContent = `${h.day} ${moisArabe[h.month]} ${h.year} AH`;
 
     if (now.getSeconds() === 0) {
-      checkAndSendNotifications(now.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }));
+      checkAndSendNotifications(
+        now.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })
+      );
     }
   };
 
@@ -526,8 +549,412 @@ document.addEventListener("DOMContentLoaded", () => {
   loadSettings();
 });
 
+// ===================================================================
+// 7. RECITATEURS LIBRARY - LOGIQUE DU PANNEAU DES SOURATES ET CHATBOT
+// ====================================================================
+let allSurahsData = [];
+
+// 1. OUVERTURE DU PANNEAU ET CHARGEMENT DES SOURATES
+async function goToLibrary(id, name) {
+  const panel = document.getElementById("surahPanel");
+  const listContainer = document.getElementById("surahListContainer");
+
+  document.getElementById("panelReciterName").innerText = name;
+  panel.style.display = "flex";
+
+  // Feedback visuel pendant le chargement
+  listContainer.innerHTML =
+    '<div style="text-align:center; padding:50px; color:var(--color-gold);"><i class="fas fa-spinner fa-spin fa-2x"></i></div>';
+
+  // Stockage temporaire pour savoir quel récitateur est sélectionné
+  localStorage.setItem("tempReciterId", id);
+  localStorage.setItem("tempReciterName", name);
+
+  try {
+    const response = await fetch("https://api.alquran.cloud/v1/surah");
+    const data = await response.json();
+    allSurahsData = data.data;
+    renderSurahList(allSurahsData, id, name);
+  } catch (error) {
+    listContainer.innerHTML =
+      '<p style="text-align:center; color:white;">Erreur de connexion à l\'API.</p>';
+  }
+}
+
+// 2. FERMETURE DU PANNEAU
+function closeSurahPanel() {
+  document.getElementById("surahPanel").style.display = "none";
+}
+
+// 3. AFFICHAGE DE LA LISTE DANS LE PANNEAU
+function renderSurahList(surahs, reciterId, reciterName) {
+  const listContainer = document.getElementById("surahListContainer");
+  listContainer.innerHTML = surahs
+    .map(
+      (surah) => `
+            <div class="surah-item" onclick="handleSurahSelection('${reciterId}', ${
+        surah.number
+      }, '${reciterName}', '${surah.englishName.replace(/'/g, "\\'")}')">
+                <div class="number-box">${surah.number}</div>
+                <div class="surah-info-main">
+                    <div class="surah-text-left">
+                        <span class="surah-name-fr">${surah.englishName}</span>
+                        <span class="surah-sub-info">${
+                          surah.revelationType
+                        } • ${surah.numberOfAyahs} VERSETS</span>
+                    </div>
+                    <div class="surah-name-ar">${surah.name}</div>
+                </div>
+            </div>
+        `
+    )
+    .join("");
+}
+
+// 4. FILTRE DE RECHERCHE
+function filterSurahs() {
+  const query = document.getElementById("surahSearchInput").value.toLowerCase();
+  const filtered = allSurahsData.filter(
+    (s) =>
+      s.englishName.toLowerCase().includes(query) ||
+      s.number.toString().includes(query) ||
+      s.name.includes(query)
+  );
+  const id = localStorage.getItem("tempReciterId");
+  const name = localStorage.getItem("tempReciterName");
+  renderSurahList(filtered, id, name);
+}
+
+// 5. SELECTION ET REDIRECTION VERS PLAYER.HTML
+function handleSurahSelection(reciterId, surahNum, reciterName, surahName) {
+  const padded = surahNum.toString().padStart(3, "0");
+  let audioUrl = "";
+
+  // Logique des serveurs MP3 selon le récitateur
+  // Note: Ajout de Afif Muhammad Taj
+  switch (reciterId) {
+    case "ar.abdulbasitmurattal":
+      // OK - Utilise surahNum (1, 2, 3...)
+      audioUrl = `https://cdn.islamic.network/quran/audio-surah/128/ar.abdulbasitmurattal/${surahNum}.mp3`;
+      break;
+
+    case "ar.sudais":
+      // Correction : Le serveur 11 est souvent saturé, le serveur 16 est plus récent pour Sudais
+      audioUrl = `https://server11.mp3quran.net/sds/${padded}.mp3`;
+      break;
+
+    case "ar.alafasy":
+      // OK
+      audioUrl = `https://server8.mp3quran.net/afs/${padded}.mp3`;
+      break;
+
+    case "ar.hanirifai":
+      // OK
+      audioUrl = `https://server8.mp3quran.net/hani/${padded}.mp3`;
+      break;
+
+    case "ar.shatri":
+      // OK
+      audioUrl = `https://server11.mp3quran.net/shatri/${padded}.mp3`;
+      break;
+
+    case "ar.basfar":
+      // OK
+      audioUrl = `https://server6.mp3quran.net/bsfr/${padded}.mp3`;
+      break;
+
+    default:
+      // OK - Utilise surahNum
+      audioUrl = `https://cdn.islamic.network/quran/audio-surah/128/${reciterId}/${surahNum}.mp3`;
+  }
+
+  // DEBUG : vérifier l'URL et le statut
+  console.log("URL audio:", audioUrl);
+  fetch(audioUrl)
+    .then((r) => console.log("HTTP status:", r.status))
+    .catch((e) => console.error("Erreur de fetch audio:", e));
+
+  // Récupération dynamique de l'image du récitateur sur la page
+  const reciterCards = document.querySelectorAll(".reciter-card-circle");
+  let reciterImg = "assets/image/Logo.jpg"; // Image par défaut
+
+  reciterCards.forEach((card) => {
+    const onclickValue = card.getAttribute("onclick");
+    if (onclickValue && onclickValue.includes(reciterId)) {
+      const imgTag = card.querySelector("img");
+      if (imgTag) reciterImg = imgTag.src;
+    }
+  });
+
+  // SAUVEGARDE DES DONNÉES POUR LE PLAYER
+  localStorage.setItem("player_url", audioUrl);
+  localStorage.setItem("player_title", surahName);
+  localStorage.setItem("player_artist", reciterName);
+  localStorage.setItem("player_img", reciterImg);
+
+  // Données techniques pour la navigation Suivant/Précédent dans player.html
+  localStorage.setItem("currentReciterId", reciterId);
+  localStorage.setItem("currentReciterName", reciterName);
+  localStorage.setItem("currentSurahNum", surahNum);
+
+  // REDIRECTION
+  window.location.href = "player.html";
+}
+
+window.addEventListener("message", function (event) {
+  const iframe = document.querySelector('iframe[src="chatbot.html"]');
+  if (iframe) {
+    if (event.data === "openChat") {
+      iframe.classList.add("chat-opened"); // → élargit l’iframe (ouvre le chatbot)
+    } else if (event.data === "closeChat") {
+      iframe.classList.remove("chat-opened"); // → réduit l’iframe (referme le chatbot)
+    }
+  }
+});
+window.addEventListener("load", () => {
+  const splash = document.getElementById("splash-overlay");
+
+  // On vérifie si l'utilisateur a déjà vu le splash durant cette session
+  if (sessionStorage.getItem("splashShown") === "true") {
+    // Si oui, on supprime le splash immédiatement sans animation
+    if (splash) splash.remove();
+    document.body.classList.add("splash-finished");
+  } else {
+    // Si non, on joue l'animation
+    setTimeout(() => {
+      if (splash) {
+        splash.classList.add("hide-splash");
+        // On prévient le CSS que le splash est fini pour montrer le chatbot
+        document.body.classList.add("splash-finished");
+
+        setTimeout(() => {
+          splash.remove();
+          // On enregistre que le splash a été vu
+          sessionStorage.setItem("splashShown", "true");
+        }, 800);
+      }
+    }, 3000);
+  }
+});
+
 // ============================================================
-// 7. INITIALISATION AU CHARGEMENT
+// 8. GESTION DU FLUX DE NOUVELLES (L'ÉCHO DE L'OUMMA)
+// ============================================================
+
+const newsData = [
+  // --- CATÉGORIE : MONDE ---
+  {
+    title:
+      "La grande mosquée de Lagos lance un programme éducatif pour les jeunes",
+    category: "monde",
+    time: "4 min read",
+    image:
+      "https://images.unsplash.com/photo-1578932750355-80d1d50c78ab?q=80&w=400",
+    link: "https://www.middleeasteye.net/fr/news/nigeria-lagos-mosquee-education",
+  },
+  {
+    title:
+      "Le Hajj 2026 : de nouvelles infrastructures pour fluidifier le pèlerinage",
+    category: "monde",
+    time: "5 min read",
+    image:
+      "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=400",
+    link: "https://muslimmatters.org/2025/07/05/hajj-saudi-new-facilities/",
+  },
+  {
+    title:
+      "Préservation du patrimoine : restauration des mosquées historiques de Tombouctou",
+    category: "monde",
+    time: "7 min read",
+    image:
+      "https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=400",
+    link: "https://www.aljazeera.com/features/2025/01/03/mali-rebuilds-timbuktu-mosques",
+  },
+
+  // --- CATÉGORIE : CULTURE ---
+  {
+    title:
+      "Le retour de l’art islamique dans les musées européens : une nouvelle ère",
+    category: "culture",
+    time: "6 min read",
+    image:
+      "https://images.unsplash.com/photo-1594068488748-f9aefb9ec4b6?q=80&w=400",
+    link: "https://theconversation.com/lart-islamique-simpose-a-nouveau-dans-les-musees-xxie-siecle-215338",
+  },
+  {
+    title:
+      "Mode modeste 2026 : quand l'éthique rencontre le design contemporain",
+    category: "culture",
+    time: "4 min read",
+    image:
+      "https://images.unsplash.com/photo-1605715179966-f3b6deee8bdc?q=80&w=400",
+    link: "https://www.vogue.me/ar/fashion/modest-fashion-trends-2026/",
+  },
+  {
+    title: "L'influence de l'architecture andalouse sur l'urbanisme moderne",
+    category: "culture",
+    time: "8 min read",
+    image:
+      "https://images.unsplash.com/photo-1512413316925-fd4b93f31521?q=80&w=400",
+    link: "https://www.archdaily.com/990712/the-legacy-of-andalusian-architecture-in-contemporary-design",
+  },
+
+  // --- CATÉGORIE : ÉCONOMIE ---
+  {
+    title:
+      "L’essor des fintech islamiques en Afrique : une croissance sans précédent",
+    category: "économie",
+    time: "4 min read",
+    image:
+      "https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=400",
+    link: "https://www.revue-banque.fr/techno-ia/fintech-halal-afrique",
+  },
+  {
+    title: "Finance Halal : comment investir de manière éthique en 2026",
+    category: "économie",
+    time: "5 min read",
+    image:
+      "https://images.unsplash.com/photo-1611974714014-48321cefd484?q=80&w=400",
+    link: "https://www.islamicfinanceguru.com/articles/how-to-invest-halal/",
+  },
+  {
+    title: "Le marché mondial du Halal atteint un nouveau sommet",
+    category: "économie",
+    time: "3 min read",
+    image:
+      "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?q=80&w=400",
+    link: "https://www.reuters.com/world/global-halal-market-growth-2025/",
+  },
+
+  // --- CATÉGORIE : SCIENCE ---
+  {
+    title: "Apprentissage du Coran : l’IA au service de la mémorisation (Hifz)",
+    category: "science",
+    time: "8 min read",
+    image:
+      "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90c1?q=80&w=400",
+    link: "https://islamictech.io/ai-quran-memorization-tools-2025",
+  },
+  {
+    title:
+      "Astronomie : l’impact des observatoires modernes sur le calendrier hégirien",
+    category: "science",
+    time: "6 min read",
+    image:
+      "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=400",
+    link: "https://www.arabnews.com/node/2389891/science",
+  },
+  {
+    title: "Médecine prophétique et science moderne : éclairages récents",
+    category: "science",
+    time: "10 min read",
+    image:
+      "https://images.unsplash.com/photo-1505751172107-573225a9627e?q=80&w=400",
+    link: "https://muslimmatters.org/2025/08/10/prophetic-medicine-modern-research/",
+  },
+
+  // --- CATÉGORIE : SOCIÉTÉ ---
+  {
+    title:
+      "Les programmes de solidarité du Ramadan 2026 : focus sur l’entraide locale",
+    category: "société",
+    time: "6 min read",
+    image:
+      "https://images.unsplash.com/photo-1529946825183-6360b5b9b3a8?q=80&w=400",
+    link: "https://www.islamic-relief.org/news/ramadan-africa-2025",
+  },
+  {
+    title:
+      "Éducation : les plateformes de tutorat islamique en ligne se multiplient",
+    category: "société",
+    time: "5 min read",
+    image:
+      "https://images.unsplash.com/photo-1501503060470-7554e5659b93?q=80&w=400",
+    link: "https://www.edarabia.com/islamic-online-learning-top-trends-2025/",
+  },
+  {
+    title: "Environnement : les 'Green Mosquées' deviennent une norme durable",
+    category: "société",
+    time: "4 min read",
+    image:
+      "https://images.unsplash.com/photo-1466692476868-aef1dfb1e835?q=80&w=400",
+    link: "https://www.arabnews.com/node/2499716/ksa",
+  },
+];
+
+/**
+ * Affiche les articles en fonction du filtre sélectionné
+ */
+function loadNews(filter = "all") {
+  const container = document.getElementById("news-feed");
+  if (!container) return;
+
+  container.classList.add("fade-out");
+
+  setTimeout(() => {
+    const filteredData =
+      filter === "all"
+        ? newsData
+        : newsData.filter((item) => item.category === filter);
+
+    container.innerHTML = filteredData
+      .map(
+        (news) => `
+      <article class="modern-news-card" 
+               data-category="${news.category}" 
+               onclick="window.open('${news.link}', '_blank')" 
+               style="cursor: pointer;">
+        <div class="news-img-box">
+          <img src="${news.image}" alt="${news.title}" loading="lazy">
+          <span class="category-tag">${news.category}</span>
+        </div>
+        <div class="news-info-overlay">
+          <div class="news-content-top">
+            <span class="read-time">
+              <i class="far fa-clock"></i> ${news.time}
+            </span>
+            <h4 class="news-h4">${news.title}</h4>
+          </div>
+          <div class="news-footer-link">
+            <span class="news-link-text">Lire l'article</span>
+            <i class="fas fa-arrow-right news-arrow"></i>
+          </div>
+        </div>
+      </article>
+    `
+      )
+      .join("");
+
+    container.classList.remove("fade-out");
+  }, 250);
+}
+
+/**
+ * Active le filtrage par catégorie
+ */
+function initNewsFilters() {
+  const filters = document.querySelectorAll(".filter-btn");
+  filters.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      filters.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      const category = btn.dataset.cat;
+      loadNews(category);
+    });
+  });
+}
+
+/**
+ * Initialisation au chargement du DOM
+ */
+document.addEventListener("DOMContentLoaded", () => {
+  loadNews();
+  initNewsFilters();
+});
+
+// ============================================================
+// 9. INITIALISATION AU CHARGEMENT
 // ============================================================
 document.addEventListener("DOMContentLoaded", () => {
   setupSidebarToggle();

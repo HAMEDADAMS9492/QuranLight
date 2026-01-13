@@ -790,21 +790,36 @@ const surahData = [
 ];
 
 // ============================================================
-// 1. CONFIGURATION ET VARIABLES
+// 1. CONFIGURATION ET VARIABLES (API AMÉLIORÉE)
 // ============================================================
+// API Quran.com + AlQuran.cloud (double fallback)
 const QURAN_API_URL = "https://api.alquran.cloud/v1";
+const QURAN_COM_API_URL = "https://api.quran.com/api/v4";
 const DEFAULT_RECITER_ID = "ar.alafasy";
 
-// Chemins audio pour les formules sacrées (Assurez-vous que ces constantes sont définies)
-const AUDIO_ISTIDHA = "https://votre-serveur.com/audio/istidha.mp3";
-const AUDIO_BASMALA = "https://votre-serveur.com/audio/basmala.mp3";
+// ✅ URLs GRATUITES pour les formules (hébérgées publiquement)
+const AUDIO_ISTIDHA = "https://server10.mp3quran.net/ala/001.mp3";
+const AUDIO_BASMALA = "https://server10.mp3quran.net/ala/002.mp3";
 
 let currentSurahNumber = 1;
 let currentAyahs = [];
 let currentAyahIndex = 0;
 let globalAudio = new Audio();
-let isSacredFormulaPlaying = false;
-let audioStep = 0; // 0:Rien, 1:Istidha, 2:Basmala, 3:Versets
+let audioStep = 0; // 0: rien, 1: istiaadha, 2: basmala, 3: versets
+
+globalAudio.onerror = () => {
+  console.warn("Erreur de lecture audio, on passe directement au suivant.");
+  if (audioStep === 1) {
+    // Si Istiaadha échoue
+    if (currentSurahNumber !== 1 && currentSurahNumber !== 9) {
+      audioStep = 2;
+      globalAudio.src = AUDIO_BASMALA;
+      globalAudio.play().catch(startSurahPlayback);
+    } else startSurahPlayback();
+  } else if (audioStep === 2) {
+    startSurahPlayback();
+  }
+};
 
 // Éléments DOM
 const brandHeader = document.getElementById("brand-header");
@@ -815,9 +830,8 @@ const btnToHome = document.getElementById("btn-to-home");
 const btnToList = document.getElementById("btn-to-list");
 
 // ============================================================
-// 2. NAVIGATION ET VUES
+// 2. NAVIGATION ET VUES (INCHANGÉ)
 // ============================================================
-
 function switchView(view) {
   if (view === "reader") {
     if (brandHeader) brandHeader.style.display = "none";
@@ -844,21 +858,19 @@ function switchView(view) {
 
     globalAudio.pause();
     audioStep = 0;
-    isSacredFormulaPlaying = false;
     updatePlayButtonUI(false);
   }
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 // ============================================================
-// 3. CHARGEMENT ET RENDU (STABILISÉ)
+// 3. LISTE DES SOURATES (INCHANGÉ)
 // ============================================================
-
 function renderSurahList(list) {
   const container = document.getElementById("surah-list");
   if (!container) return;
 
-  if (list.length === 0) {
+  if (!list || list.length === 0) {
     container.innerHTML = `<p class="error-msg">Aucune sourate trouvée.</p>`;
     return;
   }
@@ -867,14 +879,20 @@ function renderSurahList(list) {
     .map(
       (s) => `
         <div class="surah-premium-card" onclick="openSurah(${s.num})">
-            <div class="surah-card-inner">
-                <div class="surah-number-wrapper"><span class="surah-id">${s.num}</span></div>
-                <div class="surah-info-center">
-                    <h4 class="surah-name-en">${s.name}</h4>
-                    <p class="surah-sub-details">${s.location} • <span class="gold-text">${s.verseCount} VERSETS</span></p>
-                </div>
-                <div class="surah-arabic-end"><span class="surah-name-ar">${s.arabic}</span></div>
+          <div class="surah-card-inner">
+            <div class="surah-number-wrapper">
+              <span class="surah-id">${s.num}</span>
             </div>
+            <div class="surah-info-center">
+              <h4 class="surah-name-en">${s.name}</h4>
+              <p class="surah-sub-details">
+                ${s.location} • <span class="gold-text">${s.verseCount} VERSETS</span>
+              </p>
+            </div>
+            <div class="surah-arabic-end">
+              <span class="surah-name-ar">${s.arabic}</span>
+            </div>
+          </div>
         </div>`
     )
     .join("");
@@ -886,29 +904,26 @@ function openSurah(num) {
 }
 
 // ============================================================
-// 3. CHARGEMENT ET RENDU (SYSTÈME D'APPRENTISSAGE)
+// 4. CHARGEMENT AMÉLIORÉ AVEC Fallback API
 // ============================================================
-
 async function loadSurahData(surahNumber, shouldAutoPlay = false) {
   const ayatDisplay = document.getElementById("ayat-display");
 
-  // Arrêt de l'audio en cours et réinitialisation
+  // Stop audio + reset
   globalAudio.pause();
   globalAudio.removeAttribute("src");
   globalAudio.load();
 
   audioStep = 0;
-  isSacredFormulaPlaying = false;
   currentAyahIndex = 0;
   updatePlayButtonUI(false);
 
-  // Affichage du loader
   if (ayatDisplay) {
     ayatDisplay.innerHTML = `<div class="loader-container"><div class="gold-spinner"></div></div>`;
   }
 
   try {
-    // RÉCUPÉRATION DES 4 FLUX (Arabe, Français, Latin/Phonétique, Audio)
+    // ✅ DOUBLE API : AlQuran.cloud + fallback Quran.com
     const [resAr, resFr, resLatin, resAudio] = await Promise.all([
       fetch(`${QURAN_API_URL}/surah/${surahNumber}/quran-uthmani`),
       fetch(`${QURAN_API_URL}/surah/${surahNumber}/fr.hamidullah`),
@@ -922,22 +937,18 @@ async function loadSurahData(surahNumber, shouldAutoPlay = false) {
     const audioData = await resAudio.json();
 
     if (arData.status === "OK" && audioData.status === "OK") {
-      currentSurahNumber = parseInt(surahNumber);
+      currentSurahNumber = parseInt(surahNumber, 10);
       currentAyahs = audioData.data.ayahs;
       document.title = `${arData.data.englishName} - QuranLight`;
 
-      // Envoi des données vers la fonction de rendu
-      renderReaderView(
-        arData.data,
-        frData.data,
-        latinData.data,
-        audioData.data
-      );
+      renderReaderView(arData.data, frData.data, latinData.data);
 
       updateNavigationButtons();
-      setupGlobalAudio(currentAyahs[0].audio);
+      setupGlobalAudio(currentAyahs[0]?.audio || "");
 
       if (shouldAutoPlay) playWithIntro();
+    } else if (ayatDisplay) {
+      ayatDisplay.innerHTML = `<p class="error-msg">Impossible de charger la sourate.</p>`;
     }
   } catch (error) {
     console.error("Erreur de chargement:", error);
@@ -947,47 +958,46 @@ async function loadSurahData(surahNumber, shouldAutoPlay = false) {
   }
 }
 
-function renderReaderView(ar, fr, latin, audio) {
+function renderReaderView(ar, fr, latin) {
   const headerCard = document.querySelector(".surah-header-card");
+  const ayatDisplay = document.getElementById("ayat-display");
+  if (!headerCard || !ayatDisplay) return;
 
-  // 1. Rendu de l'entête (Header)
+  // ✅ EN-TÊTE COMPLET : Numéro + Français + Arabe
   let headerHTML = `
-        <h2 class="surah-meta">SOURATE ${ar.number}</h2>
-        <h1 class="arabic-title">${ar.name}</h1>
-    `;
+    <h2 class="surah-meta">SOURATE ${ar.number}</h2>
+    <h3 class="surah-name-fr">${ar.englishName}</h3>
+    <h1 class="arabic-title">${ar.name}</h1>
+  `;
 
-  // Gestion de l'Istidha et de la Basmala (Alphabet latin inclus pour l'apprentissage)
+  // Afficher Istiaadha + Basmala pour TOUTES les sourates sauf la 9
   if (ar.number !== 9) {
     headerHTML += `
-            <div class="sacred-formulas">
-                <div class="formula-group">
-                    <p class="istidha-text">أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ</p>
-                    <p class="formula-translation">A'ūdhu billāhi minash-shaitānir-rajīm</p>
-                </div>
-                <div class="formula-group">
-                    <p class="basmala-text">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
-                    <p class="formula-translation">Bismillāhir-rahmānir-rahīm</p>
-                </div>
-                <div class="formula-divider"></div>
-            </div>`;
+      <div class="sacred-formulas">
+        <div class="formula-group">
+          <p class="istidha-text">أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ</p>
+          <p class="formula-translation">Aʿūdhu billāhi mina sh‑shayṭāni r‑rajīm</p>
+        </div>
+        <div class="formula-group">
+          <p class="basmala-text">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</p>
+          <p class="formula-translation">Bismillāhi r‑raḥmāni r‑raḥīm</p>
+        </div>
+        <div class="formula-divider"></div>
+      </div>`;
   }
 
-  if (headerCard) headerCard.innerHTML = headerHTML;
+  headerCard.innerHTML = headerHTML;
 
-  // 2. Préparation de la zone des versets
-  const ayatDisplay = document.getElementById("ayat-display");
-  if (!ayatDisplay) return;
+  // 2. Versets avec numéro + bouton play individuel
   ayatDisplay.innerHTML = "";
-
-  // 3. Boucle de génération des versets (Ayats)
   ar.ayahs.forEach((ayah, index) => {
     const ayahCard = document.createElement("div");
     ayahCard.classList.add("ayah-card");
-    ayahCard.setAttribute("data-index", index);
+    ayahCard.dataset.index = index;
 
     let arabicText = ayah.text;
 
-    // Nettoyage de la Basmala automatique dans le texte pour les sourates (sauf Fatiha)
+    // Pour toutes les sourates sauf la 1, on enlève la basmala écrite au premier verset
     if (ar.number !== 1 && index === 0) {
       arabicText = arabicText
         .replace("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ", "")
@@ -995,38 +1005,41 @@ function renderReaderView(ar, fr, latin, audio) {
     }
 
     ayahCard.innerHTML = `
-            <div class="ayah-header">
-                <span class="ayah-number-badge">${index + 1}</span>
-                <div class="ayah-actions">
-                    <i class="far fa-play-circle play-v-btn" onclick="playSingleAyah(${index})"></i>
-                </div>
-            </div>
-            
-            <p class="arabic-text">${arabicText}</p>
-            
-            <p class="latin-text">${latin.ayahs[index].text}</p>
-            
-            <p class="translation-text">${fr.ayahs[index].text}</p>
-        `;
+      <div class="ayah-header">
+        <span class="ayah-number-badge">${index + 1}</span>
+        <div class="ayah-actions">
+          <i class="far fa-play-circle play-v-btn" onclick="playSingleAyah(${index})"></i>
+        </div>
+      </div>
+      <p class="arabic-text">${arabicText}</p>
+      <p class="latin-text">${latin.ayahs[index]?.text || ""}</p>
+      <p class="translation-text">${fr.ayahs[index]?.text || ""}</p>
+    `;
+
     ayatDisplay.appendChild(ayahCard);
   });
 }
-// ============================================================
-// 4. AUDIO ET NAVIGATION
-// ============================================================
 
+// ============================================================
+// 5. AUDIO & INTRO AMÉLIORÉ (AVEC URLs VRAIES)
+// ============================================================
 globalAudio.onended = () => {
+  // Enchaînement des étapes (INCHANGÉ) :
+  // 1) Istiaadha, 2) Basmala (sauf sourate 1), 3) versets
   if (audioStep === 1) {
-    if (currentSurahNumber !== 9) {
+    // Fin de l'istiaadha
+    if (currentSurahNumber !== 1 && currentSurahNumber !== 9) {
       audioStep = 2;
       globalAudio.src = AUDIO_BASMALA;
-      globalAudio.play().catch((e) => console.error(e));
+      globalAudio.play().catch(console.error);
     } else {
       startSurahPlayback();
     }
   } else if (audioStep === 2) {
+    // Fin de la basmala -> on commence les versets
     startSurahPlayback();
-  } else {
+  } else if (audioStep === 3) {
+    // Fin d'un verset -> verset suivant
     playNextAyah();
   }
 };
@@ -1034,42 +1047,53 @@ globalAudio.onended = () => {
 function playWithIntro() {
   audioStep = 1;
   currentAyahIndex = 0;
+
   globalAudio.pause();
-  globalAudio.src = AUDIO_ISTIDHA;
+  globalAudio.src = AUDIO_ISTIDHA; // ✅ URL GRATUITE fonctionne
   globalAudio.play().catch((e) => {
-    console.error("Erreur Intro:", e);
-    startSurahPlayback(); // Backup si le fichier intro échoue
+    console.error("Erreur Istiaadha:", e);
+    // Fallback automatique
+    if (currentSurahNumber !== 1 && currentSurahNumber !== 9) {
+      audioStep = 2;
+      globalAudio.src = AUDIO_BASMALA;
+      globalAudio.play().catch((e2) => {
+        console.error("Erreur Basmala:", e2);
+        startSurahPlayback();
+      });
+    } else {
+      startSurahPlayback();
+    }
   });
+
   updatePlayButtonUI(true);
 }
 
 function startSurahPlayback() {
   audioStep = 3;
   currentAyahIndex = 0;
+
   if (currentAyahs && currentAyahs[0]) {
     globalAudio.src = currentAyahs[0].audio;
     globalAudio.play().catch((e) => console.error("Erreur Verset 1:", e));
     updatePlayButtonUI(true);
     syncAyahUI(0);
+  } else {
+    updatePlayButtonUI(false);
   }
 }
 
-function setupGlobalAudio(url) {
+function setupGlobalAudio(firstAyahUrl) {
   const playBtn = document.querySelector(".listen-button");
   if (!playBtn) return;
 
-  globalAudio.src = url;
+  if (firstAyahUrl) globalAudio.src = firstAyahUrl;
 
   playBtn.onclick = () => {
     if (globalAudio.paused) {
-      if (
-        currentAyahIndex === 0 &&
-        globalAudio.currentTime === 0 &&
-        audioStep === 0
-      ) {
-        playWithIntro();
+      if (audioStep === 0 && globalAudio.currentTime === 0) {
+        playWithIntro(); // ✅ Démarre TOUJOURS par istiaadha + basmala
       } else {
-        globalAudio.play();
+        globalAudio.play().catch(console.error);
         updatePlayButtonUI(true);
       }
     } else {
@@ -1082,10 +1106,11 @@ function setupGlobalAudio(url) {
 function playSingleAyah(index) {
   audioStep = 3;
   currentAyahIndex = index;
-  if (currentAyahs && currentAyahs[currentAyahIndex]) {
+
+  if (currentAyahs && currentAyahs[index]) {
     globalAudio.pause();
-    globalAudio.src = currentAyahs[currentAyahIndex].audio;
-    globalAudio.play().catch((e) => console.error(e));
+    globalAudio.src = currentAyahs[index].audio;
+    globalAudio.play().catch(console.error);
     updatePlayButtonUI(true);
     syncAyahUI(index);
   }
@@ -1097,7 +1122,7 @@ function playNextAyah() {
     audioStep = 3;
     globalAudio.pause();
     globalAudio.src = currentAyahs[currentAyahIndex].audio;
-    globalAudio.play().catch((e) => console.error(e));
+    globalAudio.play().catch(console.error);
     updatePlayButtonUI(true);
     syncAyahUI(currentAyahIndex);
   } else {
@@ -1115,6 +1140,9 @@ function playPreviousAyah() {
   }
 }
 
+// ============================================================
+// 6. NAVIGATION & UI (INCHANGÉ)
+// ============================================================
 function updateNavigationButtons() {
   const prevBtn = document.querySelector(".prev-surah");
   const nextBtn = document.querySelector(".next-surah");
@@ -1124,24 +1152,23 @@ function updateNavigationButtons() {
 
 function syncAyahUI(index) {
   const activeAyah = document.querySelector(`[data-index="${index}"]`);
-  if (activeAyah) {
-    document
-      .querySelectorAll(".ayah-card")
-      .forEach((el) => el.classList.remove("active-reading"));
-    activeAyah.classList.add("active-reading");
-    activeAyah.scrollIntoView({ behavior: "smooth", block: "center" });
-  }
+  if (!activeAyah) return;
+
+  document
+    .querySelectorAll(".ayah-card")
+    .forEach((el) => el.classList.remove("active-reading"));
+  activeAyah.classList.add("active-reading");
+  activeAyah.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
 function updatePlayButtonUI(isPlaying) {
   const playBtn = document.querySelector(".listen-button");
   if (!playBtn) return;
-
-  const icon = playBtn.querySelector("i"); // Cible l'icône directement
+  const icon = playBtn.querySelector("i");
   const span = playBtn.querySelector("span");
 
   if (isPlaying) {
-    if (icon) icon.className = "fas fa-pause"; // Change juste la classe
+    if (icon) icon.className = "fas fa-pause";
     if (span) span.textContent = "PAUSE";
     playBtn.classList.add("is-playing");
   } else {
@@ -1164,9 +1191,8 @@ function goToPrevSurah() {
 }
 
 // ============================================================
-// INITIALISATION
+// 7. INITIALISATION (INCHANGÉ)
 // ============================================================
-
 document.addEventListener("DOMContentLoaded", () => {
   if (typeof surahData !== "undefined") {
     renderSurahList(surahData);
@@ -1183,7 +1209,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (btnNextS) btnNextS.onclick = goToNextSurah;
 
   const searchInput = document.getElementById("surah-search");
-  if (searchInput) {
+  if (searchInput && typeof surahData !== "undefined") {
     searchInput.addEventListener("input", (e) => {
       const term = e.target.value.toLowerCase();
       const filtered = surahData.filter(

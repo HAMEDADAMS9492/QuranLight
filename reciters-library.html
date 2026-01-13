@@ -248,11 +248,11 @@
     <script>
       // Base de données complète avec type et versets
       const allSurahs = [
-        {
+       {
           n: 1,
-          en: "Al-Faatiha",
+          en: "Al-Fatiha",
           ar: "سُورَةُ الْفَاتِحَةِ",
-          t: "MECQUOISE",
+          t: "MÉCQUOISE", // Ajout de l'accent ici
           v: 7,
         },
         {
@@ -264,42 +264,42 @@
         },
         {
           n: 3,
-          en: "Aal-i-Imraan",
+          en: "Al-Imran",
           ar: "سُورَةُ آلِ عِمْرَانَ",
           t: "MÉDINOISE",
           v: 200,
         },
         {
           n: 4,
-          en: "An-Nisaa",
+          en: "An-Nisa",
           ar: "سُورَةُ النِّسَاءِ",
           t: "MÉDINOISE",
           v: 176,
         },
         {
           n: 5,
-          en: "Al-Maaida",
+          en: "Al-Ma'ida",
           ar: "سُورَةُ المَائـِدَةِ",
           t: "MÉDINOISE",
           v: 120,
         },
         {
           n: 6,
-          en: "Al-An'aam",
+          en: "Al-An'am",
           ar: "سُورَةُ الأَنْعَامِ",
           t: "MECQUOISE",
           v: 165,
         },
         {
           n: 7,
-          en: "Al-A'raaf",
+          en: "Al-A'raf",
           ar: "سُورَةُ الأَعْرَافِ",
           t: "MECQUOISE",
           v: 206,
         },
         {
           n: 8,
-          en: "Al-Anfaal",
+          en: "Al-Anfal",
           ar: "سُورَةُ الأَنْفَالِ",
           t: "MÉDINOISE",
           v: 75,
@@ -312,7 +312,7 @@
           v: 129,
         },
         { n: 10, en: "Yunus", ar: "سُورَةُ يُونُسَ", t: "MECQUOISE", v: 109 },
-        { n: 11, en: "Hud", ar: "سُورَةُ هُودٍ", t: "MECQUOISE", v: 123 },
+        { n: 11, en: "Houd", ar: "سُورَةُ هُودٍ", t: "MECQUOISE", v: 123 },
         { n: 12, en: "Yusuf", ar: "سُورَةُ يُوسُفَ", t: "MECQUOISE", v: 111 },
         {
           n: 13,
@@ -362,7 +362,7 @@
         { n: 22, en: "Al-Hajj", ar: "سُورَةُ الحَجِّ", t: "MÉDINOISE", v: 78 },
         {
           n: 23,
-          en: "Al-Mu'minun",
+          en: "Al-Mu'minoun",
           ar: "سُورَةُ المُؤْمِنُونَ",
           t: "MECQUOISE",
           v: 118,
@@ -857,12 +857,6 @@
       ];
       const recitersData = [
         {
-          id: "ar.afifmuhammadtaj",
-          name: "Afif Muhammad Taj",
-          ar: "عفيف محمد تاج",
-          img: "assets/image/afif.jpg",
-        },
-        {
           id: "ar.abdulbasitmurattal",
           name: "Abd Al-Basit",
           ar: "عبد الباسط عبد الصمد",
@@ -902,12 +896,23 @@
         renderReciters();
         loadSurahsData();
       };
-
+     
       // 1. CHARGEMENT INITIAL DES DONNÉES API
       async function loadSurahsData() {
         try {
           const res = await fetch("https://api.alquran.cloud/v1/surah");
+          if (!res.ok) {
+            console.error("Erreur HTTP API:", res.status, res.statusText);
+            return;
+          }
+
           const data = await res.json();
+          if (!data || !data.data || !Array.isArray(data.data)) {
+            console.error(
+              "Format de réponse inattendu pour l'API des sourates"
+            );
+            return;
+          }
 
           allSurahs = data.data.map((s) => ({
             n: s.number,
@@ -918,7 +923,8 @@
           }));
 
           // Optionnel : Si le panneau est déjà ouvert avant la fin du fetch
-          if (document.getElementById("surahPanel").style.display === "flex") {
+          const panel = document.getElementById("surahPanel");
+          if (panel && panel.style.display === "flex") {
             renderSurahList(allSurahs);
           }
         } catch (e) {
@@ -937,21 +943,22 @@
         container.innerHTML = recitersData
           .map(
             (r) => `
-            <div class="item-card" onclick="openSurahs('${
-              r.id
-            }', '${r.name.replace(/'/g, "\\'")}')">
-                <img src="${
-                  r.img
-                }" class="reciter-avatar-sm" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(
+        <div class="item-card" onclick="openSurahs('${r.id}', '${r.name.replace(
+              /'/g,
+              "\\'"
+            )}')">
+            <img src="${
+              r.img
+            }" class="reciter-avatar-sm" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(
               r.name
             )}&background=0D3A27&color=fff'">
-                <div class="info-zone">
-                    <span class="title-fr">${r.name}</span>
-                    <span class="sub-meta">${r.ar}</span>
-                </div>
-                <i class="fas fa-chevron-right" style="color: var(--color-gold); font-size: 0.8rem;"></i>
+            <div class="info-zone">
+                <span class="title-fr">${r.name}</span>
+                <span class="sub-meta">${r.ar}</span>
             </div>
-        `
+            <i class="fas fa-chevron-right" style="color: var(--color-gold); font-size: 0.8rem;"></i>
+        </div>
+    `
           )
           .join("");
       }
@@ -967,6 +974,16 @@
         if (nameDisplay) nameDisplay.innerText = name;
         if (panel) panel.style.display = "flex";
 
+        // Si les sourates ne sont pas encore chargées, on affiche un message
+        if (!allSurahs || allSurahs.length === 0) {
+          const content = document.getElementById("surahContent");
+          if (content) {
+            content.innerHTML =
+              '<p style="text-align:center; padding:20px; color:white;">Chargement des sourates...</p>';
+          }
+          return;
+        }
+
         renderSurahList(allSurahs);
       }
 
@@ -975,7 +992,7 @@
         const content = document.getElementById("surahContent");
         if (!content) return;
 
-        if (list.length === 0) {
+        if (!list || list.length === 0) {
           content.innerHTML =
             '<p style="text-align:center; padding:20px; color:white;">Chargement des sourates ou aucun résultat...</p>';
           return;
@@ -984,36 +1001,32 @@
         content.innerHTML = list
           .map(
             (s) => `
-            <div class="item-card" onclick="selectAudio('${currentReciterId}', ${
+        <div class="item-card" onclick="selectAudio('${currentReciterId}', ${
               s.n
-            }, '${currentReciterName.replace(/'/g, "\\'")}', '${s.en.replace(
-              /'/g,
-              "\\'"
-            )}')">
-                <div class="num-badge">${s.n}</div>
-                <div class="info-zone">
-                    <span class="title-fr">${s.en}</span>
-                    <span class="sub-meta">${s.t} • ${s.v} VERSETS</span>
-                </div>
-                <div class="title-ar">${s.ar}</div>
+            }, '${
+              currentReciterName ? currentReciterName.replace(/'/g, "\\'") : ""
+            }', '${s.en.replace(/'/g, "\\'")}')">
+            <div class="num-badge">${s.n}</div>
+            <div class="info-zone">
+                <span class="title-fr">${s.en}</span>
+                <span class="sub-meta">${s.t} • ${s.v} VERSETS</span>
             </div>
-        `
+            <div class="title-ar">${s.ar}</div>
+        </div>
+    `
           )
           .join("");
       }
 
-      // 5. SELECTION ET REDIRECTION VERS LE PLAYER
+      // 5. SÉLECTION ET REDIRECTION VERS LE PLAYER
       function selectAudio(reciterId, surahNum, reciterName, surahName) {
         // 1. On prépare d'abord le numéro à 3 chiffres (ex: 1 devient 001)
         const padded = surahNum.toString().padStart(3, "0");
         let url = "";
 
         // LOGIQUE SERVEURS CORRIGÉE (Version finale optimisée)
-        if (reciterId === "ar.afifmuhammadtaj") {
-          // Dossier exact vérifié : afif_mohammad_taj
-          url = `https://download.quranic.audio/quran/afif_mohammad_taj/${padded}.mp3`;
-        } else if (reciterId === "ar.abdulbasitmurattal") {
-          // Correction du chemin : le dossier sur le serveur 7 est "basit/murattal"
+        if (reciterId === "ar.abdulbasitmurattal") {
+          // Chemin pour Basit (murattal) sur mp3quran
           url = `https://server7.mp3quran.net/basit/murattal/${padded}.mp3`;
         } else if (reciterId === "ar.sudais") {
           url = `https://server11.mp3quran.net/sds/${padded}.mp3`;
@@ -1023,10 +1036,20 @@
           url = `https://server8.mp3quran.net/hani/${padded}.mp3`;
         } else if (reciterId === "ar.shatri") {
           url = `https://server11.mp3quran.net/shatri/${padded}.mp3`;
+        } else if (reciterId === "ar.basfar") {
+          url = `https://server6.mp3quran.net/bsfr/${padded}.mp3`;
         } else {
           // Fallback pour les autres (utilise le numéro simple sans les zéros)
           url = `https://cdn.islamic.network/quran/audio-surah/128/${reciterId}/${surahNum}.mp3`;
         }
+
+        // DEBUG : vérifier rapidement si l'URL répond (optionnel en prod)
+        try {
+          console.log("Test URL audio:", url);
+        } catch (e) {
+          // silence si console non disponible
+        }
+
         // Récupérer l'image du récitateur
         const reciter = recitersData.find((r) => r.id === reciterId);
         const imgPath = reciter ? reciter.img : "assets/image/Logo.jpg";
@@ -1047,7 +1070,10 @@
 
       // 6. FILTRES DE RECHERCHE
       function filterList() {
-        const val = document.getElementById("searchInput").value.toLowerCase();
+        const input = document.getElementById("searchInput");
+        if (!input) return;
+        const val = input.value.toLowerCase();
+
         document.querySelectorAll("#reciterList .item-card").forEach((card) => {
           card.style.display = card.innerText.toLowerCase().includes(val)
             ? "flex"
@@ -1056,9 +1082,10 @@
       }
 
       function filterSurahs() {
-        const q = document
-          .getElementById("surahSearchInput")
-          .value.toLowerCase();
+        const input = document.getElementById("surahSearchInput");
+        if (!input) return;
+
+        const q = input.value.toLowerCase();
         const filtered = allSurahs.filter(
           (s) =>
             s.en.toLowerCase().includes(q) ||
@@ -1069,7 +1096,8 @@
       }
 
       function closeSurahs() {
-        document.getElementById("surahPanel").style.display = "none";
+        const panel = document.getElementById("surahPanel");
+        if (panel) panel.style.display = "none";
       }
     </script>
     <script src="assets/js/script.js"></script>

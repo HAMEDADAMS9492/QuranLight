@@ -1,12 +1,19 @@
 <!DOCTYPE html>
 <html lang="fr">
   <head>
+    <!-- ===== BASE META ===== -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Paramètres - QuranLight</title>
 
+    <!-- ===== PERFORMANCE CRITIQUE ===== -->
     <script src="assets/js/theme-loader.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+    <link rel="preload" href="assets/css/style.css" as="style" />
+    <link rel="preload" href="assets/css/theme-variables.css" as="style" />
 
+    <!-- ===== FONTS & ICONS ===== -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -16,35 +23,87 @@
       rel="stylesheet"
     />
 
+    <!-- ===== CSS PRINCIPAL ===== -->
     <link rel="stylesheet" href="assets/css/style.css" />
     <link rel="stylesheet" href="assets/css/theme-variables.css" />
 
+    <!-- ===== STYLES SPECIFIQUES PAGE SETTINGS ===== -->
     <style>
-      body {
-        background-color: var(--emerald-dark);
+      /* =============================================== */
+      /* 1. STRUCTURE GLOBALE & TYPOGRAPHIE              */
+      /* =============================================== */
+      .settings-page {
         background: radial-gradient(
           circle at top,
           var(--emerald-mid),
           var(--emerald-dark)
         );
         background-attachment: fixed;
-        color: white;
+        color: var(--text-primary);
         font-family: "Poppins", sans-serif;
+        min-height: 100vh;
         margin: 0;
         padding-bottom: 50px;
         overflow-x: hidden;
-        transition: background 0.5s ease;
+        transition: background var(--transition-theme);
       }
 
-      /* BARRE DE TACHES RÉORDONNÉE */
+      /* =============================================== */
+      /* 2. TYPOGRAPHIE - TITRES BLANC GRAS              */
+      /* =============================================== */
+      .setting-label {
+        display: block;
+        font-size: 0.95rem;
+        font-weight: 700 !important;
+        color: #ffffff !important;
+        margin: 0;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        letter-spacing: 0.3px;
+      }
+
+      #font-preview {
+        font-weight: 700 !important;
+        color: #ffffff !important;
+        font-size: 1.1rem;
+        line-height: 1.5;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+        letter-spacing: 0.2px;
+      }
+
+      /* Mode sombre harmonieux */
+      :root.theme-dark #font-preview,
+      body.theme-dark #font-preview {
+        color: #f8f8f8 !important;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+      }
+
+      /* TITRE HEADER - BLANC GRAS (MODIFIÉ ICI) */
+      .header-center h1 {
+        margin: 0;
+        font-size: clamp(0.95rem, 4vw, 1.1rem);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        font-weight: 800 !important; /* ✅ FORCE LE GRAS MAXIMUM */
+        color: #ffffff !important; /* ✅ FORCE LE BLANC PUR */
+        -webkit-text-fill-color: #ffffff !important; /* ✅ SURPASSE LE GRADIENT */
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7),
+          0 0 12px rgba(197, 160, 89, 0.3); /* Or subtil */
+        white-space: nowrap;
+      }
+
+      /* =============================================== */
+      /* 3. HEADER STICKY PREMIUM                        */
+      /* =============================================== */
       .settings-header {
         display: grid;
         grid-template-columns: 80px 1fr 80px;
         align-items: center;
+        gap: 1rem;
         padding: 10px 20px;
-        background: rgba(0, 0, 0, 0.7);
+        background: rgba(0, 0, 0, 0.8);
         backdrop-filter: blur(20px);
-        border-bottom: 1px solid var(--border-light);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border-gold);
         position: sticky;
         top: 0;
         z-index: 1000;
@@ -53,24 +112,25 @@
 
       .nav-btn {
         text-decoration: none;
-        color: white;
+        color: var(--text-primary);
         background: rgba(255, 255, 255, 0.05);
         width: 40px;
         height: 40px;
         border-radius: 12px;
-        border: 1px solid var(--border-light);
+        border: 1px solid var(--border-gold);
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: 0.3s;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: pointer;
       }
 
       .nav-btn:hover {
-        background: var(--gold);
+        background: var(--color-gold);
         color: var(--emerald-dark);
-        border-color: var(--gold-bright);
-        box-shadow: 0 0 15px var(--gold-glow);
+        border-color: var(--color-gold-light);
+        box-shadow: 0 0 15px var(--color-gold-glow);
+        transform: translateY(-2px);
       }
 
       .nav-btn.right {
@@ -87,21 +147,9 @@
 
       .header-center i {
         font-size: 1.2rem;
-        color: var(--gold);
-        filter: drop-shadow(0 0 8px var(--gold-glow));
-        animation: spin-slow 10s linear infinite;
-      }
-
-      .header-center h1 {
-        margin: 0;
-        font-size: 1.1rem;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        font-weight: 600;
-        background: linear-gradient(to right, #fff, var(--gold-bright));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        white-space: nowrap;
+        color: var(--color-gold);
+        filter: drop-shadow(0 0 8px var(--color-gold-glow));
+        animation: spin-slow 20s linear infinite;
       }
 
       @keyframes spin-slow {
@@ -113,7 +161,9 @@
         }
       }
 
-      /* CONTENEUR ET CARTES */
+      /* =============================================== */
+      /* 4. LAYOUT & SECTIONS                            */
+      /* =============================================== */
       .settings-container {
         max-width: 800px;
         margin: 20px auto;
@@ -125,7 +175,7 @@
       }
 
       .section-title {
-        color: var(--gold-bright);
+        color: var(--color-gold-light);
         font-size: 0.8rem;
         text-transform: uppercase;
         letter-spacing: 2px;
@@ -139,17 +189,27 @@
       .section-title::after {
         content: "";
         height: 1px;
-        background: linear-gradient(to right, var(--border-light), transparent);
+        background: linear-gradient(to right, var(--border-gold), transparent);
         flex-grow: 1;
       }
 
+      /* =============================================== */
+      /* 5. CARTES & ROWS                                */
+      /* =============================================== */
       .settings-card {
         background: var(--card-bg);
-        border: 1px solid var(--border-light);
+        border: 1px solid var(--border-gold);
         border-radius: 16px;
         overflow: hidden;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .settings-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
       }
 
       .setting-row {
@@ -158,7 +218,7 @@
         justify-content: space-between;
         padding: 20px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        transition: 0.3s;
+        transition: background 0.3s ease;
       }
 
       .setting-row:hover {
@@ -177,51 +237,59 @@
 
       .setting-info i {
         font-size: 1.2rem;
-        color: var(--gold);
+        color: var(--color-gold);
         width: 30px;
         text-align: center;
-      }
-
-      .setting-label {
-        display: block;
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: #fdfdfd;
+        flex-shrink: 0;
       }
 
       .setting-desc {
         display: block;
         font-size: 0.75rem;
-        color: rgba(255, 255, 255, 0.5);
+        color: var(--text-muted);
         margin-top: 2px;
         line-height: 1.3;
       }
 
+      /* =============================================== */
+      /* 6. FORM CONTROLS                                */
+      /* =============================================== */
       select {
-        background: rgba(0, 0, 0, 0.3);
-        color: var(--gold-bright);
-        border: 1px solid var(--border-light);
-        padding: 8px 12px;
+        background: rgba(0, 0, 0, 0.4);
+        color: var(--color-gold-light);
+        border: 1px solid var(--border-gold);
+        padding: 8px 16px;
         border-radius: 8px;
         outline: none;
         cursor: pointer;
         font-family: inherit;
-        font-size: 0.85rem;
+        font-size: 0.9rem;
+        min-width: 120px;
+        transition: all 0.3s ease;
+      }
+
+      select:hover,
+      select:focus {
+        background: rgba(0, 0, 0, 0.6);
+        box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.2);
       }
 
       input[type="range"] {
         width: 100%;
-        accent-color: var(--gold);
-        height: 5px;
+        accent-color: var(--color-gold);
+        height: 6px;
         margin-top: 15px;
         cursor: pointer;
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.1);
       }
 
+      /* SWITCH PREMIUM */
       .switch {
         position: relative;
         display: inline-block;
-        width: 46px;
-        height: 24px;
+        width: 52px;
+        height: 28px;
         flex-shrink: 0;
       }
 
@@ -235,112 +303,320 @@
         position: absolute;
         cursor: pointer;
         inset: 0;
-        background-color: rgba(255, 255, 255, 0.1);
-        transition: 0.4s;
-        border-radius: 34px;
-        border: 1px solid var(--border-light);
+        background: rgba(255, 255, 255, 0.1);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 999px;
+        border: 1px solid var(--border-gold);
       }
 
       .slider:before {
         position: absolute;
         content: "";
-        height: 16px;
-        width: 16px;
+        height: 20px;
+        width: 20px;
         left: 3px;
         bottom: 3px;
-        background-color: white;
-        transition: 0.4s;
+        background: var(--text-primary);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         border-radius: 50%;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
       }
 
       input:checked + .slider {
-        background-color: var(--gold);
-      }
-      input:checked + .slider:before {
-        transform: translateX(22px);
+        background: var(--color-gold);
+        border-color: var(--color-gold-light);
       }
 
+      input:checked + .slider:before {
+        transform: translateX(24px);
+      }
+
+      /* =============================================== */
+      /* 7. ÉLÉMENTS SPÉCIALISÉS - PREMIUM EFFECTS       */
+      /* =============================================== */
+
+      /* PREVIEW BOX - Verre dépoli lumineux */
       .preview-box {
-        background: rgba(0, 0, 0, 0.3);
-        border: 1px solid var(--border-light);
-        border-radius: 12px;
-        padding: 20px;
-        margin-top: 15px;
+        background: rgba(20, 20, 20, 0.6);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1.5px solid rgba(197, 160, 89, 0.3);
+        border-radius: 20px;
+        padding: 24px;
+        margin-top: 18px;
         text-align: center;
         position: relative;
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
       }
 
+      .preview-box:hover {
+        transform: translateY(-6px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(197, 160, 89, 0.25),
+          0 0 0 1px rgba(197, 160, 89, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        background: rgba(25, 25, 25, 0.8);
+      }
+
+      /* LABEL ÉTIQUETTE - Or flottant */
       .preview-label {
         position: absolute;
-        top: -10px;
-        left: 20px;
-        background: var(--gold);
-        color: var(--emerald-dark);
-        font-size: 0.65rem;
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-weight: 800;
+        top: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, var(--color-gold), #d4a574);
+        color: #1a1a1a;
+        font-size: 0.7rem;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-weight: 700;
         text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 12px rgba(197, 160, 89, 0.4);
+        backdrop-filter: blur(10px);
+        animation: labelFloat 3s ease-in-out infinite;
       }
 
+      @keyframes labelFloat {
+        0%,
+        100% {
+          transform: translateX(-50%) translateY(0px);
+        }
+        50% {
+          transform: translateX(-50%) translateY(-2px);
+        }
+      }
+
+      /* BUTTON DANGER - Effet volcanique */
       .btn-danger {
-        background: rgba(255, 68, 68, 0.1);
-        border: 1px solid rgba(255, 68, 68, 0.3);
+        background: linear-gradient(
+          135deg,
+          rgba(255, 68, 68, 0.2),
+          rgba(255, 0, 0, 0.1)
+        );
+        border: 2px solid rgba(255, 68, 68, 0.5);
         color: #ff6666;
-        padding: 10px 20px;
-        border-radius: 10px;
-        font-weight: 600;
+        padding: 14px 28px;
+        border-radius: 14px;
+        font-weight: 700;
+        font-size: 0.85rem;
         cursor: pointer;
-        transition: 0.3s;
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         text-transform: uppercase;
-        font-size: 0.75rem;
+        letter-spacing: 1px;
+        position: relative;
+        overflow: hidden;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      }
+
+      .btn-danger::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        transition: left 0.6s;
+      }
+
+      .btn-danger:hover::before {
+        left: 100%;
       }
 
       .btn-danger:hover {
-        background: #ff4444;
+        background: linear-gradient(135deg, #ff4444, #cc0000);
         color: white;
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 12px 30px rgba(255, 68, 68, 0.5),
+          0 0 20px rgba(255, 68, 68, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.2);
       }
 
-      @media (max-width: 600px) {
-        .header-center h1 {
-          font-size: 0.95rem;
+      .btn-danger:active {
+        transform: translateY(-1px) scale(1.02);
+      }
+
+      /* ADHAN BUTTONS - Effets du message précédent (gardés) */
+      .adhan-preview-btn {
+        width: 48px;
+        height: 48px;
+        border: 2px solid rgba(197, 160, 89, 0.4);
+        background: rgba(15, 15, 15, 0.8);
+        color: #e0e0e0;
+        border-radius: 14px;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .adhan-preview-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(197, 160, 89, 0.3),
+          transparent
+        );
+        transition: left 0.6s;
+      }
+
+      .adhan-preview-btn:hover::before {
+        left: 100%;
+      }
+
+      .adhan-preview-btn:hover {
+        background: linear-gradient(135deg, var(--color-gold), #d4a574);
+        color: #1a1a1a;
+        border-color: var(--color-gold-light);
+        transform: scale(1.15) rotate(5deg);
+        box-shadow: 0 8px 25px rgba(197, 160, 89, 0.4),
+          0 0 0 4px rgba(197, 160, 89, 0.2);
+      }
+
+      .adhan-preview-btn.active {
+        background: linear-gradient(135deg, var(--color-gold), #c5a059);
+        color: #1a1a1a;
+        border-color: var(--color-gold-light);
+        box-shadow: 0 0 20px rgba(197, 160, 89, 0.6),
+          0 4px 12px rgba(0, 0, 0, 0.4);
+        transform: scale(1.08);
+        animation: pulse-adhan 2s infinite;
+      }
+
+      @keyframes pulse-adhan {
+        0%,
+        100% {
+          box-shadow: 0 0 20px rgba(197, 160, 89, 0.6),
+            0 4px 12px rgba(0, 0, 0, 0.4);
         }
+        50% {
+          box-shadow: 0 0 35px rgba(197, 160, 89, 0.9),
+            0 6px 20px rgba(0, 0, 0, 0.5);
+        }
+      }
+
+      .adhan-preview-btn:active {
+        transform: scale(0.95) rotate(-2deg);
+        transition: transform 0.1s;
+      }
+
+      /* =============================================== */
+      /* 8. RESPONSIVE & ACCESSIBILITÉ                   */
+      /* =============================================== */
+      @media (max-width: 768px) {
+        .settings-header {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto 1fr auto;
+          gap: 0.75rem;
+          padding: 15px;
+          height: auto;
+        }
+        .settings-container {
+          margin: 15px auto;
+          padding: 0 10px;
+        }
+      }
+
+      @media (max-width: 480px) {
         .setting-row {
-          flex-direction: row;
-          flex-wrap: wrap;
-          gap: 15px;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 1rem;
+          padding: 20px 15px;
         }
         .setting-info {
-          min-width: 100%;
+          margin-bottom: 0.5rem;
         }
         select {
           width: 100%;
+          min-width: unset;
         }
         .switch {
           margin-left: auto;
+          align-self: flex-end;
         }
+        .adhan-preview-btn {
+          width: 40px;
+          height: 40px;
+          font-size: 0.9rem;
+        }
+        .section-title {
+          font-size: 0.75rem;
+          letter-spacing: 1.5px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      .nav-btn:focus,
+      select:focus,
+      .btn-danger:focus,
+      .adhan-preview-btn:focus {
+        outline: 2px solid var(--color-gold);
+        outline-offset: 2px;
       }
     </style>
   </head>
-  <body>
+
+  <body class="settings-page">
+    <!-- ===== HEADER NAVIGATION ===== -->
     <header class="settings-header">
-      <a href="index.html" class="nav-btn" title="Accueil">
+      <a
+        href="index.html"
+        class="nav-btn"
+        title="Accueil"
+        aria-label="Retour à l'accueil"
+      >
         <i class="fas fa-arrow-left"></i>
       </a>
 
       <div class="header-center">
-        <i class="fas fa-cog"></i>
+        <i class="fas fa-cog" aria-hidden="true"></i>
         <h1>Réglages Généraux</h1>
       </div>
 
-      <a href="about.html" class="nav-btn right" title="Informations">
+      <a
+        href="about.html"
+        class="nav-btn right"
+        title="Informations"
+        aria-label="À propos"
+      >
         <i class="fas fa-info-circle"></i>
       </a>
     </header>
 
+    <!-- ===== CONTENU PRINCIPAL ===== -->
     <div class="settings-container">
+      <!-- 📿 1. EXPÉRIENCE SPIRITUELLE -->
       <div class="settings-section">
-        <div class="section-title">Expérience Spirituelle</div>
+        <div class="section-title">
+          <i class="fas fa-star-and-crescent"></i>
+          Expérience Spirituelle
+        </div>
         <div class="settings-card">
           <div class="setting-row">
             <div class="setting-info">
@@ -348,49 +624,50 @@
               <div>
                 <span class="setting-label">Profil d'Apprentissage</span>
                 <span class="setting-desc"
-                  >Adapte les tutoriels selon votre genre.</span
+                  >Tutoriels adaptés à votre genre</span
                 >
               </div>
             </div>
-            <select id="pref-gender">
+            <select id="pref-gender" aria-label="Sélectionner votre profil">
               <option value="masculin">👨 Frère</option>
               <option value="feminin">👩 Sœur</option>
             </select>
           </div>
+
           <div class="setting-row">
             <div class="setting-info">
               <i class="fas fa-bell"></i>
               <div>
-                <span class="setting-label">Notifications de Dhikr</span>
-                <span class="setting-desc"
-                  >Rappels discrets pour le Tasbih.</span
-                >
+                <span class="setting-label">Notifications Dhikr</span>
+                <span class="setting-desc">Rappels discrets Tasbih</span>
               </div>
             </div>
-            <label class="switch">
+            <label class="switch" aria-label="Activer notifications Dhikr">
               <input type="checkbox" id="pref-dhikr" checked />
-              <span class="slider"></span>
+              <span class="slider" aria-hidden="true"></span>
             </label>
           </div>
         </div>
       </div>
 
+      <!-- 🎨 2. INTERFACE & CONFORT -->
       <div class="settings-section">
-        <div class="section-title">Interface & Confort</div>
+        <div class="section-title">
+          <i class="fas fa-paint-brush"></i>
+          Interface & Confort
+        </div>
         <div class="settings-card">
           <div class="setting-row">
             <div class="setting-info">
               <i class="fas fa-palette"></i>
               <div>
-                <span class="setting-label">Nuance d'ambiance</span>
-                <span class="setting-desc"
-                  >Choisissez l'atmosphère visuelle.</span
-                >
+                <span class="setting-label">Thème</span>
+                <span class="setting-desc">Atmosphère visuelle</span>
               </div>
             </div>
-            <select id="pref-theme">
-              <option value="emerald">🌲 Theme Émeraude </option>
-              <option value="dark">🌑 Theme Sombre</option>
+            <select id="pref-theme" aria-label="Changer de thème">
+              <option value="emerald">🌲 Émeraude</option>
+              <option value="dark">🌑 Sombre</option>
             </select>
           </div>
 
@@ -398,18 +675,21 @@
             class="setting-row"
             style="flex-direction: column; align-items: stretch"
           >
-            <div class="setting-info" style="margin-bottom: 5px">
+            <div class="setting-info" style="margin-bottom: 0.75rem">
               <i class="fas fa-text-height"></i>
-              <span class="setting-label">Taille des caractères</span>
+              <span class="setting-label">Taille Texte</span>
             </div>
-            <input type="range" id="font-range" min="14" max="32" value="18" />
+            <input
+              type="range"
+              id="font-range"
+              min="14"
+              max="32"
+              value="18"
+              aria-label="Taille texte"
+            />
             <div class="preview-box">
-              <div class="preview-label">Aperçu direct</div>
-              <div
-                class="preview-text"
-                id="font-preview"
-                style="color: var(--gold-bright)"
-              >
+              <div class="preview-label">Aperçu Live</div>
+              <div class="preview-text" id="font-preview">
                 "Certes, c'est par l'évocation d'Allah que les cœurs
                 s'apaisent." (13:28)
               </div>
@@ -418,88 +698,248 @@
         </div>
       </div>
 
+      <!-- 🕌 3. PRIÈRES SIMPLIFIÉ -->
       <div class="settings-section">
-        <div class="section-title">Confidentialité</div>
+        <div class="section-title">
+          <i class="fas fa-pray"></i>
+          Prières & Adhan
+        </div>
+        <div class="settings-card">
+          <!-- Son Adhan -->
+          <div class="setting-row">
+            <div class="setting-info">
+              <i class="fas fa-volume-up"></i>
+              <div>
+                <span class="setting-label">Son Adhan</span>
+                <span class="setting-desc">Alerte horaire prière</span>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center">
+              <button
+                class="adhan-preview-btn"
+                data-sound="silent"
+                title="🔇 Muet"
+              >
+                <i class="fas fa-volume-mute"></i>
+              </button>
+              <button
+                class="adhan-preview-btn"
+                data-sound="discreet"
+                title="📱 Discret"
+              >
+                <i class="fas fa-volume-down"></i>
+              </button>
+              <button
+                class="adhan-preview-btn active"
+                data-sound="adhan"
+                title="🕌 Adhan"
+              >
+                <i class="fas fa-mosque"></i>
+              </button>
+            </div>
+            <input type="hidden" id="pref-adhan-sound" value="adhan" />
+          </div>
+
+          <!-- ✅ VILLE + MÉTHODE CALCUL SIMPLIFIÉE -->
+          <div class="setting-row">
+            <div class="setting-info">
+              <i class="fas fa-map-marker-alt"></i>
+              <div>
+                <span class="setting-label">Horaires Prière</span>
+                <span class="setting-desc" id="location-desc"
+                  >Lagos, NG - Méthode standard</span
+                >
+              </div>
+            </div>
+            <select id="pref-location" style="min-width: 220px">
+              <option value="lagos-ng-muslim">🇳🇬 Lagos (Standard)</option>
+              <option value="paris-fr-umm">🇫🇷 Paris (Umm Al-Qura)</option>
+              <option value="dubai-ae-uae">🇦🇪 Dubai (UAE)</option>
+              <option value="custom">📍 GPS Auto</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🔒 4. CONFIDENTIALITÉ -->
+      <div class="settings-section">
+        <div class="section-title">
+          <i class="fas fa-shield-alt"></i>
+          Confidentialité
+        </div>
         <div class="settings-card">
           <div class="setting-row">
             <div class="setting-info">
               <i class="fas fa-database"></i>
               <div>
-                <span class="setting-label">Nettoyage des données</span>
-                <span class="setting-desc"
-                  >Efface les préférences enregistrées.</span
-                >
+                <span class="setting-label">Reset Préférences</span>
+                <span class="setting-desc">Supprime tout l'historique</span>
               </div>
             </div>
-            <button id="clear-cache" class="btn-danger">Réinitialiser</button>
+            <button
+              id="clear-cache"
+              class="btn-danger"
+              aria-label="Réinitialiser"
+            >
+              Réinitialiser
+            </button>
           </div>
         </div>
       </div>
     </div>
 
     <script>
-      const fontRange = document.getElementById("font-range");
-      const fontPreview = document.getElementById("font-preview");
-      const genderSelect = document.getElementById("pref-gender");
-      const themeSelect = document.getElementById("pref-theme");
-      const dhikrToggle = document.getElementById("pref-dhikr");
+      (() => {
+        /* =============================================== */
+        /* 1. CONFIGURATION AUDIO ADHAN                   */
+        /* =============================================== */
+        const adhanSounds = {
+          silent: null,
+          discreet: `data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVKMjI0wEAA`,
+          adhan: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+        };
 
-      function loadSettings() {
+        /* =============================================== */
+        /* 2. ÉLÉMENTS DOM & CACHE                        */
+        /* =============================================== */
         const settings =
           JSON.parse(localStorage.getItem("quranlight_prefs")) || {};
-        if (settings.fontSize) {
-          fontRange.value = settings.fontSize;
-          fontPreview.style.fontSize = settings.fontSize + "px";
+        const els = {
+          fontRange: document.getElementById("font-range"),
+          fontPreview: document.getElementById("font-preview"),
+          genderSelect: document.getElementById("pref-gender"),
+          themeSelect: document.getElementById("pref-theme"),
+          dhikrToggle: document.getElementById("pref-dhikr"),
+          clearCache: document.getElementById("clear-cache"),
+          adhanSound: document.getElementById("pref-adhan-sound"),
+          adhanBtns: document.querySelectorAll(".adhan-preview-btn"),
+          locationSelect: document.getElementById("pref-location"),
+          locationDesc: document.getElementById("location-desc"),
+        };
+
+        /* =============================================== */
+        /* 3. FONCTIONS UTILITAIRES                       */
+        /* =============================================== */
+        const saveSetting = (key, value) => {
+          settings[key] = value;
+          localStorage.setItem("quranlight_prefs", JSON.stringify(settings));
+
+          // Événement spécial pour le thème
+          if (key === "theme") {
+            document.dispatchEvent(
+              new CustomEvent("themechange", { detail: value })
+            );
+          }
+        };
+
+        const updateAdhanUI = (sound) => {
+          els.adhanBtns.forEach((btn) => btn.classList.remove("active"));
+          document
+            .querySelector(`[data-sound="${sound}"]`)
+            .classList.add("active");
+        };
+
+        const updateLocationDesc = (location) => {
+          const locations = {
+            "lagos-ng-muslim": "Lagos, Nigeria (Muslim World League)",
+            "paris-fr-umm": "Paris, France (Umm Al-Qura)",
+            "dubai-ae-uae": "Dubai, EAU (UAE Revised)",
+            custom: "📍 GPS Actuel (Auto)",
+          };
+          els.locationDesc.textContent = locations[location] || "Lagos, NG";
+        };
+
+        /* =============================================== */
+        /* 4. CHARGEMENT DES PARAMÈTRES                   */
+        /* =============================================== */
+        const loadSettings = () => {
+          // Paramètres existants
+          els.fontRange.value = settings.fontSize || 18;
+          els.fontPreview.style.fontSize = els.fontRange.value + "px";
+          els.genderSelect.value = settings.gender || "masculin";
+          els.themeSelect.value = settings.theme || "emerald";
+          els.dhikrToggle.checked = settings.dhikr !== false;
+
+          // Adhan + Location
+          els.adhanSound.value = settings.adhanSound || "adhan";
+          updateAdhanUI(settings.adhanSound || "adhan");
+          els.locationSelect.value = settings.location || "lagos-ng-muslim";
+          updateLocationDesc(settings.location || "lagos-ng-muslim");
+        };
+
+        /* =============================================== */
+        /* 5. ÉVÉNEMENTS INTERACTIFS                      */
+        /* =============================================== */
+
+        // Taille de police
+        els.fontRange.oninput = (e) => {
+          els.fontPreview.style.fontSize = e.target.value + "px";
+          saveSetting("fontSize", +e.target.value);
+        };
+
+        // Paramètres généraux
+        els.genderSelect.onchange = (e) =>
+          saveSetting("gender", e.target.value);
+        els.dhikrToggle.onchange = (e) =>
+          saveSetting("dhikr", e.target.checked);
+        els.themeSelect.onchange = (e) => saveSetting("theme", e.target.value);
+
+        // Preview Adhan (avec gestion d'erreurs)
+        els.adhanBtns.forEach((btn) => {
+          btn.onclick = () => {
+            const sound = btn.dataset.sound;
+
+            // Arrêt audio précédent
+            document.querySelectorAll(".adhan-audio").forEach((audio) => {
+              audio.pause();
+              audio.currentTime = 0;
+            });
+
+            // Lecture preview
+            if (sound !== "silent" && adhanSounds[sound]) {
+              try {
+                const audio = new Audio(adhanSounds[sound]);
+                audio.className = "adhan-audio";
+                audio.volume = 0.3;
+                audio.play().catch(() => {});
+              } catch (e) {}
+            }
+
+            // MAJ UI + Sauvegarde
+            updateAdhanUI(sound);
+            els.adhanSound.value = sound;
+            saveSetting("adhanSound", sound);
+          };
+        });
+
+        // Localisation
+        els.locationSelect.onchange = (e) => {
+          saveSetting("location", e.target.value);
+          updateLocationDesc(e.target.value);
+        };
+
+        // Reset total
+        els.clearCache.onclick = () => {
+          if (
+            confirm(
+              "⚠️ Réinitialiser TOUTES vos préférences ?\n\n" +
+                "• Thème • Sons Adhan • Ville • Police • Tout"
+            )
+          ) {
+            localStorage.removeItem("quranlight_prefs");
+            location.reload();
+          }
+        };
+
+        /* =============================================== */
+        /* 6. INITIALISATION                               */
+        /* =============================================== */
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", loadSettings);
+        } else {
+          loadSettings();
         }
-        if (settings.gender) genderSelect.value = settings.gender;
-        if (settings.theme) {
-          themeSelect.value = settings.theme;
-          applyTheme(settings.theme);
-        }
-        if (settings.dhikr !== undefined) dhikrToggle.checked = settings.dhikr;
-      }
-
-      function saveSetting(key, value) {
-        let settings =
-          JSON.parse(localStorage.getItem("quranlight_prefs")) || {};
-        settings[key] = value;
-        localStorage.setItem("quranlight_prefs", JSON.stringify(settings));
-      }
-
-      function applyTheme(themeName) {
-        document.body.classList.remove("theme-dark");
-        document.documentElement.classList.remove("theme-dark");
-        if (themeName === "dark") {
-          document.body.classList.add("theme-dark");
-          document.documentElement.classList.add("theme-dark");
-        }
-      }
-
-      themeSelect.addEventListener("change", (e) => {
-        applyTheme(e.target.value);
-        saveSetting("theme", e.target.value);
-      });
-
-      fontRange.addEventListener("input", (e) => {
-        fontPreview.style.fontSize = e.target.value + "px";
-        saveSetting("fontSize", e.target.value);
-      });
-
-      genderSelect.addEventListener("change", (e) =>
-        saveSetting("gender", e.target.value)
-      );
-      dhikrToggle.addEventListener("change", (e) =>
-        saveSetting("dhikr", e.target.checked)
-      );
-
-      document.getElementById("clear-cache").addEventListener("click", () => {
-        if (confirm("Réinitialiser toutes vos préférences ?")) {
-          localStorage.removeItem("quranlight_prefs");
-          location.reload();
-        }
-      });
-
-      loadSettings();
+      })();
     </script>
   </body>
 </html>

@@ -266,12 +266,6 @@
     <script>
       const recitersData = [
         {
-          id: "ar.afifmuhammadtaj",
-          name: "Afif Muhammad Taj",
-          ar: "عفيف محمد تاج",
-          img: "assets/image/afif.jpg",
-        },
-        {
           id: "ar.abdulbasitmurattal",
           name: "Abd Al-Basit",
           ar: "عبد الباسط عبد الصمد",
@@ -326,41 +320,67 @@
 
       function renderReciters(list) {
         const container = document.getElementById("recitersList");
+        if (!container) return;
+
         container.innerHTML = list
           .map(
             (r) => `
-            <div class="reciter-card-premium" onclick="openSurahs('${r.id}', '${r.name}')">
-                <div class="reciter-avatar-box">
-                    <img src="${r.img}" alt="${r.name}" onerror="this.src='https://ui-avatars.com/api/?name=${r.name}&background=0d3a27&color=b08d57'">
-                </div>
-                <div class="reciter-meta">
-                    <span class="name-fr">${r.name}</span>
-                    <span class="name-ar">${r.ar}</span>
-                </div>
-                <i class="fas fa-chevron-right" style="color: var(--color-gold); opacity: 0.5;"></i>
+        <div class="reciter-card-premium" onclick="openSurahs('${
+          r.id
+        }', '${r.name.replace(/'/g, "\\'")}')">
+            <div class="reciter-avatar-box">
+                <img src="${r.img}" alt="${r.name.replace(
+              /"/g,
+              "&quot;"
+            )}" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(
+              r.name
+            )}&background=0d3a27&color=b08d57'">
             </div>
-        `
+            <div class="reciter-meta">
+                <span class="name-fr">${r.name}</span>
+                <span class="name-ar">${r.ar}</span>
+            </div>
+            <i class="fas fa-chevron-right" style="color: var(--color-gold); opacity: 0.5;"></i>
+        </div>
+    `
           )
           .join("");
       }
 
       async function openSurahs(id, name) {
         currentReciter = { id, name };
-        document.getElementById("selectedName").innerText = name;
-        document.getElementById("surahPanel").style.display = "flex";
 
+        const selectedNameEl = document.getElementById("selectedName");
+        const panelEl = document.getElementById("surahPanel");
         const content = document.getElementById("surahContent");
+
+        if (selectedNameEl) selectedNameEl.innerText = name;
+        if (panelEl) panelEl.style.display = "flex";
+
+        if (!content) return;
+
         content.innerHTML =
           '<div style="text-align:center; padding:50px;"><i class="fas fa-spinner fa-spin fa-2x" style="color:var(--color-gold)"></i></div>';
 
         try {
-          if (allSurahs.length === 0) {
+          if (!allSurahs || allSurahs.length === 0) {
             const res = await fetch("https://api.alquran.cloud/v1/surah");
+            if (!res.ok) {
+              content.innerHTML =
+                "<p style='text-align:center; padding:20px;'>Erreur de connexion à l'API.</p>";
+              return;
+            }
             const data = await res.json();
+            if (!data || !data.data || !Array.isArray(data.data)) {
+              content.innerHTML =
+                "<p style='text-align:center; padding:20px;'>Format de données inattendu.</p>";
+              return;
+            }
             allSurahs = data.data;
           }
           displaySurahs(allSurahs);
         } catch (e) {
+          console.error("Erreur de connexion:", e);
           content.innerHTML =
             "<p style='text-align:center; padding:20px;'>Erreur de connexion.</p>";
         }
@@ -368,40 +388,54 @@
 
       function displaySurahs(list) {
         const content = document.getElementById("surahContent");
+        if (!content) return;
+
+        if (!list || list.length === 0) {
+          content.innerHTML =
+            "<p style='text-align:center; padding:20px;'>Aucune sourate trouvée.</p>";
+          return;
+        }
+
+        const safeReciterName = (currentReciter.name || "").replace(
+          /'/g,
+          "\\'"
+        );
+
         content.innerHTML = list
           .map(
             (s) => `
-            <div class="surah-item" onclick="selectAudio('${
-              currentReciter.id
-            }', ${s.number}, '${currentReciter.name}', '${s.englishName.replace(
-              /'/g,
-              "\\'"
-            )}')">
-                <div style="display:flex; align-items:center;">
-                    <div class="surah-num">${s.number}</div>
-                    <span class="surah-name-en">${s.englishName}</span>
-                </div>
-                <span class="surah-name-ar">${s.name}</span>
+        <div class="surah-item" onclick="selectAudio('${currentReciter.id}', ${
+              s.number
+            }, '${safeReciterName}', '${s.englishName.replace(/'/g, "\\'")}')">
+            <div style="display:flex; align-items:center;">
+                <div class="surah-num">${s.number}</div>
+                <span class="surah-name-en">${s.englishName}</span>
             </div>
-        `
+            <span class="surah-name-ar">${s.name}</span>
+        </div>
+    `
           )
           .join("");
       }
 
       function filterReciters() {
-        const query = document
-          .getElementById("searchInput")
-          .value.toLowerCase();
+        const input = document.getElementById("searchInput");
+        if (!input) return;
+
+        const query = input.value.toLowerCase();
         const filtered = recitersData.filter(
-          (r) => r.name.toLowerCase().includes(query) || r.ar.includes(query)
+          (r) =>
+            r.name.toLowerCase().includes(query) ||
+            (r.ar && r.ar.toLowerCase().includes(query))
         );
         renderReciters(filtered);
       }
 
       function filterSurahs() {
-        const query = document
-          .getElementById("surahSearchInput")
-          .value.toLowerCase();
+        const input = document.getElementById("surahSearchInput");
+        if (!input) return;
+
+        const query = input.value.toLowerCase();
         const filtered = allSurahs.filter(
           (s) =>
             s.englishName.toLowerCase().includes(query) ||
@@ -415,10 +449,9 @@
         const padded = surahNum.toString().padStart(3, "0");
         let audioUrl = "";
 
+        // Serveurs connus (mêmes règles que dans ton autre bloc)
         const servers = {
-          // Correction : le dossier exact sur ce miroir est afif_muhammad_taj
-          "ar.afifmuhammadtaj":
-            "https://mirrors.quranicaudio.com/tvquran/afif_muhammad_taj",
+          // Afif : chemin basé sur download.quranic.audio (à tester dans le navigateur)
           "ar.abdulbasitmurattal":
             "https://server7.mp3quran.net/basit/murattal",
           "ar.sudais": "https://server11.mp3quran.net/sds",
@@ -427,11 +460,18 @@
           "ar.shatri": "https://server11.mp3quran.net/shatri",
           "ar.basfar": "https://server6.mp3quran.net/bsfr",
         };
+
         if (servers[reciterId]) {
           audioUrl = `${servers[reciterId]}/${padded}.mp3`;
         } else {
+          // Fallback générique par numéro de sourate simple
           audioUrl = `https://cdn.islamic.network/quran/audio-surah/128/${reciterId}/${surahNum}.mp3`;
         }
+
+        // Optionnel : log pour debug
+        try {
+          console.log("URL audio sélectionnée:", audioUrl);
+        } catch (e) {}
 
         // Trouver l'image du récitateur
         const reciterInfo = recitersData.find((r) => r.id === reciterId);
@@ -454,8 +494,10 @@
       }
 
       function closePanel() {
-        document.getElementById("surahPanel").style.display = "none";
-        document.getElementById("surahSearchInput").value = "";
+        const panel = document.getElementById("surahPanel");
+        const input = document.getElementById("surahSearchInput");
+        if (panel) panel.style.display = "none";
+        if (input) input.value = "";
       }
     </script>
 
