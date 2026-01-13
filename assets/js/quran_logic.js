@@ -833,33 +833,46 @@ const btnToList = document.getElementById("btn-to-list");
 // 2. NAVIGATION ET VUES (INCHANGÉ)
 // ============================================================
 function switchView(view) {
+  // Récupération DOM à chaque appel (plus sûr)
+  const brandHeader = document.getElementById("brand-header");
+  const listView = document.getElementById("quran-list-view");
+  const readerView = document.getElementById("quran-reader-view");
+  const controlsBar = document.getElementById("quran-controls-bar");
+  const btnToList = document.getElementById("btn-to-list");
+
   if (view === "reader") {
+    // Mode lecteur (sourate complète)
     if (brandHeader) brandHeader.style.display = "none";
     if (listView) listView.style.display = "none";
     if (readerView) readerView.style.display = "block";
     if (controlsBar) controlsBar.style.display = "flex";
 
-    if (btnToHome) btnToHome.style.display = "none";
+    // Masquer bouton home, afficher bouton retour liste
     if (btnToList) {
       btnToList.style.display = "inline-flex";
+      // Liaison événementielle pour retour à la liste
       btnToList.onclick = (e) => {
         e.preventDefault();
         switchView("list");
       };
     }
   } else {
+    // Mode liste des sourates
     if (brandHeader) brandHeader.style.display = "block";
     if (listView) listView.style.display = "block";
     if (readerView) readerView.style.display = "none";
     if (controlsBar) controlsBar.style.display = "none";
 
-    if (btnToHome) btnToHome.style.display = "inline-flex";
+    // Masquer bouton retour liste
     if (btnToList) btnToList.style.display = "none";
 
+    // Arrêt audio lors du retour à la liste
     globalAudio.pause();
     audioStep = 0;
     updatePlayButtonUI(false);
   }
+
+  // Scroll fluide en haut de page
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -923,7 +936,6 @@ async function loadSurahData(surahNumber, shouldAutoPlay = false) {
   }
 
   try {
-    // ✅ DOUBLE API : AlQuran.cloud + fallback Quran.com
     const [resAr, resFr, resLatin, resAudio] = await Promise.all([
       fetch(`${QURAN_API_URL}/surah/${surahNumber}/quran-uthmani`),
       fetch(`${QURAN_API_URL}/surah/${surahNumber}/fr.hamidullah`),
@@ -942,22 +954,40 @@ async function loadSurahData(surahNumber, shouldAutoPlay = false) {
       document.title = `${arData.data.englishName} - QuranLight`;
 
       renderReaderView(arData.data, frData.data, latinData.data);
-
       updateNavigationButtons();
       setupGlobalAudio(currentAyahs[0]?.audio || "");
 
       if (shouldAutoPlay) playWithIntro();
-    } else if (ayatDisplay) {
-      ayatDisplay.innerHTML = `<p class="error-msg">Impossible de charger la sourate.</p>`;
+    } else {
+      throw new Error("Données API invalides");
     }
+    // Remplacez votre bloc catch actuel dans loadSurahData par celui-ci :
   } catch (error) {
-    console.error("Erreur de chargement:", error);
-    if (ayatDisplay) {
-      ayatDisplay.innerHTML = `<p class="error-msg">Une erreur est survenue lors du chargement de la sourate.</p>`;
+    console.warn("Échec AlQuran.cloud, tentative de secours sur Quran.com...");
+    try {
+      // Fallback spécifique vers Quran.com pour ne pas laisser l'utilisateur sans rien
+      const resFallback = await fetch(
+        `${QURAN_COM_API_URL}/quran/verses/uthmani?chapter_number=${surahNumber}`
+      );
+      const fallbackData = await resFallback.json();
+
+      if (fallbackData.verses) {
+        // Logique de secours simplifiée (ou affichage d'un message dédié)
+        ayatDisplay.innerHTML = `<p class="error-msg">Serveur principal indisponible. Mode lecture seule activé via Quran.com.</p>`;
+      }
+    } catch (finalError) {
+      ayatDisplay.innerHTML = `
+            <div class="error-msg">
+                <p>⚠️ Connexion impossible aux serveurs du Coran.</p>
+                <button onclick="loadSurahData(${surahNumber})" class="retry-btn">Réessayer</button>
+            </div>`;
     }
   }
 }
 
+// ============================================================
+// 4. RENDU DE LA VUE LECTEUR AMÉLIORÉE
+// ============================================================
 function renderReaderView(ar, fr, latin) {
   const headerCard = document.querySelector(".surah-header-card");
   const ayatDisplay = document.getElementById("ayat-display");
@@ -1024,22 +1054,23 @@ function renderReaderView(ar, fr, latin) {
 // 5. AUDIO & INTRO AMÉLIORÉ (AVEC URLs VRAIES)
 // ============================================================
 globalAudio.onended = () => {
-  // Enchaînement des étapes (INCHANGÉ) :
-  // 1) Istiaadha, 2) Basmala (sauf sourate 1), 3) versets
   if (audioStep === 1) {
-    // Fin de l'istiaadha
-    if (currentSurahNumber !== 1 && currentSurahNumber !== 9) {
+    // Fin Istiaadha
+    // On joue la Basmala sauf pour la 9 (Tawbah)
+    // Note: Pour la 1 (Fatiha), la basmala est incluse dans le verset 1,
+    // mais jouer la formule séparée avant ne fait pas de mal ou peut être sautée.
+    if (currentSurahNumber !== 9) {
       audioStep = 2;
       globalAudio.src = AUDIO_BASMALA;
-      globalAudio.play().catch(console.error);
+      globalAudio.play().catch(() => startSurahPlayback());
     } else {
       startSurahPlayback();
     }
   } else if (audioStep === 2) {
-    // Fin de la basmala -> on commence les versets
+    // Fin Basmala
     startSurahPlayback();
   } else if (audioStep === 3) {
-    // Fin d'un verset -> verset suivant
+    // Fin d'un verset
     playNextAyah();
   }
 };
@@ -1191,34 +1222,77 @@ function goToPrevSurah() {
 }
 
 // ============================================================
-// 7. INITIALISATION (INCHANGÉ)
+// 7. FONCTION D'INITIALISATION COMPLÈTE
 // ============================================================
-document.addEventListener("DOMContentLoaded", () => {
-  if (typeof surahData !== "undefined") {
-    renderSurahList(surahData);
+function initQuranApp() {
+  console.log("QuranLight: Initialisation du module Sourates...");
+
+  // --- A. Rendu Initial de la Liste ---
+  const container = document.getElementById("surah-list");
+
+  if (container) {
+    if (typeof surahData !== "undefined" && surahData.length > 0) {
+      renderSurahList(surahData);
+    } else {
+      container.innerHTML = `<p style="color:white; text-align:center; padding:20px;">
+                Erreur : Les données des sourates sont introuvables.
+            </p>`;
+      console.error("Data Error: surahData est vide ou non défini.");
+    }
+  } else {
+    console.warn(
+      "DOM Error: L'élément #surah-list est introuvable dans le HTML."
+    );
   }
 
-  const btnPrevS = document.querySelector(".prev-surah");
-  const btnPrevA = document.querySelector(".prev-ayah");
-  const btnNextA = document.querySelector(".next-ayah");
-  const btnNextS = document.querySelector(".next-surah");
-
-  if (btnPrevS) btnPrevS.onclick = goToPrevSurah;
-  if (btnPrevA) btnPrevA.onclick = playPreviousAyah;
-  if (btnNextA) btnNextA.onclick = playNextAyah;
-  if (btnNextS) btnNextS.onclick = goToNextSurah;
-
+  // --- B. Gestion de la Recherche ---
   const searchInput = document.getElementById("surah-search");
   if (searchInput && typeof surahData !== "undefined") {
     searchInput.addEventListener("input", (e) => {
-      const term = e.target.value.toLowerCase();
+      const term = e.target.value.toLowerCase().trim();
+
+      // Filtrage intelligent (Nom, Numéro ou Arabe)
       const filtered = surahData.filter(
         (s) =>
           s.name.toLowerCase().includes(term) ||
           s.num.toString() === term ||
           s.arabic.includes(term)
       );
+
       renderSurahList(filtered);
     });
   }
+
+ // --- C. Liaison des Contrôles du Lecteur ---
+const controls = [
+  { selector: ".prev-surah", action: goToPrevSurah },
+  { selector: ".prev-ayah", action: playPreviousAyah },
+  { selector: ".next-ayah", action: playNextAyah },
+  { selector: ".next-surah", action: goToNextSurah },
+  { selector: "#btn-to-list", action: () => switchView("list") },
+];
+
+// ✅ Liaison des contrôles avec preventDefault pour éviter navigation
+controls.forEach((control) => {
+  const btn = document.querySelector(control.selector);
+  if (btn) {
+    btn.onclick = (e) => {
+      e.preventDefault();  // ✅ Empêche navigation pour ces boutons
+      control.action();
+    };
+  }
 });
+
+console.log("QuranLight: Initialisation terminée avec succès.");
+}
+
+// ============================================================
+// DÉCLENCHEMENT SÉCURISÉ
+// ============================================================
+// Cette partie s'assure que la fonction se lance peu importe
+// quand le script est chargé (début ou fin de fichier)
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initQuranApp);
+} else {
+  initQuranApp();
+}

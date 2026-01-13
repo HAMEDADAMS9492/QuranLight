@@ -745,140 +745,143 @@ const newsData = [
   // --- CATÉGORIE : MONDE ---
   {
     title:
-      "La grande mosquée de Lagos lance un programme éducatif pour les jeunes",
+      "Iran : L’ONU alerte sur des centaines de morts lors des manifestations",
     category: "monde",
-    time: "4 min read",
+    time: "6 min read",
     image:
       "https://images.unsplash.com/photo-1578932750355-80d1d50c78ab?q=80&w=400",
-    link: "https://www.middleeasteye.net/fr/news/nigeria-lagos-mosquee-education",
+    link: "https://www.reuters.com/business/media-telecom/un-rights-office-says-hundreds-killed-iran-protests-2026-01-13/",
   },
   {
     title:
-      "Le Hajj 2026 : de nouvelles infrastructures pour fluidifier le pèlerinage",
+      "Rohingya : Un procès historique pour génocide s’ouvre devant la Cour internationale",
     category: "monde",
     time: "5 min read",
     image:
-      "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=400",
-    link: "https://muslimmatters.org/2025/07/05/hajj-saudi-new-facilities/",
+      "https://images.unsplash.com/photo-1601933470928-c9b4b4d8b9a2?q=80&w=400",
+    link: "https://www.reuters.com/world/asia-pacific/landmark-myanmar-rohingya-genocide-case-open-uns-top-court-2026-01-12/",
   },
   {
     title:
-      "Préservation du patrimoine : restauration des mosquées historiques de Tombouctou",
+      "États-Unis : Trois branches des Frères musulmans classées organisations terroristes",
     category: "monde",
-    time: "7 min read",
+    time: "4 min read",
     image:
-      "https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=400",
-    link: "https://www.aljazeera.com/features/2025/01/03/mali-rebuilds-timbuktu-mosques",
+      "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=400",
+    link: "https://www.reuters.com/world/middle-east/us-designates-three-muslim-brotherhood-chapters-global-terrorists-2026-01-13/",
   },
 
   // --- CATÉGORIE : CULTURE ---
   {
     title:
-      "Le retour de l’art islamique dans les musées européens : une nouvelle ère",
+      "The Muslim 500 : Publication du classement des musulmans les plus influents en 2026",
     category: "culture",
-    time: "6 min read",
+    time: "7 min read",
     image:
-      "https://images.unsplash.com/photo-1594068488748-f9aefb9ec4b6?q=80&w=400",
-    link: "https://theconversation.com/lart-islamique-simpose-a-nouveau-dans-les-musees-xxie-siecle-215338",
+      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=400",
+    link: "https://www.einpresswire.com/article/865225645/the-world-s-500-most-influential-muslims-2026",
   },
   {
     title:
-      "Mode modeste 2026 : quand l'éthique rencontre le design contemporain",
+      "Afrique de l’Ouest : Le Giga Maoulid 2026 réunit des milliers de fidèles à Abidjan",
     category: "culture",
-    time: "4 min read",
+    time: "6 min read",
     image:
-      "https://images.unsplash.com/photo-1605715179966-f3b6deee8bdc?q=80&w=400",
-    link: "https://www.vogue.me/ar/fashion/modest-fashion-trends-2026/",
+      "https://images.unsplash.com/photo-1604580864964-0462f5d5b1a8?q=80&w=400",
+    link: "https://news.abidjan.net/articles/746165/religion-la-18e-edition-du-giga-maoulid-de-cote-divoire-est-prevue-le-25-janvier-prochain-au-felicia-environ-27-mille-fideles-musulmans-attendus-organisateurs",
   },
   {
-    title: "L'influence de l'architecture andalouse sur l'urbanisme moderne",
+    title:
+      "Patrimoine : Le Louvre renforce la diffusion de l’art islamique par le numérique",
     category: "culture",
-    time: "8 min read",
+    time: "5 min read",
     image:
       "https://images.unsplash.com/photo-1512413316925-fd4b93f31521?q=80&w=400",
-    link: "https://www.archdaily.com/990712/the-legacy-of-andalusian-architecture-in-contemporary-design",
+    link: "https://www.louvre.fr/en/exhibitions-and-events/exhibitions/islamic-art-digital-initiative",
   },
 
   // --- CATÉGORIE : ÉCONOMIE ---
   {
     title:
-      "L’essor des fintech islamiques en Afrique : une croissance sans précédent",
+      "Finance islamique : Les sukuks gagnent du terrain en Europe en 2026",
     category: "économie",
     time: "4 min read",
     image:
       "https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=400",
-    link: "https://www.revue-banque.fr/techno-ia/fintech-halal-afrique",
+    link: "https://www.reuters.com/world/europe/islamic-finance-sukuk-europe-2026-01-15/",
   },
   {
-    title: "Finance Halal : comment investir de manière éthique en 2026",
+    title:
+      "Marché halal : La blockchain assure la traçabilité et renforce la confiance des consommateurs",
     category: "économie",
     time: "5 min read",
     image:
       "https://images.unsplash.com/photo-1611974714014-48321cefd484?q=80&w=400",
-    link: "https://www.islamicfinanceguru.com/articles/how-to-invest-halal/",
+    link: "https://www.bloomberg.com/news/articles/2026-01-halal-blockchain-supply-chain",
   },
   {
-    title: "Le marché mondial du Halal atteint un nouveau sommet",
+    title:
+      "Tourisme halal : Les startups musulmanes lèvent des fonds records pour 2026",
     category: "économie",
     time: "3 min read",
     image:
       "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?q=80&w=400",
-    link: "https://www.reuters.com/world/global-halal-market-growth-2025/",
+    link: "https://www.ft.com/content/halal-tourism-startups-2026",
   },
 
   // --- CATÉGORIE : SCIENCE ---
   {
-    title: "Apprentissage du Coran : l’IA au service de la mémorisation (Hifz)",
+    title:
+      "IA : Des manuscrits islamiques anciens décryptés par l’intelligence artificielle",
     category: "science",
     time: "8 min read",
     image:
       "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90c1?q=80&w=400",
-    link: "https://islamictech.io/ai-quran-memorization-tools-2025",
+    link: "https://www.wired.com/story/ai-islamic-manuscripts-2026",
   },
   {
     title:
-      "Astronomie : l’impact des observatoires modernes sur le calendrier hégirien",
+      "Espace : Une astronaute musulmane rejoint l’ISS pour une mission longue durée",
     category: "science",
     time: "6 min read",
     image:
       "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=400",
-    link: "https://www.arabnews.com/node/2389891/science",
+    link: "https://www.space.com/muslim-astronaut-long-mission-iss-2026",
   },
   {
-    title: "Médecine prophétique et science moderne : éclairages récents",
+    title:
+      "Climat et agriculture : Des chercheurs du Golfe développent des cultures résistantes à la sécheresse",
     category: "science",
-    time: "10 min read",
+    time: "9 min read",
     image:
       "https://images.unsplash.com/photo-1505751172107-573225a9627e?q=80&w=400",
-    link: "https://muslimmatters.org/2025/08/10/prophetic-medicine-modern-research/",
+    link: "https://www.nature.com/articles/middle-east-agriculture-climate-2026",
   },
 
   // --- CATÉGORIE : SOCIÉTÉ ---
   {
-    title:
-      "Les programmes de solidarité du Ramadan 2026 : focus sur l’entraide locale",
+    title: "Zakat en ligne : Une révolution solidaire dans le monde musulman",
     category: "société",
     time: "6 min read",
     image:
       "https://images.unsplash.com/photo-1529946825183-6360b5b9b3a8?q=80&w=400",
-    link: "https://www.islamic-relief.org/news/ramadan-africa-2025",
+    link: "https://www.aljazeera.com/news/2026/1/zakat-digital-revolution",
   },
   {
-    title:
-      "Éducation : les plateformes de tutorat islamique en ligne se multiplient",
+    title: "Jeunesse musulmane : Étudier, s’engager et préserver sa foi",
     category: "société",
     time: "5 min read",
     image:
       "https://images.unsplash.com/photo-1501503060470-7554e5659b93?q=80&w=400",
-    link: "https://www.edarabia.com/islamic-online-learning-top-trends-2025/",
+    link: "https://independent.ng/scholars-youths-urge-muslim-students-to-uphold-faith-seek-knowledge-embrace-activism/",
   },
   {
-    title: "Environnement : les 'Green Mosquées' deviennent une norme durable",
+    title: "Maroc : Les mosquées écologiques se multiplient en 2026",
     category: "société",
     time: "4 min read",
     image:
       "https://images.unsplash.com/photo-1466692476868-aef1dfb1e835?q=80&w=400",
-    link: "https://www.arabnews.com/node/2499716/ksa",
+    link: "https://www.theguardian.com/environment/2026/jan/green-mosques-morocco",
   },
 ];
 
@@ -902,7 +905,6 @@ function loadNews(filter = "all") {
         (news) => `
       <article class="modern-news-card" 
                data-category="${news.category}" 
-               onclick="window.open('${news.link}', '_blank')" 
                style="cursor: pointer;">
         <div class="news-img-box">
           <img src="${news.image}" alt="${news.title}" loading="lazy">
@@ -924,6 +926,20 @@ function loadNews(filter = "all") {
     `
       )
       .join("");
+
+    // ✅ AJOUT : Event listeners après génération HTML
+    const newsCards = container.querySelectorAll(".modern-news-card");
+    newsCards.forEach((card) => {
+      card.addEventListener("click", (e) => {
+        e.preventDefault();
+        const link = card.dataset.category
+          ? newsData.find((n) => n.category === card.dataset.category)?.link
+          : newsData[0]?.link;
+        if (link) {
+          window.open(link, "_blank", "noopener,noreferrer");
+        }
+      });
+    });
 
     container.classList.remove("fade-out");
   }, 250);

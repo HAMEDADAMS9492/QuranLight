@@ -1714,13 +1714,95 @@ iframe[src="chatbot.html"] {
   color: var(--color-gold-light);
 }
 
-/* --- Responsive --- */
-@media (max-width: 768px) {
-  .section-title-premium {
-    font-size: 1.4rem;
+/* ============================================================ */
+/* 12. RESPONSIVE OPTIMISÉ - L'ÉCHO DE L'OUMMA                 */
+/* ============================================================ */
+
+/* --- 1. Desktop Large (Grille fixe pour remplir l'espace) --- */
+@media (min-width: 1400px) {
+  .news-container-fluid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 articles par ligne */
+    gap: 30px;
+    overflow-x: visible;
+    padding: 40px 5%;
   }
+
   .modern-news-card {
-    min-width: 260px;
+    max-width: 100%;
+    min-width: 0;
+    flex: none;
+  }
+}
+
+/* --- 2. Desktop Standard & Tablettes (Scroll Horizontal) --- */
+@media (max-width: 1399px) {
+  .news-container-fluid {
+    display: flex;
+    gap: 25px;
+    overflow-x: auto;
+    padding: 30px 5% 50px 5%;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch; /* Scroll fluide iOS */
+  }
+
+  .modern-news-card {
+    flex: 0 0 320px; /* Taille stable sur tablette */
+    scroll-snap-align: center;
+  }
+}
+
+/* --- 3. Mobiles (Optimisation tactile) --- */
+@media (max-width: 768px) {
+  .news-section {
+    padding: 40px 0;
+  }
+
+  .section-header-flex {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .section-title-premium {
+    font-size: 1.3rem;
+  }
+
+  /* Filtres plus faciles à cliquer au doigt */
+  .filter-btn {
+    padding: 10px 18px;
+    font-size: 0.75rem;
+  }
+
+  .modern-news-card {
+    flex: 0 0 280px; /* Un peu plus petit pour voir l'amorce de la carte suivante */
+    border-radius: 20px;
+  }
+
+  .news-img-box {
+    height: 170px;
+  }
+
+  .news-h4 {
+    font-size: 1rem;
+  }
+}
+
+/* --- 4. Très petits écrans (iPhone SE, etc.) --- */
+@media (max-width: 380px) {
+  .modern-news-card {
+    flex: 0 0 85vw; /* Occupe presque tout l'écran */
+  }
+
+  .section-title-premium {
+    font-size: 1.15rem;
+  }
+}
+
+/* --- 5. Support pour les écrans à haute densité (Retina) --- */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .modern-news-card {
+    border-width: 0.5px; /* Bordure plus fine et élégante */
   }
 }
 /* ============================================================ */
