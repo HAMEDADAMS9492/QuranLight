@@ -247,8 +247,8 @@
 
     <script>
       // Base de données complète avec type et versets
-      const allSurahs = [
-       {
+      let allSurahsData = [
+        {
           n: 1,
           en: "Al-Fatiha",
           ar: "سُورَةُ الْفَاتِحَةِ",
@@ -887,16 +887,10 @@
           img: "assets/image/shatri.jpg",
         },
       ];
-
+      
       let currentReciterId = "";
       let currentReciterName = "";
 
-      // 2. CORRECTION : Une seule fonction de chargement au démarrage
-      window.onload = () => {
-        renderReciters();
-        loadSurahsData();
-      };
-     
       // 1. CHARGEMENT INITIAL DES DONNÉES API
       async function loadSurahsData() {
         try {
@@ -922,7 +916,7 @@
             v: s.numberOfAyahs,
           }));
 
-          // Optionnel : Si le panneau est déjà ouvert avant la fin du fetch
+          // Si le panneau est déjà ouvert avant la fin du fetch
           const panel = document.getElementById("surahPanel");
           if (panel && panel.style.display === "flex") {
             renderSurahList(allSurahs);
@@ -932,10 +926,13 @@
         }
       }
 
-      // Appeler le chargement immédiatement au lancement
-      loadSurahsData();
+      // 2. INITIALISATION AU DÉMARRAGE
+      window.onload = () => {
+        renderReciters();
+        loadSurahsData();
+      };
 
-      // 2. AFFICHAGE DES RÉCITATEURS
+      // 3. AFFICHAGE DES RÉCITATEURS
       function renderReciters() {
         const container = document.getElementById("reciterList");
         if (!container) return;
@@ -963,7 +960,7 @@
           .join("");
       }
 
-      // 3. OUVERTURE DU PANNEAU DES SOURATES
+      // 4. OUVERTURE DU PANNEAU DES SOURATES
       function openSurahs(id, name) {
         currentReciterId = id;
         currentReciterName = name;
@@ -974,7 +971,6 @@
         if (nameDisplay) nameDisplay.innerText = name;
         if (panel) panel.style.display = "flex";
 
-        // Si les sourates ne sont pas encore chargées, on affiche un message
         if (!allSurahs || allSurahs.length === 0) {
           const content = document.getElementById("surahContent");
           if (content) {
@@ -987,14 +983,14 @@
         renderSurahList(allSurahs);
       }
 
-      // 4. AFFICHAGE DE LA LISTE DES SOURATES
+      // 5. AFFICHAGE DE LA LISTE DES SOURATES
       function renderSurahList(list) {
         const content = document.getElementById("surahContent");
         if (!content) return;
 
         if (!list || list.length === 0) {
           content.innerHTML =
-            '<p style="text-align:center; padding:20px; color:white;">Chargement des sourates ou aucun résultat...</p>';
+            '<p style="text-align:center; padding:20px; color:white;">Aucun résultat...</p>';
           return;
         }
 
@@ -1018,15 +1014,12 @@
           .join("");
       }
 
-      // 5. SÉLECTION ET REDIRECTION VERS LE PLAYER
+      // 6. SÉLECTION ET REDIRECTION VERS LE PLAYER
       function selectAudio(reciterId, surahNum, reciterName, surahName) {
-        // 1. On prépare d'abord le numéro à 3 chiffres (ex: 1 devient 001)
         const padded = surahNum.toString().padStart(3, "0");
         let url = "";
 
-        // LOGIQUE SERVEURS CORRIGÉE (Version finale optimisée)
         if (reciterId === "ar.abdulbasitmurattal") {
-          // Chemin pour Basit (murattal) sur mp3quran
           url = `https://server7.mp3quran.net/basit/murattal/${padded}.mp3`;
         } else if (reciterId === "ar.sudais") {
           url = `https://server11.mp3quran.net/sds/${padded}.mp3`;
@@ -1039,28 +1032,17 @@
         } else if (reciterId === "ar.basfar") {
           url = `https://server6.mp3quran.net/bsfr/${padded}.mp3`;
         } else {
-          // Fallback pour les autres (utilise le numéro simple sans les zéros)
           url = `https://cdn.islamic.network/quran/audio-surah/128/${reciterId}/${surahNum}.mp3`;
         }
 
-        // DEBUG : vérifier rapidement si l'URL répond (optionnel en prod)
-        try {
-          console.log("Test URL audio:", url);
-        } catch (e) {
-          // silence si console non disponible
-        }
-
-        // Récupérer l'image du récitateur
         const reciter = recitersData.find((r) => r.id === reciterId);
         const imgPath = reciter ? reciter.img : "assets/image/Logo.jpg";
 
-        // Stockage pour player.html
         localStorage.setItem("player_url", url);
         localStorage.setItem("player_title", surahName);
         localStorage.setItem("player_artist", reciterName);
         localStorage.setItem("player_img", imgPath);
 
-        // Stockage pour la navigation
         localStorage.setItem("currentReciterId", reciterId);
         localStorage.setItem("currentReciterName", reciterName);
         localStorage.setItem("currentSurahNum", surahNum);
@@ -1068,7 +1050,7 @@
         window.location.href = "player.html";
       }
 
-      // 6. FILTRES DE RECHERCHE
+      // 7. FILTRES DE RECHERCHE
       function filterList() {
         const input = document.getElementById("searchInput");
         if (!input) return;

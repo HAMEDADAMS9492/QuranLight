@@ -749,142 +749,116 @@ const newsData = [
     category: "monde",
     time: "6 min read",
     image:
-      "https://images.unsplash.com/photo-1578932750355-80d1d50c78ab?q=80&w=400",
+      "https://www.reuters.com/resizer/v2/QEGZ3U6QOVP5DLZNRXQEYBW6XQ.jpg?auth=bc007ef81c9efeba20e6c6ac57aa6a46fcb8ce4a313f0fb18388865868446ab7&width=1920&quality=80",
     link: "https://www.reuters.com/business/media-telecom/un-rights-office-says-hundreds-killed-iran-protests-2026-01-13/",
   },
   {
     title:
-      "Rohingya : Un procès historique pour génocide s’ouvre devant la Cour internationale",
+      "En Iran, le régime mobilise ses soutiens pour tenter d’étouffer la contestation",
     category: "monde",
     time: "5 min read",
     image:
-      "https://images.unsplash.com/photo-1601933470928-c9b4b4d8b9a2?q=80&w=400",
-    link: "https://www.reuters.com/world/asia-pacific/landmark-myanmar-rohingya-genocide-case-open-uns-top-court-2026-01-12/",
+      "https://img.lemde.fr/2026/01/12/0/0/5472/3648/1668/0/75/0/a89d505_ftp-1-7q1w6hfs7x0q-2026-01-12t181028z-961154969-rc2qzia9xlm8-rtrmadp-3-iran-economy-protests.JPG",
+    link: "https://www.lemonde.fr/international/article/2026/01/13/en-iran-le-regime-mobilise-ses-soutiens-dans-l-espoir-d-etouffer-la-contestation_6661795_3210.html",
   },
   {
     title:
-      "États-Unis : Trois branches des Frères musulmans classées organisations terroristes",
+      "Chute du régime iranien : un séisme externe aux conséquences mondiales",
+    category: "monde",
+    time: "7 min read",
+    image: "https://oumma.com/wp-content/uploads/2026/01/iran-1.avif",
+    link: "https://oumma.com/chute-du-regime-iranien-un-seisme-externe-aux-consequences-mondiales/",
+  },
+  {
+    title:
+      "L’Autriche interdit le port du voile pour les jeunes filles de moins de 14 ans",
     category: "monde",
     time: "4 min read",
     image:
-      "https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=400",
-    link: "https://www.reuters.com/world/middle-east/us-designates-three-muslim-brotherhood-chapters-global-terrorists-2026-01-13/",
+      "https://islaminfo.org/wp-content/uploads/2026/01/200416-hijab-day-m_3.jpg",
+    link: "https://islaminfo.org/lautriche-interdit-le-port-du-voile-pour-les-jeunes-filles-de-moins-de-14-ans/",
   },
 
   // --- CATÉGORIE : CULTURE ---
   {
-    title:
-      "The Muslim 500 : Publication du classement des musulmans les plus influents en 2026",
+    title: "Ramadan 2026 : un rendez-vous spirituel à ne pas manquer",
     category: "culture",
-    time: "7 min read",
-    image:
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=400",
-    link: "https://www.einpresswire.com/article/865225645/the-world-s-500-most-influential-muslims-2026",
+    time: "5 min read",
+    image: "https://islaminfo.org/wp-content/uploads/2026/01/IMG_8493.jpeg",
+    link: "https://islaminfo.org/ramadan-2026-un-rendez-vous-spirituel-a-ne-pas-manquer/",
   },
   {
-    title:
-      "Afrique de l’Ouest : Le Giga Maoulid 2026 réunit des milliers de fidèles à Abidjan",
+    title: "20e FESTIVAL MAWLID DES SOUFIS EN CÔTE D’IVOIRE",
     category: "culture",
     time: "6 min read",
     image:
-      "https://images.unsplash.com/photo-1604580864964-0462f5d5b1a8?q=80&w=400",
-    link: "https://news.abidjan.net/articles/746165/religion-la-18e-edition-du-giga-maoulid-de-cote-divoire-est-prevue-le-25-janvier-prochain-au-felicia-environ-27-mille-fideles-musulmans-attendus-organisateurs",
+      "https://islaminfo.org/wp-content/uploads/2026/01/IMG_2042-scaled.jpeg",
+    link: "https://islaminfo.org/20e-festival-mawlid-des-soufis-en-cote-divoire",
   },
   {
     title:
-      "Patrimoine : Le Louvre renforce la diffusion de l’art islamique par le numérique",
+      "Ali Abderraziq (1888-1966), le penseur qui a dissocié religion et pouvoir",
     category: "culture",
-    time: "5 min read",
-    image:
-      "https://images.unsplash.com/photo-1512413316925-fd4b93f31521?q=80&w=400",
-    link: "https://www.louvre.fr/en/exhibitions-and-events/exhibitions/islamic-art-digital-initiative",
+    time: "8 min read",
+    image: "https://oumma.com/wp-content/uploads/2026/01/Ali-abderraziq.avif",
+    link: "https://oumma.com/ali-abderraziq-1888-1966-le-penseur-qui-a-dissocie-religion-et-pouvoir/",
+  },
+  {
+    title: "Al-Kindi, le philosophe musulman de la raison et de la sagesse",
+    category: "culture",
+    time: "7 min read",
+    image: "https://oumma.com/wp-content/uploads/2026/01/alkindiphilosphe.avif",
+    link: "https://oumma.com/al-kindi-le-philosophe-musulman-de-la-raison-et-de-la-sagesse/",
   },
 
   // --- CATÉGORIE : ÉCONOMIE ---
   {
     title:
-      "Finance islamique : Les sukuks gagnent du terrain en Europe en 2026",
+      "Le Canada investit 2,2 millions de dollars pour renforcer la filière du bœuf halal",
     category: "économie",
     time: "4 min read",
     image:
-      "https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=400",
-    link: "https://www.reuters.com/world/europe/islamic-finance-sukuk-europe-2026-01-15/",
-  },
-  {
-    title:
-      "Marché halal : La blockchain assure la traçabilité et renforce la confiance des consommateurs",
-    category: "économie",
-    time: "5 min read",
-    image:
-      "https://images.unsplash.com/photo-1611974714014-48321cefd484?q=80&w=400",
-    link: "https://www.bloomberg.com/news/articles/2026-01-halal-blockchain-supply-chain",
-  },
-  {
-    title:
-      "Tourisme halal : Les startups musulmanes lèvent des fonds records pour 2026",
-    category: "économie",
-    time: "3 min read",
-    image:
-      "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?q=80&w=400",
-    link: "https://www.ft.com/content/halal-tourism-startups-2026",
+      "https://islaminfo.org/wp-content/uploads/2026/01/attat8-1152x768-1.jpg",
+    link: "https://islaminfo.org/le-canada-investit-22-millions-de-dollars-pour-renforcer-la-filiere-du-boeuf-halal/",
   },
 
   // --- CATÉGORIE : SCIENCE ---
   {
     title:
-      "IA : Des manuscrits islamiques anciens décryptés par l’intelligence artificielle",
-    category: "science",
-    time: "8 min read",
-    image:
-      "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90c1?q=80&w=400",
-    link: "https://www.wired.com/story/ai-islamic-manuscripts-2026",
-  },
-  {
-    title:
-      "Espace : Une astronaute musulmane rejoint l’ISS pour une mission longue durée",
+      "Première édition de l’After Icha : La Foi et l’astronomie au cœur d’une nuit d’élévation scientifique",
     category: "science",
     time: "6 min read",
-    image:
-      "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=400",
-    link: "https://www.space.com/muslim-astronaut-long-mission-iss-2026",
-  },
-  {
-    title:
-      "Climat et agriculture : Des chercheurs du Golfe développent des cultures résistantes à la sécheresse",
-    category: "science",
-    time: "9 min read",
-    image:
-      "https://images.unsplash.com/photo-1505751172107-573225a9627e?q=80&w=400",
-    link: "https://www.nature.com/articles/middle-east-agriculture-climate-2026",
+    image: "https://islaminfo.org/wp-content/uploads/2025/11/la-nuit-.jpg",
+    link: "https://islaminfo.org/premiere-edition-de-lafter-icha-la-foi-et-lastronomie-au-coeur-dune-nuit-delevation-scientifique/",
   },
 
   // --- CATÉGORIE : SOCIÉTÉ ---
   {
-    title: "Zakat en ligne : Une révolution solidaire dans le monde musulman",
+    title:
+      "Des randonneurs musulmans relèvent le défi de l’Everest et récoltent 58 000 euros pour la solidarité",
     category: "société",
-    time: "6 min read",
-    image:
-      "https://images.unsplash.com/photo-1529946825183-6360b5b9b3a8?q=80&w=400",
-    link: "https://www.aljazeera.com/news/2026/1/zakat-digital-revolution",
+    time: "5 min read",
+    image: "https://oumma.com/wp-content/uploads/2026/01/muslim.avif",
+    link: "https://oumma.com/des-randonneurs-musulmans-relevent-le-defi-de-leverest-et-recoltent-58-000-euros-pour-la-solidarite/",
   },
   {
-    title: "Jeunesse musulmane : Étudier, s’engager et préserver sa foi",
+    title:
+      "Un site fiche les musulmans dans un silence médiatique et politique",
+    category: "société",
+    time: "4 min read",
+    image: "https://oumma.com/wp-content/uploads/2026/01/site.avif",
+    link: "https://oumma.com/un-site-fiche-les-musulmans-dans-un-silence-mediatique-et-politique/",
+  },
+  {
+    title:
+      "Construction d’une mosquée à Metz : une subvention municipale annulée par la justice",
     category: "société",
     time: "5 min read",
     image:
-      "https://images.unsplash.com/photo-1501503060470-7554e5659b93?q=80&w=400",
-    link: "https://independent.ng/scholars-youths-urge-muslim-students-to-uphold-faith-seek-knowledge-embrace-activism/",
-  },
-  {
-    title: "Maroc : Les mosquées écologiques se multiplient en 2026",
-    category: "société",
-    time: "4 min read",
-    image:
-      "https://images.unsplash.com/photo-1466692476868-aef1dfb1e835?q=80&w=400",
-    link: "https://www.theguardian.com/environment/2026/jan/green-mosques-morocco",
+      "https://i.la-croix.com/836x/smart/2025/12/30/2297018-chantier-de-la-grande-mosquee-de-metz-une-subventi.jpg",
+    link: "https://www.la-croix.com/societe/construction-d-une-mosquee-a-metz-une-subvention-municipale-annulee-par-la-justice-20251230",
   },
 ];
-
 /**
  * Affiche les articles en fonction du filtre sélectionné
  */

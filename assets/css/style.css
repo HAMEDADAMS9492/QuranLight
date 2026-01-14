@@ -1441,32 +1441,25 @@ iframe[src="chatbot.html"] {
 }
 
 /* ============================================================ */
-/* 12. SECTION "L'ÉCHO DE L'OUMMA" - HARMONISÉE PREMIUM       */
+/* 12. SECTION "L'ÉCHO DE L'OUMMA" - HARMONISÉE PREMIUM        */
 /* ============================================================ */
 
 /* --- Conteneur principal (Optimisation Background & Transition) --- */
 .news-section {
-  padding: 40px 0 60px 0; /* Augmentation du padding bas pour aérer avant le footer */
+  padding: 40px 0 60px 0; /* Plus d’espace avant le footer */
   margin-top: 20px;
-
-  /* Dégradé sophistiqué : 
-     1. On part du vert abyssal (Emerald)
-     2. On descend vers une nuance presque noire pour la profondeur
-     3. On finit sur une touche de bg-surface pour fusionner avec le footer
-  */
   background: linear-gradient(
     180deg,
     var(--color-emerald-abyssal) 0%,
     rgba(2, 8, 6, 1) 50%,
     rgba(13, 34, 27, 0.4) 100%
   );
-
   border-top: var(--glass-border);
   position: relative;
   overflow: hidden;
 }
 
-/* Optionnel : Ajout d'une lueur subtile en bas de section pour le relief */
+/* Lueur subtile en bas de section */
 .news-section::after {
   content: "";
   position: absolute;
@@ -1490,14 +1483,14 @@ iframe[src="chatbot.html"] {
   align-items: center;
   padding: 0 20px;
   flex-wrap: wrap;
+  gap: 10px;
 }
 
 .section-title-premium {
-  font-size: 1.6rem;
+  font-size: clamp(1.3rem, 1.2rem + 0.4vw, 1.8rem);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  /* Harmonisation avec le doré du root */
   background: linear-gradient(
     90deg,
     var(--color-gold),
@@ -1554,31 +1547,36 @@ iframe[src="chatbot.html"] {
 
 .filter-btn.active {
   background: var(--color-gold);
-  color: var(--color-emerald-abyssal); /* Contraste sur fond doré */
+  color: var(--color-emerald-abyssal);
   border-color: var(--color-gold);
   box-shadow: 0 4px 15px rgba(176, 141, 87, 0.4);
   font-weight: 700;
 }
 
-/* --- Conteneur d'articles (scroll fluide) --- */
+/* ============================================================ */
+/* 12.a LAYOUT RÉACTIF DES CARTES                             */
+/* ============================================================ */
+
+/* Base mobile-first : scroll horizontal fluide */
 .news-container-fluid {
   display: flex;
   gap: 20px;
   overflow-x: auto;
-  padding: 20px 20px 40px 20px;
+  padding: 20px 16px 40px 16px;
   scroll-behavior: smooth;
   scrollbar-width: none;
   scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
 }
 
 .news-container-fluid::-webkit-scrollbar {
   display: none;
 }
 
-/* --- Cartes d'articles (Style Glassmorphism) --- */
+/* Cartes */
 .modern-news-card {
-  min-width: 290px;
-  max-width: 290px;
+  min-width: 260px;
+  max-width: 260px;
   background: var(--bg-surface);
   border-radius: 24px;
   border: var(--glass-border);
@@ -1588,7 +1586,6 @@ iframe[src="chatbot.html"] {
   transition: var(--transition-speed);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  /* CORRECTION CLIC : */
   cursor: pointer;
   z-index: 1;
 }
@@ -1606,7 +1603,6 @@ iframe[src="chatbot.html"] {
   height: 190px;
   overflow: hidden;
   position: relative;
-  /* CORRECTION : L'image ne doit pas bloquer le clic */
   z-index: 0;
 }
 
@@ -1626,7 +1622,7 @@ iframe[src="chatbot.html"] {
   position: absolute;
   top: 15px;
   right: 15px;
-  background: rgba(5, 20, 15, 0.8); /* Rappel emerald abyssal */
+  background: rgba(5, 20, 15, 0.8);
   backdrop-filter: blur(5px);
   color: var(--color-gold-light);
   padding: 5px 14px;
@@ -1642,7 +1638,6 @@ iframe[src="chatbot.html"] {
 /* --- Contenu de la carte --- */
 .news-info-overlay {
   padding: 20px;
-  /* Dégradé fluide vers le fond de carte */
   background: linear-gradient(
     to top,
     var(--color-emerald-abyssal) 60%,
@@ -1654,9 +1649,8 @@ iframe[src="chatbot.html"] {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  /* CORRECTION : S'assure que le contenu est au dessus et laisse passer le clic vers la carte */
   z-index: 2;
-  pointer-events: none;
+  pointer-events: none; /* clic géré par la carte */
 }
 
 .read-time {
@@ -1670,7 +1664,7 @@ iframe[src="chatbot.html"] {
 
 .news-h4 {
   margin: 12px 0;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   line-height: 1.4;
   color: var(--text-main);
   font-weight: 600;
@@ -1686,7 +1680,6 @@ iframe[src="chatbot.html"] {
   justify-content: space-between;
   align-items: center;
   margin-top: 10px;
-  /* CORRECTION : On redonne la main au clic ici pour le texte spécifique */
   pointer-events: auto;
 }
 
@@ -1715,67 +1708,100 @@ iframe[src="chatbot.html"] {
 }
 
 /* ============================================================ */
-/* 12. RESPONSIVE OPTIMISÉ - L'ÉCHO DE L'OUMMA                 */
+/* 12.b RESPONSIVE OPTIMISÉ - L'ÉCHO DE L'OUMMA                */
 /* ============================================================ */
 
-/* --- 1. Desktop Large (Grille fixe pour remplir l'espace) --- */
-@media (min-width: 1400px) {
+/* --- 1. Ultra large (≥ 1600px) : grille auto-fill --- */
+@media (min-width: 1600px) {
   .news-container-fluid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 articles par ligne */
-    gap: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 32px;
     overflow-x: visible;
-    padding: 40px 5%;
+    padding: 50px 8%;
+    scroll-snap-type: none;
   }
 
   .modern-news-card {
     max-width: 100%;
     min-width: 0;
-    flex: none;
+    height: 100%;
   }
 }
 
-/* --- 2. Desktop Standard & Tablettes (Scroll Horizontal) --- */
-@media (max-width: 1399px) {
+/* --- 2. Desktop Large (1400px – 1599px) --- */
+@media (min-width: 1400px) and (max-width: 1599px) {
   .news-container-fluid {
-    display: flex;
-    gap: 25px;
-    overflow-x: auto;
-    padding: 30px 5% 50px 5%;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch; /* Scroll fluide iOS */
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 30px;
+    overflow-x: visible;
+    padding: 40px 6%;
+    scroll-snap-type: none;
   }
 
   .modern-news-card {
-    flex: 0 0 320px; /* Taille stable sur tablette */
-    scroll-snap-align: center;
+    max-width: 100%;
+    min-width: 0;
   }
 }
 
-/* --- 3. Mobiles (Optimisation tactile) --- */
-@media (max-width: 768px) {
+/* --- 3. Desktop Standard / Tablettes paysage (1024px – 1399px) --- */
+@media (min-width: 1024px) and (max-width: 1399px) {
+  .news-container-fluid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 26px;
+    overflow-x: visible;
+    padding: 35px 5%;
+    scroll-snap-type: none;
+  }
+
+  .modern-news-card {
+    max-width: 100%;
+    min-width: 0;
+  }
+}
+
+/* --- 4. Tablettes et grands mobiles paysage (768px – 1023px) --- */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .news-container-fluid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    overflow-x: visible;
+    padding: 30px 5% 45px 5%;
+    scroll-snap-type: none;
+  }
+
+  .modern-news-card {
+    max-width: 100%;
+    min-width: 0;
+  }
+}
+
+/* --- 5. Mobiles (≤ 767px) : scroll horizontal tactile --- */
+@media (max-width: 767px) {
   .news-section {
-    padding: 40px 0;
+    padding: 32px 0 48px 0;
   }
 
   .section-header-flex {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
   }
 
-  .section-title-premium {
-    font-size: 1.3rem;
-  }
-
-  /* Filtres plus faciles à cliquer au doigt */
-  .filter-btn {
-    padding: 10px 18px;
-    font-size: 0.75rem;
+  .news-container-fluid {
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    padding: 24px 14px 40px 14px;
+    scroll-snap-type: x mandatory;
   }
 
   .modern-news-card {
-    flex: 0 0 280px; /* Un peu plus petit pour voir l'amorce de la carte suivante */
+    flex: 0 0 75vw; /* Carte large, avec aperçu de la suivante */
+    max-width: 320px;
     border-radius: 20px;
   }
 
@@ -1786,25 +1812,35 @@ iframe[src="chatbot.html"] {
   .news-h4 {
     font-size: 1rem;
   }
+
+  .filter-btn {
+    padding: 10px 18px;
+    font-size: 0.75rem;
+  }
 }
 
-/* --- 4. Très petits écrans (iPhone SE, etc.) --- */
+/* --- 6. Très petits écrans (≤ 380px) --- */
 @media (max-width: 380px) {
   .modern-news-card {
-    flex: 0 0 85vw; /* Occupe presque tout l'écran */
+    flex: 0 0 88vw;
   }
 
   .section-title-premium {
     font-size: 1.15rem;
   }
-}
 
-/* --- 5. Support pour les écrans à haute densité (Retina) --- */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  .modern-news-card {
-    border-width: 0.5px; /* Bordure plus fine et élégante */
+  .news-section {
+    padding: 28px 0 40px 0;
   }
 }
+
+/* --- 7. Support Retina / haute densité --- */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .modern-news-card {
+    border-width: 0.5px;
+  }
+}
+
 /* ============================================================ */
 /* 13. RESPONSIVE MASTER : OPTIMISATION UNIVERSELLE           */
 /* ============================================================ */
@@ -2148,3 +2184,5 @@ body.theme-dark .quote-french {
 body.theme-dark #sidebar-overlay {
   background: rgba(0, 0, 0, 0.8) !important;
 }
+
+
