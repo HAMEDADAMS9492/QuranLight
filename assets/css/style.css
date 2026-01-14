@@ -990,7 +990,6 @@ a {
   border-color: var(--color-gold) !important;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 193, 7, 0.2);
 }
-
 /* ======================================================== */
 /* 10- SECTION RÉCITATEURS (PURE LUXE & SYMÉTRIE)           */
 /* ======================================================== */
@@ -1077,18 +1076,17 @@ a {
 /* --- LISTE DES RÉCITATEURS (MODIFIÉE POUR L'ALIGNEMENT) --- */
 .reciters-horizontal-list {
   display: flex;
-  flex-direction: row; /* Force la ligne */
-  flex-wrap: nowrap; /* Empêche le retour à la ligne */
-  justify-content: flex-start; /* Commence à gauche pour le scroll */
-  align-items: flex-start; /* Aligne tous les sommets de cartes */
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
   overflow-x: auto;
   gap: 30px;
-  padding: 30px 20px; /* Padding haut augmenté pour laisser l'espace au hover */
+  padding: 30px 20px;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
 }
 
-/* Centrer si peu d'éléments, sinon scroll */
 @media (min-width: 900px) {
   .reciters-horizontal-list {
     justify-content: center;
@@ -1107,7 +1105,7 @@ a {
   align-items: center;
   justify-content: flex-start;
   cursor: pointer;
-  padding: 0; /* Reset padding pour éviter les décalages */
+  padding: 0;
   margin: 0;
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   backface-visibility: hidden;
@@ -1167,6 +1165,7 @@ a {
   color: var(--color-gold-light);
   opacity: 1;
 }
+
 /* ======================================================================== */
 /* 11. RESPONSIVE MASTER : OPTIMISATION UNIVERSELLE RECITATEURS ET CHATBOT */
 /* ======================================================================== */
@@ -1203,6 +1202,7 @@ a {
   flex-grow: 1;
   scrollbar-width: none;
 }
+
 .surah-list::-webkit-scrollbar {
   display: none;
 }
@@ -1252,18 +1252,21 @@ a {
   display: flex;
   flex-direction: column;
 }
+
 .surah-name-fr {
   font-size: 1rem;
   font-weight: 700;
   color: #fff;
   letter-spacing: 0.5px;
 }
+
 .surah-sub-info {
   font-size: 0.75rem;
   color: var(--color-gold-light);
   opacity: 0.8;
   text-transform: uppercase;
 }
+
 .surah-name-ar {
   font-family: "Amiri", serif;
   font-size: 1.3rem;
@@ -1271,12 +1274,12 @@ a {
   text-align: right;
 }
 
-/* L'iframe ne fait que la taille de la boule par défaut */
+/* --- CHATBOT --- */
 iframe[src="chatbot.html"] {
   position: fixed;
   bottom: 0;
   right: 0;
-  width: 110px !important; /* Taille de la boule + aura */
+  width: 110px !important;
   height: 110px !important;
   border: none;
   z-index: 9999;
@@ -1284,16 +1287,14 @@ iframe[src="chatbot.html"] {
   pointer-events: auto !important;
 }
 
-/* Classe ajoutée quand le chat est ouvert */
 iframe.chat-opened {
   width: 380px !important;
   height: 550px !important;
 }
 
-/* 3. On utilise un sélecteur ultra-précis pour les cartes */
 .reciters-horizontal-list {
   position: relative;
-  z-index: 10; /* On fait passer les récitateurs au-dessus du vide de l'iframe */
+  z-index: 10;
 }
 
 .reciter-card-circle {
@@ -1301,7 +1302,7 @@ iframe.chat-opened {
   z-index: 11;
   backface-visibility: hidden;
   transform: translateZ(0);
-  pointer-events: auto !important; /* Force la détection de la souris */
+  pointer-events: auto !important;
 }
 
 /* --- SPLASH SCREEN SYSTEM --- */
@@ -1315,7 +1316,7 @@ iframe.chat-opened {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 99999; /* Priorité absolue sur tout le reste */
+  z-index: 99999;
   transition: opacity 0.8s ease, visibility 0.8s;
 }
 
@@ -1384,10 +1385,11 @@ iframe.chat-opened {
   font-weight: 600;
   text-transform: uppercase;
 }
+
 .splash-tagline {
   color: #ffffff;
   font-size: 0.75rem;
-  margin-top: 10px; /* Espace ajouté pour décoller du titre */
+  margin-top: 10px;
   margin-bottom: 25px;
   letter-spacing: 2px;
   font-weight: 700;
@@ -1395,6 +1397,7 @@ iframe.chat-opened {
   opacity: 0;
   animation: fadeIn 1.2s forwards 1s;
 }
+
 /* Cache l'iframe du chatbot tant que le splash est là */
 iframe[src="chatbot.html"] {
   opacity: 0;
@@ -1407,6 +1410,7 @@ iframe[src="chatbot.html"] {
   opacity: 1;
   pointer-events: auto;
 }
+
 /* Animations */
 @keyframes premiumReveal {
   to {
@@ -1414,11 +1418,13 @@ iframe[src="chatbot.html"] {
     transform: scale(1);
   }
 }
+
 @keyframes shineText {
   to {
     background-position: 200% center;
   }
 }
+
 @keyframes loadingProgress {
   to {
     width: 100%;
@@ -1429,10 +1435,11 @@ iframe[src="chatbot.html"] {
   opacity: 0;
   visibility: hidden;
 }
+
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px); /* Petit mouvement vers le haut */
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -2185,4 +2192,176 @@ body.theme-dark #sidebar-overlay {
   background: rgba(0, 0, 0, 0.8) !important;
 }
 
+/* ======================================================== */
+/* BOUTON "AFFICHÉ PLUS" EN BAS DU TITRE - RESPONSIVE       */
+/* ======================================================== */
 
+.section-header-flex {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Centre verticalement */
+  margin-bottom: 40px;
+  text-align: center;
+  padding: 0 20px;
+  gap: 20px; /* Espace parfait entre titre et bouton */
+  position: relative;
+}
+
+/* TITRE ROYAL */
+.section-title-premium {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  font-size: 1.7rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  position: relative;
+  padding-bottom: 15px;
+  background: linear-gradient(to right, #fff, var(--color-gold-light), #fff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  width: 100%;
+  order: 1; /* Premier dans la pile flex */
+}
+
+.section-title-premium::before,
+.section-title-premium::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  max-width: 100px;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+}
+
+.title-decoration {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 1px;
+  background: var(--color-gold);
+}
+
+/* BOUTON "VOIR PLUS" - EN BAS DU TITRE */
+.view-all-link {
+  order: 2; /* Deuxième dans la pile flex */
+  margin-top: 0 !important; /* Plus de margin-top */
+  color: var(--color-gold-light);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  text-decoration: none;
+  padding: 10px 28px;
+  border-radius: 25px;
+  border: 2px solid rgba(176, 141, 87, 0.4);
+  background: rgba(176, 141, 87, 0.05);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.view-all-link::before {
+  content: "→";
+  margin-left: 8px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.view-all-link:hover {
+  background: var(--color-gold) !important;
+  color: #05140f !important;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(176, 141, 87, 0.4);
+  border-color: var(--color-gold);
+}
+
+.view-all-link:hover::before {
+  margin-left: 12px;
+}
+
+/* ======================================================== */
+/* RESPONSIVE - BOUTON PARFAIT SUR TOUS ÉCRANS              */
+/* ======================================================== */
+
+@media (max-width: 768px) {
+  .section-header-flex {
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+  
+  .section-title-premium {
+    font-size: 1.4rem;
+    letter-spacing: 3px;
+    padding-bottom: 12px;
+  }
+  
+  .view-all-link {
+    padding: 9px 24px;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-header-flex {
+    gap: 12px;
+    padding: 0 10px;
+  }
+  
+  .section-title-premium {
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    gap: 12px;
+  }
+  
+  .section-title-premium::before,
+  .section-title-premium::after {
+    max-width: 50px;
+  }
+  
+  .title-decoration {
+    width: 40px;
+  }
+  
+  .view-all-link {
+    padding: 8px 20px !important;
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    min-width: 120px; /* Garantit visibilité */
+  }
+}
+
+@media (max-width: 360px) {
+  .view-all-link {
+    padding: 7px 18px !important;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    min-width: 110px;
+  }
+}
+
+/* ======================================================== */
+/* RÉCITATEURS EN BAS - PARFAITEMENT CENTRÉS                */
+/* ======================================================== */
+
+.reciters-horizontal-list {
+  margin-top: 20px; /* Espace après le bouton */
+  justify-content: center !important; /* TOUJOURS centré */
+}
+
+@media (max-width: 900px) {
+  .reciters-horizontal-list {
+    padding: 15px 8px;
+    gap: 12px;
+  }
+}
