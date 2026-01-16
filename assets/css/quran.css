@@ -1114,3 +1114,151 @@ body {
     width: 180px;
   }
 }
+
+/* ======================================================== */
+/* 📱 OPTIMISATION RESPONSIVE MOBILE (CONSOLIDÉE)           */
+/* ======================================================== */
+
+@media (max-width: 768px) {
+    /* 1. Ajustement global des conteneurs */
+    .quran-container, 
+    .search-section, 
+    .surah-list-grid, 
+    .quran-reader {
+        max-width: 100%;
+        padding: 0 15px;
+    }
+
+    /* 2. Header Mobile */
+    .glass-panel.main-header {
+        height: 70px;
+        padding: 0 10px;
+    }
+
+    .header-main-title {
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+    }
+
+    /* 3. Branding & Logo XL (Ajustement fluide) */
+    .quran-brand-header {
+        padding: 100px 15px 30px;
+        gap: 15px;
+    }
+
+    .main-logo-gold {
+        height: 160px; /* Réduction pour tablettes */
+        width: 160px;
+        border-width: 3px;
+    }
+
+    .brand-arabic-title {
+        font-size: 2.5rem;
+    }
+
+    .brand-name {
+        font-size: 1.5rem;
+        letter-spacing: 2px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* 4. Logo pour petits smartphones */
+    .main-logo-gold {
+        height: 140px;
+        width: 140px;
+    }
+
+    /* 5. Cartes des Sourates (Optimisation de l'espace) */
+    .surah-premium-card {
+        padding: 15px 20px;
+        border-radius: 18px;
+    }
+
+    .surah-number-wrapper {
+        min-width: 40px;
+        height: 40px;
+        margin-right: 12px;
+        font-size: 0.9rem;
+    }
+
+    .surah-name-en {
+        font-size: 1rem;
+    }
+
+    .surah-name-ar {
+        font-size: 1.5rem;
+    }
+
+    .surah-sub-details {
+        font-size: 0.65rem;
+        letter-spacing: 1px;
+    }
+
+    /* 6. Lecteur et Versets */
+    .arabic-title {
+        font-size: 2.2rem;
+    }
+
+    .basmala-text {
+        font-size: 1.8rem;
+    }
+
+    .arabic-text {
+        font-size: 1.7rem;
+        line-height: 1.8;
+    }
+
+    .translation-text, .latin-text {
+        font-size: 0.95rem;
+        padding-left: 12px;
+    }
+
+    /* 7. Barre de Recherche */
+    .search-bar-premium {
+        padding: 12px 18px;
+    }
+
+    .search-bar-premium input {
+        font-size: 1rem;
+    }
+
+    /* 8. Contrôles Audio Flottants (Crucial pour Mobile) */
+    .nav-controls {
+        gap: 10px;
+    }
+
+    .play-icon-bg {
+        width: 60px;
+        height: 60px;
+        font-size: 1.2rem;
+    }
+
+    .control-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 0.8rem;
+    }
+
+    .play-main-btn span {
+        font-size: 0.5rem;
+    }
+    
+    body {
+        padding-bottom: 130px; /* Évite que le player cache le contenu */
+    }
+}
+
+/* 9. Correction pour écrans très étroits (Fold) */
+@media (max-width: 340px) {
+    .brand-arabic-title {
+        font-size: 2rem;
+    }
+    .nav-controls {
+        gap: 5px;
+    }
+    .control-btn {
+        width: 35px;
+        height: 35px;
+    }
+}

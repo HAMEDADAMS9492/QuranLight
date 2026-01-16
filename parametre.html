@@ -1,296 +1,264 @@
 <!DOCTYPE html>
 <html lang="fr">
   <head>
-    <!-- ===== BASE META ===== -->
+    <!-- ===== MÉTADONNÉES ===== -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Paramètres - QuranLight</title>
+    <title>Paramètres – QuranLight</title>
 
-    <!-- ===== PERFORMANCE CRITIQUE ===== -->
-    <script src="assets/js/theme-loader.js"></script>
+    <!-- ===== PERFORMANCE ===== -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
     <link rel="preload" href="assets/css/style.css" as="style" />
     <link rel="preload" href="assets/css/theme-variables.css" as="style" />
 
-    <!-- ===== FONTS & ICONS ===== -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
+    <!-- ===== FONTS & ICONES ===== -->
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
       rel="stylesheet"
     />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
 
     <!-- ===== CSS PRINCIPAL ===== -->
-    <link rel="stylesheet" href="assets/css/style.css" />
     <link rel="stylesheet" href="assets/css/theme-variables.css" />
+    <link rel="stylesheet" href="assets/css/style.css" />
 
-    <!-- ===== STYLES SPECIFIQUES PAGE SETTINGS ===== -->
+    <!-- ===== TON STYLE PERSONNALISÉ DIRECT ===== -->
     <style>
-      /* =============================================== */
-      /* 1. STRUCTURE GLOBALE & TYPOGRAPHIE              */
-      /* =============================================== */
+      /* REMPLACER cette partie dans ton CSS existant : */
+
+      /* ======================================================== */
+      /* 1. VARIABLES & FONDATION (MÊME QUE L'ACCUEIL)            */
+      :root {
+        --emerald-dark: #060e0a;
+        --emerald-mid: #0d1612;
+        --emerald-green: #10b981; /* ✅ VERT ÉMERAUDE ACCUEIL */
+        --emerald-light: #059669; /* ✅ GRADIENT ÉMERAUDE */
+        --color-gold: #b08d57;
+        --color-gold-light: #e6c18a;
+        --color-gold-glow: rgba(176, 141, 87, 0.3);
+        --card-bg: rgba(255, 255, 255, 0.03);
+        --border-gold: rgba(176, 141, 87, 0.2);
+        --text-primary: #ffffff;
+        --text-muted: rgba(255, 255, 255, 0.6);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* ✅ FOND IDENTIQUE À L'ACCUEIL - VERT ÉMERAUDE */
       .settings-page {
-        background: radial-gradient(
-          circle at top,
-          var(--emerald-mid),
-          var(--emerald-dark)
+        /* MÊME GRADIENT VERT que l'accueil */
+        background: linear-gradient(
+          135deg,
+          #10b981 0%,
+          #059669 50%,
+          #047857 100%
         );
         background-attachment: fixed;
         color: var(--text-primary);
         font-family: "Poppins", sans-serif;
         min-height: 100vh;
         margin: 0;
-        padding-bottom: 50px;
+        padding-bottom: 80px;
         overflow-x: hidden;
-        transition: background var(--transition-theme);
+        position: relative;
       }
 
-      /* =============================================== */
-      /* 2. TYPOGRAPHIE - TITRES BLANC GRAS              */
-      /* =============================================== */
-      .setting-label {
-        display: block;
-        font-size: 0.95rem;
-        font-weight: 700 !important;
-        color: #ffffff !important;
-        margin: 0;
-        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-        letter-spacing: 0.3px;
+      /* ✅ SUBTIL OVERLAY pour garder la lisibilité des cartes */
+      .settings-page::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(6, 14, 10, 0.1); /* Léger voile sombre */
+        z-index: -1;
+        pointer-events: none;
       }
 
-      #font-preview {
-        font-weight: 700 !important;
-        color: #ffffff !important;
-        font-size: 1.1rem;
-        line-height: 1.5;
-        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
-        letter-spacing: 0.2px;
-      }
-
-      /* Mode sombre harmonieux */
-      :root.theme-dark #font-preview,
-      body.theme-dark #font-preview {
-        color: #f8f8f8 !important;
-        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
-      }
-
-      /* TITRE HEADER - BLANC GRAS (MODIFIÉ ICI) */
-      .header-center h1 {
-        margin: 0;
-        font-size: clamp(0.95rem, 4vw, 1.1rem);
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        font-weight: 800 !important; /* ✅ FORCE LE GRAS MAXIMUM */
-        color: #ffffff !important; /* ✅ FORCE LE BLANC PUR */
-        -webkit-text-fill-color: #ffffff !important; /* ✅ SURPASSE LE GRADIENT */
-        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7),
-          0 0 12px rgba(197, 160, 89, 0.3); /* Or subtil */
-        white-space: nowrap;
-      }
-
-      /* =============================================== */
-      /* 3. HEADER STICKY PREMIUM                        */
-      /* =============================================== */
+      /* Ajustement header pour fond émeraude */
       .settings-header {
-        display: grid;
-        grid-template-columns: 80px 1fr 80px;
-        align-items: center;
-        gap: 1rem;
-        padding: 10px 20px;
-        background: rgba(0, 0, 0, 0.8);
+        background: rgba(16, 185, 129, 0.9); /* ✅ Émeraude translucide */
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        border-bottom: 1px solid var(--border-gold);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      /* Ajustement bordures cartes pour émeraude */
+      .settings-card {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(16, 185, 129, 0.3); /* ✅ Bordure émeraude */
+        backdrop-filter: blur(15px);
+        box-shadow: 0 15px 35px rgba(16, 185, 129, 0.15);
+      }
+
+      /* ======================================================== */
+      /* 2. HEADER PREMIUM (FIXE & COMPACT)                       */
+      .settings-header {
         position: sticky;
         top: 0;
         z-index: 1000;
-        height: 60px;
-      }
-
-      .nav-btn {
-        text-decoration: none;
-        color: var(--text-primary);
-        background: rgba(255, 255, 255, 0.05);
-        width: 40px;
-        height: 40px;
-        border-radius: 12px;
-        border: 1px solid var(--border-gold);
+        height: 70px;
         display: flex;
         align-items: center;
-        justify-content: center;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        cursor: pointer;
-      }
-
-      .nav-btn:hover {
-        background: var(--color-gold);
-        color: var(--emerald-dark);
-        border-color: var(--color-gold-light);
-        box-shadow: 0 0 15px var(--color-gold-glow);
-        transform: translateY(-2px);
-      }
-
-      .nav-btn.right {
-        justify-self: end;
+        justify-content: space-between;
+        padding: 0 20px;
+        background: rgba(6, 14, 10, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border-gold);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
       }
 
       .header-center {
         display: flex;
         align-items: center;
-        justify-content: center;
-        gap: 10px;
-        text-align: center;
+        gap: 12px;
+      }
+
+      .header-center h1 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: #ffffff;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
       }
 
       .header-center i {
-        font-size: 1.2rem;
         color: var(--color-gold);
-        filter: drop-shadow(0 0 8px var(--color-gold-glow));
-        animation: spin-slow 20s linear infinite;
+        font-size: 1.3rem;
+        filter: drop-shadow(0 0 5px var(--color-gold-glow));
       }
 
-      @keyframes spin-slow {
-        from {
-          transform: rotate(0deg);
-        }
-        to {
-          transform: rotate(360deg);
-        }
+      .nav-btn {
+        width: 45px;
+        height: 45px;
+        background: rgba(176, 141, 87, 0.1);
+        border: 1px solid var(--border-gold);
+        border-radius: 14px;
+        color: var(--color-gold-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+        cursor: pointer;
+        text-decoration: none;
       }
 
-      /* =============================================== */
-      /* 4. LAYOUT & SECTIONS                            */
-      /* =============================================== */
+      .nav-btn:hover {
+        background: var(--color-gold);
+        color: var(--emerald-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px var(--color-gold-glow);
+      }
+
+      /* ======================================================== */
+      /* 3. STRUCTURE DES SECTIONS & CARTES                       */
       .settings-container {
-        max-width: 800px;
-        margin: 20px auto;
+        max-width: 850px;
+        margin: 25px auto;
         padding: 0 15px;
       }
 
-      .settings-section {
-        margin-bottom: 35px;
-      }
-
       .section-title {
-        color: var(--color-gold-light);
-        font-size: 0.8rem;
+        color: var(--color-gold);
+        font-size: 0.85rem;
+        font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 2px;
-        margin-bottom: 15px;
+        margin: 30px 0 15px 5px;
         display: flex;
         align-items: center;
         gap: 15px;
-        opacity: 0.9;
       }
 
       .section-title::after {
         content: "";
         height: 1px;
         background: linear-gradient(to right, var(--border-gold), transparent);
-        flex-grow: 1;
+        flex: 1;
       }
 
-      /* =============================================== */
-      /* 5. CARTES & ROWS                                */
-      /* =============================================== */
       .settings-card {
         background: var(--card-bg);
         border: 1px solid var(--border-gold);
-        border-radius: 16px;
+        border-radius: 24px;
         overflow: hidden;
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-      }
-
-      .settings-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(10px);
       }
 
       .setting-row {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 20px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        transition: background 0.3s ease;
+        padding: 22px 25px;
+        border-bottom: 1px solid rgba(176, 141, 87, 0.1);
+        transition: var(--transition);
       }
 
       .setting-row:hover {
-        background: rgba(255, 255, 255, 0.02);
-      }
-      .setting-row:last-child {
-        border-bottom: none;
+        background: rgba(176, 141, 87, 0.03);
       }
 
       .setting-info {
         display: flex;
         align-items: center;
-        gap: 15px;
-        flex: 1;
+        gap: 20px;
       }
 
       .setting-info i {
-        font-size: 1.2rem;
+        font-size: 1.4rem;
         color: var(--color-gold);
-        width: 30px;
+        width: 35px;
         text-align: center;
-        flex-shrink: 0;
+      }
+
+      .setting-label {
+        font-weight: 700;
+        color: #ffffff;
+        font-size: 1rem;
+        margin: 0;
       }
 
       .setting-desc {
-        display: block;
-        font-size: 0.75rem;
+        font-size: 0.8rem;
         color: var(--text-muted);
-        margin-top: 2px;
-        line-height: 1.3;
+        display: block;
+        margin-top: 3px;
       }
 
-      /* =============================================== */
-      /* 6. FORM CONTROLS                                */
-      /* =============================================== */
+      /* ======================================================== */
+      /* 4. CONTROLES (INPUTS, SELECTS, SWITCHES)                 */
       select {
-        background: rgba(0, 0, 0, 0.4);
+        background: #0a110e;
         color: var(--color-gold-light);
         border: 1px solid var(--border-gold);
-        padding: 8px 16px;
-        border-radius: 8px;
-        outline: none;
-        cursor: pointer;
+        padding: 10px 18px;
+        border-radius: 12px;
         font-family: inherit;
-        font-size: 0.9rem;
-        min-width: 120px;
-        transition: all 0.3s ease;
-      }
-
-      select:hover,
-      select:focus {
-        background: rgba(0, 0, 0, 0.6);
-        box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.2);
-      }
-
-      input[type="range"] {
-        width: 100%;
-        accent-color: var(--color-gold);
-        height: 6px;
-        margin-top: 15px;
+        font-weight: 600;
         cursor: pointer;
-        border-radius: 3px;
-        background: rgba(255, 255, 255, 0.1);
+        transition: var(--transition);
+        min-width: 140px;
       }
 
-      /* SWITCH PREMIUM */
+      select:focus {
+        border-color: var(--color-gold);
+        box-shadow: 0 0 0 3px var(--color-gold-glow);
+      }
+
+      /* Switch Modernisé */
       .switch {
         position: relative;
         display: inline-block;
-        width: 52px;
-        height: 28px;
-        flex-shrink: 0;
+        width: 56px;
+        height: 30px;
       }
 
       .switch input {
@@ -302,296 +270,358 @@
       .slider {
         position: absolute;
         cursor: pointer;
-        inset: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         background: rgba(255, 255, 255, 0.1);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        border-radius: 999px;
         border: 1px solid var(--border-gold);
+        border-radius: 30px;
+        transition: var(--transition);
       }
 
       .slider:before {
         position: absolute;
         content: "";
-        height: 20px;
-        width: 20px;
+        height: 22px;
+        width: 22px;
         left: 3px;
         bottom: 3px;
-        background: var(--text-primary);
-        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        background: #ffffff;
         border-radius: 50%;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        transition: var(--transition);
       }
 
       input:checked + .slider {
-        background: var(--color-gold);
-        border-color: var(--color-gold-light);
+        background: linear-gradient(
+          135deg,
+          var(--color-gold),
+          var(--color-gold-light)
+        );
       }
 
       input:checked + .slider:before {
-        transform: translateX(24px);
+        transform: translateX(26px);
       }
 
-      /* =============================================== */
-      /* 7. ÉLÉMENTS SPÉCIALISÉS - PREMIUM EFFECTS       */
-      /* =============================================== */
-
-      /* PREVIEW BOX - Verre dépoli lumineux */
-      .preview-box {
-        background: rgba(20, 20, 20, 0.6);
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
-        border: 1.5px solid rgba(197, 160, 89, 0.3);
-        border-radius: 20px;
-        padding: 24px;
-        margin-top: 18px;
+      /* ======================================================== */
+      /* 5. SECTION DHIKR & NOTIFICATIONS (STYLE COCHE SIMPLE)    */
+      .settings-section:last-of-type .section-title {
+        justify-content: center;
         text-align: center;
-        position: relative;
-        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
-          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        margin-bottom: 25px;
+        color: var(--color-gold);
       }
 
-      .preview-box:hover {
-        transform: translateY(-6px) scale(1.02);
-        box-shadow: 0 20px 40px rgba(197, 160, 89, 0.25),
-          0 0 0 1px rgba(197, 160, 89, 0.4),
-          inset 0 1px 0 rgba(255, 255, 255, 0.2);
-        background: rgba(25, 25, 25, 0.8);
+      .notification-options {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        padding: 10px 0;
       }
 
-      /* LABEL ÉTIQUETTE - Or flottant */
-      .preview-label {
-        position: absolute;
-        top: -12px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: linear-gradient(135deg, var(--color-gold), #d4a574);
-        color: #1a1a1a;
-        font-size: 0.7rem;
-        padding: 6px 16px;
-        border-radius: 20px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        box-shadow: 0 4px 12px rgba(197, 160, 89, 0.4);
-        backdrop-filter: blur(10px);
-        animation: labelFloat 3s ease-in-out infinite;
+      .notification-options input[type="checkbox"] {
+        display: none;
       }
 
-      @keyframes labelFloat {
-        0%,
-        100% {
-          transform: translateX(-50%) translateY(0px);
-        }
-        50% {
-          transform: translateX(-50%) translateY(-2px);
-        }
-      }
-
-      /* BUTTON DANGER - Effet volcanique */
-      .btn-danger {
-        background: linear-gradient(
-          135deg,
-          rgba(255, 68, 68, 0.2),
-          rgba(255, 0, 0, 0.1)
-        );
-        border: 2px solid rgba(255, 68, 68, 0.5);
-        color: #ff6666;
-        padding: 14px 28px;
-        border-radius: 14px;
-        font-weight: 700;
-        font-size: 0.85rem;
+      .check-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
         cursor: pointer;
-        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        position: relative;
-        overflow: hidden;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        transition: var(--transition);
+        min-width: 80px;
       }
 
-      .btn-danger::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(255, 255, 255, 0.3),
-          transparent
-        );
-        transition: left 0.6s;
-      }
-
-      .btn-danger:hover::before {
-        left: 100%;
-      }
-
-      .btn-danger:hover {
-        background: linear-gradient(135deg, #ff4444, #cc0000);
-        color: white;
-        transform: translateY(-3px) scale(1.05);
-        box-shadow: 0 12px 30px rgba(255, 68, 68, 0.5),
-          0 0 20px rgba(255, 68, 68, 0.3),
-          inset 0 1px 0 rgba(255, 255, 255, 0.2);
-      }
-
-      .btn-danger:active {
-        transform: translateY(-1px) scale(1.02);
-      }
-
-      /* ADHAN BUTTONS - Effets du message précédent (gardés) */
-      .adhan-preview-btn {
-        width: 48px;
-        height: 48px;
-        border: 2px solid rgba(197, 160, 89, 0.4);
-        background: rgba(15, 15, 15, 0.8);
-        color: #e0e0e0;
-        border-radius: 14px;
-        cursor: pointer;
-        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      .check-box {
+        width: 32px;
+        height: 32px;
+        border: 1px solid var(--border-gold);
+        border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.1rem;
-        position: relative;
-        overflow: hidden;
+        background: rgba(255, 255, 255, 0.02);
+        color: transparent;
+        transition: var(--transition);
+        font-size: 0.8rem;
       }
 
-      .adhan-preview-btn::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(197, 160, 89, 0.3),
-          transparent
-        );
-        transition: left 0.6s;
+      .check-label {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
 
-      .adhan-preview-btn:hover::before {
-        left: 100%;
+      .notification-options
+        input[type="checkbox"]:checked
+        + .check-item
+        .check-box {
+        background: var(--color-gold);
+        border-color: var(--color-gold-light);
+        color: var(--emerald-dark);
+        box-shadow: 0 0 15px var(--color-gold-glow);
       }
 
+      .notification-options
+        input[type="checkbox"]:checked
+        + .check-item
+        .check-label {
+        color: #ffffff;
+      }
+
+      /* Preview texte */
+      .preview-box {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--border-gold);
+        border-radius: 12px;
+        padding: 15px;
+        margin-top: 12px;
+      }
+
+      .preview-label {
+        font-size: 0.75rem;
+        color: var(--color-gold);
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+
+      .preview-text {
+        font-size: 16px;
+        line-height: 1.5;
+        color: var(--text-primary);
+        font-style: italic;
+      }
+
+      /* Boutons Adhan */
+      .adhan-preview-btn {
+        width: 45px;
+        height: 45px;
+        background: rgba(176, 141, 87, 0.1);
+        border: 1px solid var(--border-gold);
+        border-radius: 12px;
+        color: var(--color-gold-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+        cursor: pointer;
+        font-size: 0.9rem;
+      }
+
+      .adhan-preview-btn.active,
       .adhan-preview-btn:hover {
-        background: linear-gradient(135deg, var(--color-gold), #d4a574);
-        color: #1a1a1a;
-        border-color: var(--color-gold-light);
-        transform: scale(1.15) rotate(5deg);
-        box-shadow: 0 8px 25px rgba(197, 160, 89, 0.4),
-          0 0 0 4px rgba(197, 160, 89, 0.2);
+        background: var(--color-gold);
+        color: var(--emerald-dark);
+        box-shadow: 0 0 15px var(--color-gold-glow);
+      }
+/* BOUTON RÉINITIALISER - PLUS GROS & ALIGNÉ */
+.btn-danger {
+  /* ALIGNÉ VERTICALEMENT avec le texte */
+  align-self: center;
+  justify-self: flex-end;
+  
+  /* PLUS GROS */
+  width: 180px;
+  height: 45px;
+  padding: 12px 24px;
+  font-size: 0.85rem; /* Légèrement plus grand */
+  line-height: 1.4;
+  
+  /* MARGES AUTOMatiques mais à droite */
+  margin: 40px auto 20px;
+  margin-left: auto; /* Pousse à droite */
+  
+  background: transparent;
+  border: 2px solid rgba(255, 68, 68, 0.3);
+  color: rgba(255, 128, 128, 0.8);
+  border-radius: 25px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-danger:hover {
+  background: rgba(255, 68, 68, 0.15);
+  color: #ff4444;
+  border-color: #ff4444;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 68, 68, 0.3);
+}
+
+/* HTML - Ajustement du setting-row pour l'alignement */
+.setting-row.reset-row {
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (max-width: 480px) {
+  .btn-danger {
+    width: 90%;
+    max-width: 220px;
+    height: 50px;
+    font-size: 0.9rem;
+    padding: 14px 28px;
+  }
+}
+
+
+      /* ======================================================== */
+      /* ACCESSIBILITÉ - FOCUS VISIBLE                           */
+      .nav-btn:focus-visible,
+      select:focus-visible,
+      button:focus-visible,
+      input:focus-visible,
+      .switch:focus-within {
+        outline: 2px solid var(--color-gold);
+        outline-offset: 2px;
       }
 
-      .adhan-preview-btn.active {
-        background: linear-gradient(135deg, var(--color-gold), #c5a059);
-        color: #1a1a1a;
-        border-color: var(--color-gold-light);
-        box-shadow: 0 0 20px rgba(197, 160, 89, 0.6),
-          0 4px 12px rgba(0, 0, 0, 0.4);
-        transform: scale(1.08);
-        animation: pulse-adhan 2s infinite;
+      /* ALIGNEMENT HORIZONTAL ADHAN */
+      .adhan-controls {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
       }
 
-      @keyframes pulse-adhan {
-        0%,
-        100% {
-          box-shadow: 0 0 20px rgba(197, 160, 89, 0.6),
-            0 4px 12px rgba(0, 0, 0, 0.4);
+      .adhan-group {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .adhan-preview-btn {
+        flex-shrink: 0; /* Empêche le rétrécissement */
+      }
+
+      /* Sur mobile, scroll horizontal si nécessaire */
+      @media (max-width: 480px) {
+        .adhan-group {
+          flex-wrap: nowrap;
+          overflow-x: auto;
+          padding: 8px 0;
+          -webkit-overflow-scrolling: touch;
         }
-        50% {
-          box-shadow: 0 0 35px rgba(197, 160, 89, 0.9),
-            0 6px 20px rgba(0, 0, 0, 0.5);
+
+        .adhan-preview-btn {
+          width: 42px;
+          height: 42px;
         }
       }
 
-      .adhan-preview-btn:active {
-        transform: scale(0.95) rotate(-2deg);
-        transition: transform 0.1s;
-      }
+      /* ======================================================== */
+      /* RESPONSIVE OPTIMISÉ (MOBILE-FIRST)                       */
 
-      /* =============================================== */
-      /* 8. RESPONSIVE & ACCESSIBILITÉ                   */
-      /* =============================================== */
       @media (max-width: 768px) {
         .settings-header {
-          grid-template-columns: 1fr;
-          grid-template-rows: auto 1fr auto;
-          gap: 0.75rem;
-          padding: 15px;
-          height: auto;
+          height: 65px;
+          padding: 0 15px;
         }
-        .settings-container {
-          margin: 15px auto;
-          padding: 0 10px;
+
+        .header-center h1 {
+          font-size: 0.95rem;
         }
       }
 
       @media (max-width: 480px) {
+        .settings-container {
+          margin: 15px auto;
+          padding: 0 10px;
+        }
+
         .setting-row {
           flex-direction: column;
-          align-items: stretch;
-          gap: 1rem;
-          padding: 20px 15px;
+          align-items: flex-start;
+          gap: 15px;
+          padding: 20px;
         }
+
         .setting-info {
-          margin-bottom: 0.5rem;
-        }
-        select {
           width: 100%;
-          min-width: unset;
         }
+
+        select,
+        input[type="range"] {
+          width: 100%;
+        }
+
         .switch {
-          margin-left: auto;
           align-self: flex-end;
         }
+
         .adhan-preview-btn {
           width: 40px;
           height: 40px;
-          font-size: 0.9rem;
         }
+
+        .adhan-group {
+          display: flex;
+          flex-wrap: nowrap;
+          overflow-x: auto;
+          padding: 10px;
+          -webkit-overflow-scrolling: touch;
+          gap: 8px;
+        }
+
+        .adhan-preview-btn {
+          flex-shrink: 0;
+        }
+
+        .btn-danger {
+          width: 80%;
+          padding: 12px;
+        }
+
         .section-title {
           font-size: 0.75rem;
-          letter-spacing: 1.5px;
+          margin-top: 20px;
+        }
+
+        .preview-box {
+          padding: 20px;
+          width: 100%;
+        }
+
+        .notification-options {
+          gap: 20px;
+        }
+
+        .check-box {
+          width: 38px;
+          height: 38px;
         }
       }
 
+      /* Accessibilité : Réduction des mouvements */
       @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-          animation-duration: 0.01ms !important;
-          transition-duration: 0.01ms !important;
+        * {
+          transition: none !important;
+          animation: none !important;
         }
-      }
-
-      .nav-btn:focus,
-      select:focus,
-      .btn-danger:focus,
-      .adhan-preview-btn:focus {
-        outline: 2px solid var(--color-gold);
-        outline-offset: 2px;
       }
     </style>
   </head>
 
   <body class="settings-page">
-    <!-- ===== HEADER NAVIGATION ===== -->
-    <header class="settings-header">
+    <!-- ===== HEADER ===== -->
+    <header class="settings-header" role="banner">
       <a
         href="index.html"
         class="nav-btn"
         title="Accueil"
         aria-label="Retour à l'accueil"
       >
-        <i class="fas fa-arrow-left"></i>
+        <i class="fas fa-arrow-left" aria-hidden="true"></i>
       </a>
 
       <div class="header-center">
@@ -600,27 +630,27 @@
       </div>
 
       <a
-        href="about.html"
-        class="nav-btn right"
-        title="Informations"
-        aria-label="À propos"
+        href="conditions.html"
+        class="nav-btn"
+        title="À propos"
+        aria-label="À propos de l'application"
       >
-        <i class="fas fa-info-circle"></i>
+        <i class="fas fa-info-circle" aria-hidden="true"></i>
       </a>
     </header>
 
     <!-- ===== CONTENU PRINCIPAL ===== -->
-    <div class="settings-container">
+    <main class="settings-container" role="main">
       <!-- 📿 1. EXPÉRIENCE SPIRITUELLE -->
-      <div class="settings-section">
-        <div class="section-title">
-          <i class="fas fa-star-and-crescent"></i>
+      <section class="settings-section" aria-labelledby="exp-spirituelle">
+        <h2 id="exp-spirituelle" class="section-title">
+          <i class="fas fa-star-and-crescent" aria-hidden="true"></i>
           Expérience Spirituelle
-        </div>
+        </h2>
         <div class="settings-card">
           <div class="setting-row">
             <div class="setting-info">
-              <i class="fas fa-mosque"></i>
+              <i class="fas fa-mosque" aria-hidden="true"></i>
               <div>
                 <span class="setting-label">Profil d'Apprentissage</span>
                 <span class="setting-desc"
@@ -628,7 +658,10 @@
                 >
               </div>
             </div>
-            <select id="pref-gender" aria-label="Sélectionner votre profil">
+            <select
+              id="pref-gender"
+              aria-label="Sélectionner votre profil d'apprentissage"
+            >
               <option value="masculin">👨 Frère</option>
               <option value="feminin">👩 Sœur</option>
             </select>
@@ -636,30 +669,34 @@
 
           <div class="setting-row">
             <div class="setting-info">
-              <i class="fas fa-bell"></i>
+              <i class="fas fa-bell" aria-hidden="true"></i>
               <div>
                 <span class="setting-label">Notifications Dhikr</span>
                 <span class="setting-desc">Rappels discrets Tasbih</span>
               </div>
             </div>
-            <label class="switch" aria-label="Activer notifications Dhikr">
+            <label
+              class="switch"
+              for="pref-dhikr"
+              aria-label="Activer les notifications Dhikr"
+            >
               <input type="checkbox" id="pref-dhikr" checked />
               <span class="slider" aria-hidden="true"></span>
             </label>
           </div>
         </div>
-      </div>
+      </section>
 
       <!-- 🎨 2. INTERFACE & CONFORT -->
-      <div class="settings-section">
-        <div class="section-title">
-          <i class="fas fa-paint-brush"></i>
+      <section class="settings-section" aria-labelledby="interface-confort">
+        <h2 id="interface-confort" class="section-title">
+          <i class="fas fa-paint-brush" aria-hidden="true"></i>
           Interface & Confort
-        </div>
+        </h2>
         <div class="settings-card">
           <div class="setting-row">
             <div class="setting-info">
-              <i class="fas fa-palette"></i>
+              <i class="fas fa-palette" aria-hidden="true"></i>
               <div>
                 <span class="setting-label">Thème</span>
                 <span class="setting-desc">Atmosphère visuelle</span>
@@ -676,7 +713,7 @@
             style="flex-direction: column; align-items: stretch"
           >
             <div class="setting-info" style="margin-bottom: 0.75rem">
-              <i class="fas fa-text-height"></i>
+              <i class="fas fa-text-height" aria-hidden="true"></i>
               <span class="setting-label">Taille Texte</span>
             </div>
             <input
@@ -685,7 +722,7 @@
               min="14"
               max="32"
               value="18"
-              aria-label="Taille texte"
+              aria-label="Ajuster la taille du texte"
             />
             <div class="preview-box">
               <div class="preview-label">Aperçu Live</div>
@@ -696,54 +733,68 @@
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- 🕌 3. PRIÈRES SIMPLIFIÉ -->
-      <div class="settings-section">
-        <div class="section-title">
-          <i class="fas fa-pray"></i>
+      <!-- 🕌 3. PRIÈRES & ADHAN -->
+      <section class="settings-section" aria-labelledby="prieres-adhan">
+        <h2 id="prieres-adhan" class="section-title">
+          <i class="fas fa-pray" aria-hidden="true"></i>
           Prières & Adhan
-        </div>
+        </h2>
         <div class="settings-card">
-          <!-- Son Adhan -->
+          <!-- Son Adhan - ALIGNÉ HORIZONTALEMENT -->
           <div class="setting-row">
             <div class="setting-info">
-              <i class="fas fa-volume-up"></i>
+              <i class="fas fa-volume-up" aria-hidden="true"></i>
               <div>
                 <span class="setting-label">Son Adhan</span>
                 <span class="setting-desc">Alerte horaire prière</span>
               </div>
             </div>
-            <div style="display: flex; gap: 8px; align-items: center">
-              <button
-                class="adhan-preview-btn"
-                data-sound="silent"
-                title="🔇 Muet"
+
+            <!-- ALIGNEMENT HORIZONTAL DES BOUTONS -->
+            <div class="adhan-controls">
+              <div
+                class="adhan-group"
+                role="radiogroup"
+                aria-label="Sélectionner le son Adhan"
               >
-                <i class="fas fa-volume-mute"></i>
-              </button>
-              <button
-                class="adhan-preview-btn"
-                data-sound="discreet"
-                title="📱 Discret"
-              >
-                <i class="fas fa-volume-down"></i>
-              </button>
-              <button
-                class="adhan-preview-btn active"
-                data-sound="adhan"
-                title="🕌 Adhan"
-              >
-                <i class="fas fa-mosque"></i>
-              </button>
+                <button
+                  class="adhan-preview-btn"
+                  data-sound="silent"
+                  title="🔇 Muet"
+                  aria-label="Son muet"
+                  type="button"
+                >
+                  <i class="fas fa-volume-mute" aria-hidden="true"></i>
+                </button>
+                <button
+                  class="adhan-preview-btn"
+                  data-sound="discreet"
+                  title="📱 Discret"
+                  aria-label="Son discret"
+                  type="button"
+                >
+                  <i class="fas fa-volume-down" aria-hidden="true"></i>
+                </button>
+                <button
+                  class="adhan-preview-btn active"
+                  data-sound="adhan"
+                  title="🕌 Adhan"
+                  aria-label="Adhan traditionnel"
+                  type="button"
+                >
+                  <i class="fas fa-mosque" aria-hidden="true"></i>
+                </button>
+              </div>
+              <input type="hidden" id="pref-adhan-sound" value="adhan" />
             </div>
-            <input type="hidden" id="pref-adhan-sound" value="adhan" />
           </div>
 
-          <!-- ✅ VILLE + MÉTHODE CALCUL SIMPLIFIÉE -->
+          <!-- Ville + Méthode Calcul -->
           <div class="setting-row">
             <div class="setting-info">
-              <i class="fas fa-map-marker-alt"></i>
+              <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
               <div>
                 <span class="setting-label">Horaires Prière</span>
                 <span class="setting-desc" id="location-desc"
@@ -751,7 +802,11 @@
                 >
               </div>
             </div>
-            <select id="pref-location" style="min-width: 220px">
+            <select
+              id="pref-location"
+              aria-label="Sélectionner la localisation pour les horaires de prière"
+              style="min-width: 220px"
+            >
               <option value="lagos-ng-muslim">🇳🇬 Lagos (Standard)</option>
               <option value="paris-fr-umm">🇫🇷 Paris (Umm Al-Qura)</option>
               <option value="dubai-ae-uae">🇦🇪 Dubai (UAE)</option>
@@ -759,37 +814,35 @@
             </select>
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- 🔒 4. CONFIDENTIALITÉ -->
-      <div class="settings-section">
-        <div class="section-title">
-          <i class="fas fa-shield-alt"></i>
-          Confidentialité
-        </div>
-        <div class="settings-card">
-          <div class="setting-row">
-            <div class="setting-info">
-              <i class="fas fa-database"></i>
-              <div>
-                <span class="setting-label">Reset Préférences</span>
-                <span class="setting-desc">Supprime tout l'historique</span>
-              </div>
-            </div>
-            <button
-              id="clear-cache"
-              class="btn-danger"
-              aria-label="Réinitialiser"
-            >
-              Réinitialiser
-            </button>
-          </div>
-        </div>
-      </div>
+     <!-- 🔒 4. CONFIDENTIALITÉ -->
+<div class="setting-row reset-row">
+  <div class="setting-info">
+    <i class="fas fa-database" aria-hidden="true"></i>
+    <div>
+      <span class="setting-label">Réinitialiser les Préférences</span>
+      <span class="setting-desc">Supprime tout l'historique local</span>
     </div>
+  </div>
+  <button
+    id="clear-cache"
+    class="btn-danger"
+    aria-label="Réinitialiser toutes les préférences"
+    type="button"
+  >
+    Réinitialiser
+  </button>
+</div>
 
-    <script>
-      (() => {
+        </div>
+      </section>
+    </main>
+
+    <!-- ===== JS FINAL ===== -->
+    <script src="assets/js/theme-loader.js" defer></script>
+    <script defer>
+      document.addEventListener("DOMContentLoaded", () => {
         /* =============================================== */
         /* 1. CONFIGURATION AUDIO ADHAN                   */
         /* =============================================== */
@@ -836,7 +889,7 @@
           els.adhanBtns.forEach((btn) => btn.classList.remove("active"));
           document
             .querySelector(`[data-sound="${sound}"]`)
-            .classList.add("active");
+            ?.classList.add("active");
         };
 
         const updateLocationDesc = (location) => {
@@ -932,14 +985,10 @@
         };
 
         /* =============================================== */
-        /* 6. INITIALISATION                               */
+        /* 6. INITIALISATION                              */
         /* =============================================== */
-        if (document.readyState === "loading") {
-          document.addEventListener("DOMContentLoaded", loadSettings);
-        } else {
-          loadSettings();
-        }
-      })();
+        loadSettings();
+      });
     </script>
   </body>
 </html>
