@@ -2,34 +2,67 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=5.0"
+    />
+    <meta name="theme-color" content="#0f172a" />
     <meta name="referrer" content="no-referrer" />
+
+    <title>QuranLight 🌙 – Prayer & Ramadan Companion</title>
     <meta
       name="description"
-      content="QuranLight – Votre guide spirituel quotidien pour la prière et le Coran."
+      content="QuranLight helps Muslims follow prayer times, Ramadan calendar and Islamic reminders worldwide."
     />
-    <title>QuranLight – Accueil</title>
 
-    <!-- Fonts : Amiri (arabe/titres) + Poppins (UI) -->
+    <meta property="og:title" content="QuranLight 🌙" />
+    <meta
+      property="og:description"
+      content="Prayer times, Ramadan calendar and Islamic reminders."
+    />
+    <meta
+      property="og:image"
+      content="https://quranlight.vercel.app/Logo.jpg"
+    />
+    <meta property="og:url" content="https://quranlight.vercel.app/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="QuranLight" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="QuranLight 🌙" />
+    <meta
+      name="twitter:description"
+      content="Prayer times & Ramadan Companion"
+    />
+    <meta
+      name="twitter:image"
+      content="https://quranlight.vercel.app/Logo.jpg"
+    />
+
+    <link rel="icon" type="image/jpeg" href="Logo.jpg" />
+    <link rel="apple-touch-icon" href="Logo.jpg" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link rel="stylesheet" href="assets/css/theme-variables.css" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/salat.css" />
+
     <link
       href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
-
-    <!-- Icônes -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-
-    <!-- Styles -->
-    <link rel="stylesheet" href="assets/css/style.css" />
-    <link rel="stylesheet" href="assets/css/theme-variables.css" />
-    <link rel="stylesheet" href="assets/css/salat.css" />
   </head>
-
   <body>
     <!-- ░░ SPLASH SCREEN ░░ -->
     <div
@@ -474,5 +507,13 @@
     <!-- ░░ SCRIPTS ░░ -->
     <script src="assets/js/salat_logic.js" defer></script>
     <script src="assets/js/script.js" defer></script>
+
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.getRegistrations().then((regs) => {
+          regs.forEach((r) => r.unregister());
+        });
+      }
+    </script>
   </body>
 </html>

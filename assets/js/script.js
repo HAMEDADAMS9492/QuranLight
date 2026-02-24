@@ -31,6 +31,25 @@ let _lastNotifiedPrayer = "";
 let _allSurahs = [];
 let _prayerCountdownTimer = null;
 
+async function checkForUpdate() {
+  try {
+    const res = await fetch("/", {
+      cache: "no-store",
+    });
+
+    const newVersion = res.headers.get("last-modified");
+
+    const oldVersion = localStorage.getItem("site-version");
+
+    if (oldVersion && oldVersion !== newVersion) {
+      location.reload(true);
+    }
+
+    localStorage.setItem("site-version", newVersion);
+  } catch {}
+}
+
+setInterval(checkForUpdate, 60000);
 /* ============================================================
    1. ENTRÉE PRINCIPALE
    ============================================================ */
