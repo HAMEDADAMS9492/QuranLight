@@ -1,21 +1,42 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="referrer" content="no-referrer" />
-    <title>QuranLight - Accueil</title>
+    <meta
+      name="description"
+      content="QuranLight – Votre guide spirituel quotidien pour la prière et le Coran."
+    />
+    <title>QuranLight – Accueil</title>
 
-    <link rel="stylesheet" href="assets/css/style.css" />
-    <link rel="stylesheet" href="assets/css/salat.css" />
-    <link rel="stylesheet" href="assets/css/theme-variables.css" />
+    <!-- Fonts : Amiri (arabe/titres) + Poppins (UI) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icônes -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/theme-variables.css" />
+    <link rel="stylesheet" href="assets/css/salat.css" />
   </head>
+
   <body>
-    <div id="splash-overlay">
+    <!-- ░░ SPLASH SCREEN ░░ -->
+    <div
+      id="splash-overlay"
+      role="status"
+      aria-label="Chargement de QuranLight"
+    >
       <div class="splash-content">
         <div class="logo-wrapper-splash">
           <img
@@ -26,14 +47,20 @@
         </div>
         <h1 class="brand-name-splash">QuranLight</h1>
         <p class="splash-tagline">Illuminez votre chemin spirituel</p>
-        <div class="loader-container-splash">
+        <div class="loader-container-splash" aria-hidden="true">
           <div class="loader-bar-splash"></div>
         </div>
       </div>
-      <div class="version-splash">VERSION 2.12</div>
+      <div class="version-splash" aria-hidden="true">VERSION 2.12</div>
     </div>
 
-    <aside id="sidebar" class="sidebar">
+    <!-- ░░ SIDEBAR ░░ -->
+    <aside
+      id="sidebar"
+      class="sidebar"
+      role="navigation"
+      aria-label="Menu principal"
+    >
       <div class="sidebar-header">
         <img
           src="assets/image/Logo.jpg"
@@ -43,183 +70,279 @@
       </div>
       <nav class="sidebar-nav">
         <a href="index.html" class="nav-item active"
-          ><i class="fas fa-home"></i> Accueil</a
+          ><i class="fas fa-home" aria-hidden="true"></i> Accueil</a
         >
         <a href="salat.html" class="nav-item"
-          ><i class="fas fa-clock"></i> Horaires de Prières</a
+          ><i class="fas fa-clock" aria-hidden="true"></i> Horaires de
+          Prières</a
         >
         <a href="quran.html" class="nav-item"
-          ><i class="fas fa-quran"></i> Coran</a
+          ><i class="fas fa-quran" aria-hidden="true"></i> Coran</a
         >
         <a href="hadiths.html" class="nav-item"
-          ><i class="fas fa-book-open"></i> Collections de hadiths</a
+          ><i class="fas fa-book-open" aria-hidden="true"></i> Collections de
+          hadiths</a
         >
         <a href="qibla.html" class="nav-item"
-          ><i class="fas fa-compass"></i> Direction de la Qibla</a
+          ><i class="fas fa-compass" aria-hidden="true"></i> Direction de la
+          Qibla</a
         >
         <a href="calendar.html" class="nav-item"
-          ><i class="fas fa-calendar-alt"></i> Calendrier Musulman</a
+          ><i class="fas fa-calendar-alt" aria-hidden="true"></i> Calendrier
+          Musulman</a
         >
         <a href="ramadan.html" class="nav-item"
-          ><i class="fas fa-moon"></i> Ramadan</a
+          ><i class="fas fa-moon" aria-hidden="true"></i> Ramadan</a
         >
       </nav>
       <div class="sidebar-footer">
         <a href="parametre.html" class="nav-item"
-          ><i class="fas fa-cog"></i> Paramètres</a
+          ><i class="fas fa-cog" aria-hidden="true"></i> Paramètres</a
         >
         <a href="conditions.html" class="nav-item"
-          ><i class="fas fa-info-circle"></i> À Propos</a
+          ><i class="fas fa-info-circle" aria-hidden="true"></i> À Propos</a
         >
       </div>
     </aside>
-    <div id="sidebar-overlay"></div>
+    <div id="sidebar-overlay" aria-hidden="true"></div>
 
-    <header class="glass-panel">
-      <button id="menu-toggle" class="menu-toggle">
-        <i class="fas fa-bars"></i>
+    <!-- ░░ HEADER ░░ -->
+    <header class="glass-panel" role="banner">
+      <button
+        id="menu-toggle"
+        class="menu-toggle"
+        aria-label="Ouvrir le menu"
+        aria-expanded="false"
+        aria-controls="sidebar"
+      >
+        <i class="fas fa-bars" aria-hidden="true"></i>
       </button>
-      <div id="header-location">
-        <i class="fa-solid fa-location-dot"></i> Abuja - Nigeria
+      <div id="header-location" aria-live="polite">
+        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+        <span id="header-location-text">Localisation…</span>
       </div>
       <button
         id="sync-location-btn"
         class="settings-icon"
-        style="background: none; border: none; color: inherit; cursor: pointer"
+        aria-label="Actualiser la localisation"
       >
-        <i class="fas fa-sync-alt"></i>
+        <i class="fas fa-sync-alt" aria-hidden="true"></i>
       </button>
     </header>
 
-    <div class="main-container">
-      <div class="home-date-time-block">
-        <div class="gregorian-date" id="gregorian-date"></div>
-        <div class="current-time" id="current-time"></div>
-        <div class="hijri-date" id="hijri-date"></div>
-        <div class="next-prayer-info">
+    <!-- ░░ CONTENU PRINCIPAL ░░ -->
+    <main class="main-container" role="main">
+      <!-- Bloc date / heure / prière -->
+      <section
+        class="home-date-time-block"
+        aria-label="Date, heure et prochaine prière"
+      >
+        <div
+          class="gregorian-date"
+          id="gregorian-date"
+          aria-live="polite"
+        ></div>
+        <div class="current-time" id="current-time" aria-live="off"></div>
+        <div class="hijri-date" id="hijri-date" aria-live="polite"></div>
+
+        <div class="next-prayer-info" aria-label="Prochaine prière">
           <div class="next-prayer-label">Prochaine prière :</div>
-          <div class="next-prayer-name" id="next-prayer-name">
-            Chargement...
+          <div
+            class="next-prayer-name"
+            id="next-prayer-name"
+            aria-live="polite"
+          >
+            Chargement…
           </div>
-          <div class="next-prayer-countdown" id="next-prayer-countdown">
+          <div
+            class="next-prayer-countdown"
+            id="next-prayer-countdown"
+            aria-live="off"
+          >
             --:--:--
           </div>
-          <div class="prayer-progress-container">
+          <div class="prayer-progress-container" aria-hidden="true">
             <div class="prayer-progress-bar" id="prayer-progress-bar"></div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="daily-reminder-card" id="daily-quote"></div>
+      <!-- Citation / rappel du jour -->
+      <div
+        class="daily-reminder-card"
+        id="daily-quote"
+        aria-live="polite"
+        aria-label="Citation du jour"
+      ></div>
 
-      <section class="modules-grid">
+      <!-- Grille des modules -->
+      <section class="modules-grid" aria-label="Modules de l'application">
         <a href="salat.html" class="module-card"
           ><div class="module-icon bg-icon-red">
-            <i class="fas fa-clock"></i>
+            <i class="fas fa-clock" aria-hidden="true"></i>
           </div>
           <span class="module-label">Prières</span></a
         >
         <a href="quran.html" class="module-card"
           ><div class="module-icon bg-icon-purple">
-            <i class="fas fa-quran"></i>
+            <i class="fas fa-quran" aria-hidden="true"></i>
           </div>
           <span class="module-label">Coran</span></a
         >
         <a href="qibla.html" class="module-card"
           ><div class="module-icon bg-icon-blue">
-            <i class="fas fa-compass"></i>
+            <i class="fas fa-compass" aria-hidden="true"></i>
           </div>
           <span class="module-label">Qibla</span></a
         >
         <a href="ramadan.html" class="module-card"
           ><div class="module-icon bg-icon-green">
-            <i class="fas fa-moon"></i>
+            <i class="fas fa-moon" aria-hidden="true"></i>
           </div>
           <span class="module-label">Ramadan</span></a
         >
         <a href="calendar.html" class="module-card"
           ><div class="module-icon bg-icon-gold">
-            <i class="fas fa-calendar-alt"></i>
+            <i class="fas fa-calendar-alt" aria-hidden="true"></i>
           </div>
           <span class="module-label">Calendrier</span></a
         >
         <a href="hadiths.html" class="module-card"
           ><div class="module-icon bg-icon-gray">
-            <i class="fas fa-book-open"></i>
+            <i class="fas fa-book-open" aria-hidden="true"></i>
           </div>
           <span class="module-label">Hadiths</span></a
         >
       </section>
 
-      <section class="reciters-section">
+      <!-- Récitateurs -->
+      <section class="reciters-section" aria-label="Récitateurs">
         <div class="section-header-flex">
-          <h3 class="section-title-premium">Récitateurs</h3>
+          <h2 class="section-title-premium">Récitateurs</h2>
           <a href="reciters-library.html" class="view-all-link"
             >Afficher plus</a
           >
         </div>
-        <div class="reciters-horizontal-list">
+        <div class="reciters-horizontal-list" role="list">
           <div
             class="reciter-card-circle"
-            onclick="goToLibrary('ar.abdulbasitmurattal', 'Abd Al-Basit')"
+            role="listitem"
+            tabindex="0"
+            data-reciter-id="ar.abdulbasitmurattal"
+            data-reciter-name="Abd Al-Basit"
+            aria-label="Écouter Abd Al-Basit"
           >
             <div class="reciter-image-wrapper">
-              <img src="assets/image/basit.jpg" alt="Abd Al-Basit" />
+              <img
+                src="assets/image/basit.jpg"
+                alt="Abd Al-Basit"
+                loading="lazy"
+              />
             </div>
             <span class="reciter-label">Abd Al-Basit</span>
           </div>
+
           <div
             class="reciter-card-circle"
-            onclick="goToLibrary('ar.sudais', 'Abdurrahman Al-Sudais')"
+            role="listitem"
+            tabindex="0"
+            data-reciter-id="ar.sudais"
+            data-reciter-name="Abdurrahman Al-Sudais"
+            aria-label="Écouter Al-Sudais"
           >
             <div class="reciter-image-wrapper">
-              <img src="assets/image/sudais.jpg" alt="Al-Sudais" />
+              <img
+                src="assets/image/sudais.jpg"
+                alt="Al-Sudais"
+                loading="lazy"
+              />
             </div>
             <span class="reciter-label">Al-Sudais</span>
           </div>
+
           <div
             class="reciter-card-circle"
-            onclick="goToLibrary('ar.hanirifai', 'Hani Al-Rifai')"
+            role="listitem"
+            tabindex="0"
+            data-reciter-id="ar.hanirifai"
+            data-reciter-name="Hani Al-Rifai"
+            aria-label="Écouter Hani Al-Rifai"
           >
             <div class="reciter-image-wrapper">
-              <img src="assets/image/hani.jpg" alt="Hani Al-Rifai" />
+              <img
+                src="assets/image/hani.jpg"
+                alt="Hani Al-Rifai"
+                loading="lazy"
+              />
             </div>
             <span class="reciter-label">Hani Al-Rifai</span>
           </div>
+
           <div
             class="reciter-card-circle"
-            onclick="goToLibrary('ar.alafasy', 'Mishary Alafasy')"
+            role="listitem"
+            tabindex="0"
+            data-reciter-id="ar.alafasy"
+            data-reciter-name="Mishary Alafasy"
+            aria-label="Écouter Mishary Alafasy"
           >
             <div class="reciter-image-wrapper">
-              <img src="assets/image/mishary.jpg" alt="Alafasy" />
+              <img
+                src="assets/image/mishary.jpg"
+                alt="Mishary Alafasy"
+                loading="lazy"
+              />
             </div>
             <span class="reciter-label">Alafasy</span>
           </div>
+
           <div
             class="reciter-card-circle"
-            onclick="goToLibrary('ar.basfar', 'Abdullah Basfar')"
+            role="listitem"
+            tabindex="0"
+            data-reciter-id="ar.basfar"
+            data-reciter-name="Abdullah Basfar"
+            aria-label="Écouter Abdullah Basfar"
           >
             <div class="reciter-image-wrapper">
-              <img src="assets/image/basfar.jpg" alt="Basfar" />
+              <img
+                src="assets/image/basfar.jpg"
+                alt="Abdullah Basfar"
+                loading="lazy"
+              />
             </div>
             <span class="reciter-label">Basfar</span>
           </div>
+
           <div
             class="reciter-card-circle"
-            onclick="goToLibrary('ar.shatri', 'Al-Shatri')"
+            role="listitem"
+            tabindex="0"
+            data-reciter-id="ar.shatri"
+            data-reciter-name="Al-Shatri"
+            aria-label="Écouter Al-Shatri"
           >
             <div class="reciter-image-wrapper">
-              <img src="assets/image/shatri.jpg" alt="Al-Shatri" />
+              <img
+                src="assets/image/shatri.jpg"
+                alt="Al-Shatri"
+                loading="lazy"
+              />
             </div>
             <span class="reciter-label">Al-Shatri</span>
           </div>
         </div>
       </section>
 
-      <section class="news-section">
+      <!-- Flux de nouvelles -->
+      <section class="news-section" aria-label="Actualités islamiques">
         <div class="section-header-flex">
-          <h3 class="section-title-premium">Lumières sur le Monde</h3>
-          <div class="news-filters">
+          <h2 class="section-title-premium">Lumières sur le Monde</h2>
+          <div
+            class="news-filters"
+            role="group"
+            aria-label="Filtres des actualités"
+          >
             <button class="filter-btn active" data-cat="all">Tout</button>
             <button class="filter-btn" data-cat="monde">Monde</button>
             <button class="filter-btn" data-cat="culture">Culture</button>
@@ -228,54 +351,53 @@
             <button class="filter-btn" data-cat="société">Société</button>
           </div>
         </div>
-        <div class="news-container-fluid" id="news-feed"></div>
+        <div
+          class="news-container-fluid"
+          id="news-feed"
+          aria-live="polite"
+        ></div>
       </section>
-    </div>
+    </main>
 
+    <!-- ░░ PANNEAU SOURATES (Récitateurs) ░░ -->
     <div
       id="surahPanel"
-      style="
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: #05140f;
-        z-index: 10000;
-        flex-direction: column;
-      "
+      role="dialog"
+      aria-modal="true"
+      aria-label="Liste des sourates"
+      hidden
     >
-      <header
-        class="reciters-header"
-        style="
-          background: rgba(5, 20, 15, 0.95);
-          padding: 15px 20px;
-          border-bottom: 1px solid rgba(176, 141, 87, 0.2);
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        "
-      >
-        <div class="back-btn" onclick="closeSurahPanel()">
-          <i class="fas fa-times"></i>
-        </div>
-        <div class="header-title">
-          <h1 id="panelReciterName">Chargement...</h1>
-        </div>
-        <div style="width: 20px"></div>
+      <header class="surah-panel-header">
+        <button
+          class="surah-close-btn"
+          id="surah-close-btn"
+          aria-label="Fermer"
+        >
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+        <h2 class="surah-panel-title" id="panelReciterName">Chargement…</h2>
+        <div aria-hidden="true" style="width: 38px"></div>
       </header>
-      <div
-        id="surahListContainer"
-        style="flex: 1; overflow-y: auto; padding: 20px"
-      ></div>
+      <div id="surahListContainer" class="surah-list-container"></div>
     </div>
 
-    <footer class="footer" aria-label="Pied de page QuranLight">
+    <!-- ░░ FOOTER ░░ -->
+    <footer
+      class="footer"
+      role="contentinfo"
+      aria-label="Pied de page QuranLight"
+    >
       <div class="footer-grid container">
         <section class="footer-section footer-info">
           <div class="footer-brand">
-            <a href="index.html" class="footer-logo-link">
+            <a
+              href="index.html"
+              class="footer-logo-link"
+              aria-label="Accueil QuranLight"
+            >
               <img
                 src="assets/image/Logo.jpg"
-                alt="Logo de l'application QuranLight"
+                alt="Logo QuranLight"
                 class="footer-logo"
                 loading="lazy"
               />
@@ -288,21 +410,26 @@
         </section>
 
         <section class="footer-section footer-links">
-          <h4>Termes et conditions</h4>
-          <nav>
-            <a href="confidentialite.html"
-              ><span>Politique de confidentialité</span></a
-            >
-            <a href="conditions.html"><span>Conditions générales</span></a>
-            <a href="cookies.html"><span>Politique des cookies</span></a>
+          <h3>Termes et conditions</h3>
+          <nav aria-label="Liens légaux">
+            <a href="confidentialite.html">Politique de confidentialité</a>
+            <a href="conditions.html">Conditions générales</a>
+            <a href="cookies.html">Politique des cookies</a>
           </nav>
         </section>
 
         <section class="footer-section footer-lang">
-          <h4>Langue</h4>
+          <h3>Langue</h3>
           <div class="lang-selector-wrapper">
-            <div class="lang-icon-box"><i class="fas fa-globe-africa"></i></div>
-            <select class="lang-select" id="language-switcher" name="language">
+            <div class="lang-icon-box">
+              <i class="fas fa-globe-africa" aria-hidden="true"></i>
+            </div>
+            <select
+              class="lang-select"
+              id="language-switcher"
+              name="language"
+              aria-label="Choisir la langue"
+            >
               <option value="fr">Français 🇫🇷</option>
               <option value="en">English 🇬🇧</option>
             </select>
@@ -310,62 +437,42 @@
         </section>
 
         <section class="footer-section footer-social-group">
-          <h4>Suivez-nous</h4>
+          <h3>Suivez-nous</h3>
           <div class="social-links-vertical">
-            <a href="#"
-              ><i class="fab fa-instagram"></i> <span>Instagram</span></a
+            <a href="#" aria-label="Instagram QuranLight"
+              ><i class="fab fa-instagram" aria-hidden="true"></i
+              ><span>Instagram</span></a
             >
-            <a href="#"
-              ><i class="fab fa-facebook"></i> <span>Facebook</span></a
+            <a href="#" aria-label="Facebook QuranLight"
+              ><i class="fab fa-facebook" aria-hidden="true"></i
+              ><span>Facebook</span></a
             >
-            <a href="#"><i class="fab fa-twitter"></i> <span>Twitter</span></a>
+            <a href="#" aria-label="Twitter QuranLight"
+              ><i class="fab fa-twitter" aria-hidden="true"></i
+              ><span>Twitter</span></a
+            >
           </div>
         </section>
       </div>
       <div class="footer-bottom">
-        <p>© 2025 QuranLight. Tous droits réservés.</p>
+        <p>© 2026 QuranLight. Tous droits réservés.</p>
       </div>
     </footer>
 
-    <audio id="mainAudio" style="display: none"></audio>
+    <!-- Audio player (invisible) -->
+    <audio id="mainAudio" aria-hidden="true" style="display: none"></audio>
+
+    <!-- Chatbot iframe -->
     <iframe
       src="chatbot.html"
       allowtransparency="true"
-      style="
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        border: none;
-        z-index: 99999;
-        background: transparent;
-        transition: all 0.4s ease;
-      "
+      title="Assistant QuranLight"
+      aria-label="Chatbot assistant"
+      tabindex="-1"
     ></iframe>
 
-    <script>
-      // Configuration Serveurs Audio
-      const audioServers = {
-        "ar.abdulbasitmurattal": "https://server7.mp3quran.net/basit/murattal",
-        "ar.sudais": "https://server11.mp3quran.net/sds",
-        "ar.alafasy": "https://server8.mp3quran.net/afs",
-        "ar.hanirifai": "https://server8.mp3quran.net/hani",
-        "ar.shatri": "https://server11.mp3quran.net/shatri",
-        "ar.basfar": "https://server6.mp3quran.net/bsfr",
-      };
-
-      // Redirection vers Bibliothèque
-      function goToLibrary(id, name) {
-        localStorage.setItem("targetReciterId", id);
-        localStorage.setItem("targetReciterName", name);
-        window.location.href = "reciters-library.html";
-      }
-
-      function closeSurahPanel() {
-        document.getElementById("surahPanel").style.display = "none";
-      }
-    </script>
-
-    <script src="assets/js/salat_logic.js"></script>
-    <script src="assets/js/script.js"></script>
+    <!-- ░░ SCRIPTS ░░ -->
+    <script src="assets/js/salat_logic.js" defer></script>
+    <script src="assets/js/script.js" defer></script>
   </body>
 </html>

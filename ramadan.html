@@ -1,159 +1,300 @@
-<!DOCTYPE html>
-<html lang="fr">
+<!doctype html>
+<html lang="fr" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ramadan - Compagnon Spirituel</title>
+    <meta
+      name="description"
+      content="Compagnon spirituel pour le Ramadan – Horaires Imsak & Iftar, Douas, Objectifs"
+    />
+    <title>Ramadan – Compagnon Spirituel</title>
 
-    <link rel="stylesheet" href="assets/css/style.css" />
-    <link rel="stylesheet" href="assets/css/ramadan.css" />
-    <link rel="stylesheet" href="assets/css/theme-variables.css" />
+    <!-- ░░ FONTS : Amiri (arabe) · Cinzel (titres prestige) · Poppins (UI) ░░ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cinzel:wght@400;700;900&family=Poppins:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- ░░ ICÔNES ░░ -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+
+    <!-- ░░ STYLES ░░ -->
+    <link rel="stylesheet" href="assets/css/ramadan.css" />
+    <link rel="stylesheet" href="assets/css/theme-variables.css" />
   </head>
+
   <body class="ramadan-page">
-    <header class="glass-panel main-header">
-      <div class="navigation-top">
-        <a href="index.html" class="floating-back-btn" title="Retour Accueil">
-          <i class="fas fa-home"></i>
+    <!-- ░░ FOND ÉTOILÉ ░░ -->
+    <canvas id="stars-canvas" aria-hidden="true"></canvas>
+
+    <!-- ░░ HEADER ░░ -->
+    <header class="main-header glass-panel" role="banner">
+      <nav class="header-nav" aria-label="Navigation principale">
+        <a
+          href="index.html"
+          class="icon-btn"
+          title="Retour Accueil"
+          aria-label="Retour à l'accueil"
+        >
+          <i class="fas fa-home" aria-hidden="true"></i>
         </a>
+      </nav>
+
+      <div class="header-brand">
+        <span aria-hidden="true">🌙</span>
+        <h1 class="header-title">Ramadan</h1>
       </div>
 
-      <div class="header-center-content">
-        <div class="header-title-wrapper">
-          <div
-            class="hero-intro-section"
-            style="display: flex; align-items: center; gap: 12px"
-          >
-            <h1 class="header-main-title">Ramadan</h1>
-            <i class="fas fa-moon moon-logo" style="font-size: 1.5rem"></i>
-          </div>
-        </div>
-      </div>
-
-      <div class="header-actions-right">
+      <div class="header-actions">
         <button
-          id="refresh-ramadan"
-          class="action-icon-btn"
+          id="theme-toggle-btn"
+          class="icon-btn"
+          title="Changer le thème"
+          aria-label="Basculer le thème clair/sombre"
+        >
+          <i class="fas fa-circle-half-stroke" aria-hidden="true"></i>
+        </button>
+        <button
+          class="icon-btn"
           onclick="location.reload()"
           title="Actualiser"
+          aria-label="Actualiser la page"
         >
-          <i class="fas fa-rotate"></i>
+          <i class="fas fa-rotate" aria-hidden="true"></i>
         </button>
       </div>
     </header>
 
-    <div class="header-spacer"></div>
+    <div class="header-spacer" aria-hidden="true"></div>
 
-    <main class="main-container">
-      <div class="header-subtext">
-        <h2 class="arabic-title-large">رمضان مبارك</h2>
-        <div class="sub-divider"></div>
-        <div class="hero-intro-section-footer">
-          <p class="french-translation">Mois sacré de jeûne et de piété</p>
+    <!-- ░░ CONTENU PRINCIPAL ░░ -->
+    <main class="main-container" role="main">
+      <!-- Hero -->
+      <section class="hero-section" aria-label="Bienvenue">
+        <h2 class="arabic-hero" lang="ar">رمضان مبارك</h2>
+        <div class="hero-divider" aria-hidden="true">
+          <span class="divider-gem">✦</span>
         </div>
-      </div>
+        <p class="hero-subtitle">Mois sacré de jeûne et de piété</p>
+      </section>
 
-      <div class="events-section">
-        <div id="ramadan-info" class="info-highlight-box">
-          <div class="info-item">
-            <span>Calendrier</span>
-            <b id="hijri-ramadan-year">--H</b>
+      <!-- ░░ TABLEAU DE BORD ░░ -->
+      <section class="events-section" aria-label="Tableau de bord Ramadan">
+        <!-- Info calendrier / localisation -->
+        <div
+          class="info-dashboard"
+          id="ramadan-info"
+          role="region"
+          aria-label="Informations"
+        >
+          <div class="info-tile">
+            <span class="info-label">Calendrier</span>
+            <strong
+              class="info-value"
+              id="hijri-ramadan-year"
+              aria-live="polite"
+              >--H</strong
+            >
           </div>
-          <div class="info-item">
-            <span>Localisation</span>
-            <b id="location-display">--</b>
+          <div class="info-divider" aria-hidden="true"></div>
+          <div class="info-tile">
+            <span class="info-label">Localisation</span>
+            <strong class="info-value" id="location-display" aria-live="polite">
+              <i class="fas fa-location-dot" aria-hidden="true"></i>
+              <span>Détection…</span>
+            </strong>
           </div>
         </div>
 
-        <div id="countdown-container" class="countdown-banner">
-          <span id="countdown-label">Prochain Iftar dans</span>
-          <div id="countdown-timer">00:00:00</div>
-          <div class="timer-units">
+        <!-- Compte à rebours -->
+        <div
+          class="countdown-banner"
+          role="timer"
+          aria-live="polite"
+          aria-label="Compte à rebours"
+        >
+          <div class="countdown-ring" aria-hidden="true"></div>
+          <span class="countdown-label" id="countdown-label">Chargement…</span>
+          <div
+            class="countdown-time"
+            id="countdown-timer"
+            aria-label="Temps restant"
+          >
+            00:00:00
+          </div>
+          <div class="countdown-units" aria-hidden="true">
             <span>HEURES</span>
             <span>MINUTES</span>
             <span>SECONDES</span>
           </div>
         </div>
 
-        <div class="options-grid">
-          <div class="option-card active" data-target="section-calendar">
-            <i class="fas fa-calendar-alt"></i>
+        <!-- Onglets de navigation -->
+        <nav class="tabs-nav" role="tablist" aria-label="Sections Ramadan">
+          <button
+            class="tab-btn active"
+            role="tab"
+            aria-selected="true"
+            aria-controls="section-calendar"
+            data-target="section-calendar"
+          >
+            <i class="fas fa-calendar-alt" aria-hidden="true"></i>
             <span>Horaires</span>
-          </div>
-          <div class="option-card" data-target="section-douas">
-            <i class="fas fa-hands-praying"></i>
+          </button>
+          <button
+            class="tab-btn"
+            role="tab"
+            aria-selected="false"
+            aria-controls="section-douas"
+            data-target="section-douas"
+          >
+            <i class="fas fa-hands-praying" aria-hidden="true"></i>
             <span>Douas</span>
-          </div>
-          <div class="option-card" data-target="section-checklist">
-            <i class="fas fa-tasks"></i>
+          </button>
+          <button
+            class="tab-btn"
+            role="tab"
+            aria-selected="false"
+            aria-controls="section-checklist"
+            data-target="section-checklist"
+          >
+            <i class="fas fa-tasks" aria-hidden="true"></i>
             <span>Objectifs</span>
-          </div>
-        </div>
+          </button>
+        </nav>
 
-        <div class="header-divider"></div>
+        <div class="section-divider" aria-hidden="true"></div>
 
-        <div id="section-calendar" class="module-content active">
-          <div class="section-header">
-            <h2 class="section-title">Calendrier</h2>
-            <p class="header-sub">Horaires précis Imsak & Iftar</p>
-          </div>
-          <div id="ramadan-countdown-notification" class="notif-ramadan">
-            <div class="notif-content">
-              <div class="notif-icon">🌙</div>
-              <div class="notif-text">
-                <span class="notif-title">Ramadan approche !</span>
-                <span class="notif-subtitle"
-                  >Plus que <span id="days-until-ramadan">--</span> jours
-                  restants</span
-                >
+        <!-- ░░ MODULE : CALENDRIER ░░ -->
+        <div
+          id="section-calendar"
+          class="module-panel active"
+          role="tabpanel"
+          aria-label="Calendrier Ramadan"
+        >
+          <header class="module-header">
+            <h2 class="module-title">Calendrier</h2>
+            <p class="module-sub">Horaires précis Imsak &amp; Iftar</p>
+          </header>
+
+          <!-- Notification pré-Ramadan (masquée par défaut, affichée par JS) -->
+          <div
+            id="ramadan-countdown-notification"
+            class="pre-ramadan-notif"
+            style="display: none"
+            role="alert"
+            aria-live="polite"
+          >
+            <div class="notif-inner">
+              <div class="notif-moon" aria-hidden="true">🌙</div>
+              <div class="notif-body">
+                <strong class="notif-title">Ramadan approche&nbsp;!</strong>
+                <span class="notif-days">
+                  Plus que <em id="days-until-ramadan">--</em> jours
+                </span>
               </div>
             </div>
           </div>
-          <div id="monthly-events-list">
-            <div class="loading-state">
-              <i class="fas fa-spinner fa-spin"></i>
-              <p>Récupération des horaires en cours...</p>
+
+          <!-- Liste des jours (remplie par JS) -->
+          <div
+            id="monthly-events-list"
+            role="list"
+            aria-label="Calendrier mensuel"
+          >
+            <div class="loading-state" aria-busy="true">
+              <div class="loading-spinner" aria-hidden="true"></div>
+              <p>Récupération des horaires…</p>
             </div>
           </div>
         </div>
 
-        <div id="section-douas" class="module-content">
-          <div class="section-header">
-            <h2 class="section-title">Invocations</h2>
-            <p class="header-sub">Douas quotidiennes du jeûneur</p>
-          </div>
-          <div id="douas-container"></div>
+        <!-- ░░ MODULE : DOUAS ░░ -->
+        <div
+          id="section-douas"
+          class="module-panel"
+          role="tabpanel"
+          aria-label="Invocations"
+          hidden
+        >
+          <header class="module-header">
+            <h2 class="module-title">Invocations</h2>
+            <p class="module-sub">Douas quotidiennes du jeûneur</p>
+          </header>
+          <div
+            id="douas-container"
+            role="list"
+            aria-label="Liste des invocations"
+          ></div>
         </div>
 
-        <div id="section-checklist" class="module-content">
-          <div class="section-header">
-            <h2 class="section-title">Suivi Spirituel</h2>
+        <!-- ░░ MODULE : CHECK-LIST ░░ -->
+        <div
+          id="section-checklist"
+          class="module-panel"
+          role="tabpanel"
+          aria-label="Suivi spirituel"
+          hidden
+        >
+          <header class="module-header">
+            <h2 class="module-title">Suivi Spirituel</h2>
 
-            <div class="date-navigator">
-              <button onclick="changeChecklistDate(-1)" class="nav-btn">
-                <i class="fas fa-chevron-left"></i>
+            <div
+              class="date-navigator"
+              role="navigation"
+              aria-label="Navigation par date"
+            >
+              <button
+                class="nav-btn"
+                onclick="changeChecklistDate(-1)"
+                aria-label="Jour précédent"
+              >
+                <i class="fas fa-chevron-left" aria-hidden="true"></i>
               </button>
-              <div id="current-checklist-date-display">
-                <span id="chk-day-fr">--</span>
-                <small id="chk-date-detailed">--</small>
+              <div
+                id="current-checklist-date-display"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                <span id="chk-day-fr" class="chk-day">--</span>
+                <small id="chk-date-detailed" class="chk-date-sub">--</small>
               </div>
-              <button onclick="changeChecklistDate(1)" class="nav-btn">
-                <i class="fas fa-chevron-right"></i>
+              <button
+                class="nav-btn"
+                onclick="changeChecklistDate(1)"
+                aria-label="Jour suivant"
+              >
+                <i class="fas fa-chevron-right" aria-hidden="true"></i>
               </button>
             </div>
-          </div>
+          </header>
 
-          <div id="checklist-container"></div>
+          <div
+            id="checklist-container"
+            role="list"
+            aria-label="Objectifs du jour"
+          ></div>
         </div>
 
-        <div id="ramadan-footer"></div>
-      </div>
+        <!-- Footer -->
+        <footer class="app-footer" role="contentinfo">
+          <p>
+            Horaires via <b>Aladhan API</b> · Géolocalisation
+            <b>OpenStreetMap</b>
+          </p>
+          <p>
+            Les horaires peuvent varier selon votre lieu exact de résidence.
+          </p>
+        </footer>
+      </section>
     </main>
 
+    <!-- ░░ SCRIPTS ░░ -->
     <script src="assets/js/ramadan_logic.js"></script>
-    <script src="assets/js/theme-loader.js"></script>
   </body>
 </html>

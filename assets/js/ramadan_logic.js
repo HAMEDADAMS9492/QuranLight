@@ -1,555 +1,827 @@
 /**
- * RAMADAN APP - LOGIC
- * Modules: Calendrier, Douas (Phonétique), Check-list Spirituelle, Countdown
+ * RAMADAN APP – LOGIC OPTIMISÉ
+ * Modules : Étoiles, Calendrier, Countdown, Douas, Check-list, Thème
+ * ---------------------------------------------------------------
+ * Améliorations :
+ * - Canvas étoiles animées en arrière-plan
+ * - Gestion propre du localStorage avec expiration par date
+ * - Countdown corrigé (prend l'heure locale de l'API)
+ * - Checklist multi-jours avec stockage par clé de date
+ * - Bascule thème dark/light persistante
+ * - Navigation par onglets accessible (ARIA)
+ * - Code organisé en fonctions pures et bien séparées
  */
 
-const listContainer = document.getElementById("monthly-events-list");
-let countdownInterval;
+"use strict";
 
-async function initRamadanApp() {
-  setupNavigation();
-  setupChecklist();
+/* ================================================================
+   0. CONSTANTES & ÉTAT
+   ================================================================ */
+const STORAGE_KEY_CHECKLIST = "ramadan_chk_";
+const STORAGE_KEY_THEME = "ramadan_theme";
+const API_PRAYER_BASE = "https://api.aladhan.com/v1";
+const API_GEOCODE_BASE = "https://nominatim.openstreetmap.org/reverse";
+const PRAYER_METHOD = 12; // Muslim World League
+
+let countdownInterval = null;
+let checklistOffset = 0; // nombre de jours par rapport à aujourd'hui
+
+const TASKS = [
+  { id: 0, label: "Les 5 prières quotidiennes", icon: "🕌" },
+  { id: 1, label: "Lecture du Coran (portion du jour)", icon: "📖" },
+  { id: 2, label: "Prière du Tarawih", icon: "🌙" },
+  { id: 3, label: "Acte de charité ou bonne action", icon: "❤️" },
+  { id: 4, label: "Dhikr du matin et du soir", icon: "📿" },
+];
+
+/* ================================================================
+   1. ENTRÉE PRINCIPALE
+   ================================================================ */
+document.addEventListener("DOMContentLoaded", () => {
+  initStars();
+  initTheme();
+  initNavigation();
+  initChecklist();
   renderDouas();
+  initRamadanData();
+});
 
-  try {
-    const locationData = await new Promise((res) => {
-      navigator.geolocation.getCurrentPosition(
-        async (p) => {
-          const lat = p.coords.latitude;
-          const lon = p.coords.longitude;
-          let cityName = "Ma Position";
+/* ================================================================
+   2. FOND ÉTOILÉ (CANVAS)
+   ================================================================ */
+function initStars() {
+  const canvas = document.getElementById("stars-canvas");
+  if (!canvas) return;
 
-          try {
-            const geoRes = await fetch(
-              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`
-            );
-            const geoData = await geoRes.json();
-            const a = geoData.address;
+  const ctx = canvas.getContext("2d");
+  let stars = [];
+  let width, height;
 
-            // 1. Extraction des composants (Logique de ton autre classe)
-            const country = a.country || "";
-            let city =
-              a.city ||
-              a.town ||
-              a.village ||
-              a.municipality ||
-              a.county ||
-              a.state ||
-              "";
-
-            // 2. Traitement spécifique (Cas comme Abuja)
-            if (
-              city.toLowerCase().includes("municipal") ||
-              city.toLowerCase().includes("area council")
-            ) {
-              city = a.city_district || a.suburb || a.town || "Abuja";
-            }
-
-            // 3. Nettoyage des prépositions
-            city = city.replace(/^(du |de |de la |des |the )/gi, "").trim();
-
-            // 4. Formatage STRICT : "Ville, Pays"
-            if (
-              city &&
-              country &&
-              city.toLowerCase() !== country.toLowerCase()
-            ) {
-              cityName = `${city}, ${country}`;
-            } else if (!city) {
-              cityName = country || "Ma Position";
-            } else {
-              cityName = city;
-            }
-          } catch (e) {
-            console.error("Geo error", e);
-          }
-
-          // On retourne l'objet avec les noms de variables attendus par la suite du code
-          res({ lat, lon, city: cityName });
-        },
-        // Fallback Paris si refus GPS
-        () => res({ lat: 48.8566, lon: 2.3522, city: "Paris, France" }),
-        { enableHighAccuracy: true, timeout: 15000 }
-      );
-    });
-
-    // Mise à jour de l'UI avec le nom formaté
-    const locDisplay = document.getElementById("location-display");
-    if (locDisplay) locDisplay.innerText = locationData.city;
-
-    const now = new Date();
-    const currentMonth = now.getMonth() + 1;
-    const currentYear = now.getFullYear();
-
-    // 1. Vérifier la date Hijri actuelle
-    const dateCheckRes = await fetch(
-      `https://api.aladhan.com/v1/gToH?date=${now.getDate()}-${currentMonth}-${currentYear}`
-    );
-    const dateCheckData = await dateCheckRes.json();
-    const hijriDate = dateCheckData.data.hijri;
-    const hijriYear = hijriDate.year;
-    const hijriMonthNumber = parseInt(hijriDate.month.number);
-
-    const hijriYearEl = document.getElementById("hijri-ramadan-year");
-    if (hijriYearEl) hijriYearEl.innerText = hijriYear + "H";
-
-    // --- LOGIQUE DE NOTIFICATION ---
-    const notificationBox = document.getElementById(
-      "ramadan-countdown-notification"
-    );
-    if (notificationBox) {
-      if (hijriMonthNumber < 9) {
-        const ramadanStartDate = new Date(2026, 2, 12);
-        const diffInMs = ramadanStartDate - now;
-        const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
-
-        if (diffInDays > 0) {
-          notificationBox.style.display = "block";
-          const daysEl = document.getElementById("days-until-ramadan");
-          if (daysEl) daysEl.innerText = diffInDays;
-        }
-      } else {
-        notificationBox.style.display = "none";
-      }
-    }
-
-    // --- LOGIQUE D'AFFICHAGE DU CALENDRIER ---
-    let apiUrl;
-    const method = 12;
-
-    if (hijriMonthNumber >= 9) {
-      apiUrl = `https://api.aladhan.com/v1/hijriCalendar/${hijriYear}/9?latitude=${locationData.lat}&longitude=${locationData.lon}&method=${method}&tune=0,0,0,0,0,0,0,0,0`;
-    } else {
-      apiUrl = `https://api.aladhan.com/v1/calendar/${currentYear}/${currentMonth}?latitude=${locationData.lat}&longitude=${locationData.lon}&method=${method}&tune=0,0,0,0,0,0,0,0,0`;
-    }
-
-    const response = await fetch(apiUrl);
-    const result = await response.json();
-
-    if (result.code === 200) {
-      renderCalendar(result.data);
-    }
-  } catch (error) {
-    console.error("Init Error:", error);
+  function resize() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
   }
+
+  function createStars(count = 180) {
+    stars = Array.from({ length: count }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      r: Math.random() * 1.3 + 0.2,
+      alpha: Math.random(),
+      speed: Math.random() * 0.008 + 0.002,
+      dir: Math.random() > 0.5 ? 1 : -1,
+    }));
+  }
+
+  function drawStars() {
+    ctx.clearRect(0, 0, width, height);
+    stars.forEach((s) => {
+      s.alpha += s.speed * s.dir;
+      if (s.alpha >= 1 || s.alpha <= 0) s.dir *= -1;
+
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(212, 188, 150, ${s.alpha})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(drawStars);
+  }
+
+  resize();
+  createStars();
+  drawStars();
+  window.addEventListener("resize", () => {
+    resize();
+    createStars();
+  });
 }
-// 2. GESTION DE LA NAVIGATION (TUILES)
-function setupNavigation() {
-  const cards = document.querySelectorAll(".option-card");
-  const sections = document.querySelectorAll(".module-content");
 
-  if (!cards.length || !sections.length) return;
+/* ================================================================
+   3. GESTION DU THÈME (DARK / LIGHT)
+   ================================================================ */
+function initTheme() {
+  const saved = localStorage.getItem(STORAGE_KEY_THEME);
+  if (saved) document.documentElement.setAttribute("data-theme", saved);
 
-  cards.forEach((card) => {
-    card.addEventListener("click", () => {
-      const target = card.getAttribute("data-target");
-      const targetSection = document.getElementById(target);
+  const btn = document.getElementById("theme-toggle-btn");
+  if (!btn) return;
 
-      if (!targetSection) return;
+  btn.addEventListener("click", () => {
+    const current =
+      document.documentElement.getAttribute("data-theme") || "dark";
+    const next = current === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem(STORAGE_KEY_THEME, next);
+  });
+}
 
-      cards.forEach((c) => c.classList.remove("active"));
-      sections.forEach((s) => s.classList.remove("active"));
+/* ================================================================
+   4. NAVIGATION PAR ONGLETS
+   ================================================================ */
+function initNavigation() {
+  const tabs = document.querySelectorAll(".tab-btn");
+  const panels = document.querySelectorAll(".module-panel");
 
-      card.classList.add("active");
-      targetSection.classList.add("active");
+  if (!tabs.length) return;
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const targetId = tab.getAttribute("data-target");
+      if (!targetId) return;
+
+      // Mettre à jour les onglets
+      tabs.forEach((t) => {
+        t.classList.remove("active");
+        t.setAttribute("aria-selected", "false");
+      });
+      tab.classList.add("active");
+      tab.setAttribute("aria-selected", "true");
+
+      // Mettre à jour les panneaux
+      panels.forEach((p) => {
+        const isTarget = p.id === targetId;
+        p.classList.toggle("active", isTarget);
+        p.toggleAttribute("hidden", !isTarget);
+      });
     });
   });
 
-  const firstCard = cards[0];
-  const firstTarget = document.getElementById(
-    firstCard.getAttribute("data-target")
+  // État initial : premier onglet actif
+  const firstTab = tabs[0];
+  const firstPanel = document.getElementById(
+    firstTab.getAttribute("data-target"),
   );
-
-  if (firstCard && firstTarget) {
-    firstCard.classList.add("active");
-    firstTarget.classList.add("active");
+  firstTab.classList.add("active");
+  firstTab.setAttribute("aria-selected", "true");
+  if (firstPanel) {
+    firstPanel.classList.add("active");
+    firstPanel.removeAttribute("hidden");
   }
 }
 
-// 3. MODULE CALENDRIER ET COMPTE À REBOURS
+/* ================================================================
+   5. DONNÉES RAMADAN (GÉOLOC + API)
+   ================================================================ */
+
+document.addEventListener("DOMContentLoaded", initRamadanData);
+
+async function initRamadanData() {
+  try {
+    // Affichage temporaire
+    updateLocationUI("Détection...");
+
+    const loc = await getLocation();
+
+    console.log("LOCALISATION :", loc);
+
+    // ✅ Affiche vraie ville
+    updateLocationUI(loc.city);
+
+    const now = new Date();
+
+    const hijriData = await fetchHijriDate(now);
+    const hijriYear = parseInt(hijriData.year);
+    const hijriMonth = parseInt(hijriData.month.number);
+
+    updateHijriYearUI(hijriYear);
+    handlePreRamadanNotification(hijriMonth, now);
+
+    const calendarData = await fetchCalendar(loc, hijriYear, hijriMonth, now);
+
+    if (calendarData) renderCalendar(calendarData);
+  } catch (err) {
+    console.error("[Ramadan] Erreur :", err);
+    showCalendarError();
+  }
+}
+
+/* ================================================================
+   GÉOLOCALISATION + NOM DE VILLE (VERSION STABLE)
+   ================================================================ */
+
+async function getLocation() {
+  const fallback = {
+    lat: 48.8566,
+    lon: 2.3522,
+    city: "Paris, France",
+  };
+
+  return new Promise((resolve) => {
+    if (!navigator.geolocation) {
+      resolve(fallback);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
+            {
+              headers: {
+                Accept: "application/json",
+              },
+            },
+          );
+
+          if (!response.ok) throw new Error("Geocode error");
+
+          const data = await response.json();
+          const a = data.address || {};
+
+          const city =
+            a.city ||
+            a.town ||
+            a.village ||
+            a.municipality ||
+            a.county ||
+            a.state;
+
+          const country = a.country;
+
+          const cityName =
+            city && country
+              ? `${city}, ${country}`
+              : city || country || "Ma Position";
+
+          resolve({
+            lat,
+            lon,
+            city: cityName,
+          });
+        } catch (error) {
+          console.warn("Reverse geocode failed");
+
+          resolve({
+            lat,
+            lon,
+            city: "Ma Position",
+          });
+        }
+      },
+
+      // GPS refusé
+      () => resolve(fallback),
+
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      },
+    );
+  });
+}
+
+/* ================================================================
+   UPDATE UI LOCATION
+   ================================================================ */
+
+function updateLocationUI(city) {
+  const span = document.querySelector("#location-display span");
+
+  if (!span) {
+    console.warn("location-display introuvable");
+    return;
+  }
+
+  span.textContent = city || "Ma Position";
+}
+
+/* ================================================================
+   DATE HIJRI
+   ================================================================ */
+
+async function fetchHijriDate(date) {
+  const d = date.getDate();
+  const m = date.getMonth() + 1;
+  const y = date.getFullYear();
+
+  const res = await fetch(`${API_PRAYER_BASE}/gToH?date=${d}-${m}-${y}`);
+
+  const json = await res.json();
+
+  return json.data.hijri;
+}
+
+/* ================================================================
+   CALENDRIER PRIÈRES
+   ================================================================ */
+
+async function fetchCalendar(loc, hijriYear, hijriMonth, now) {
+  const { lat, lon } = loc;
+
+  const params =
+    `latitude=${lat}&longitude=${lon}` +
+    `&method=${PRAYER_METHOD}` +
+    `&tune=0,0,0,0,0,0,0,0,0`;
+
+  let url;
+
+  if (hijriMonth >= 9) {
+    url = `${API_PRAYER_BASE}/hijriCalendar/` + `${hijriYear}/9?${params}`;
+  } else {
+    const m = now.getMonth() + 1;
+    const y = now.getFullYear();
+
+    url = `${API_PRAYER_BASE}/calendar/` + `${y}/${m}?${params}`;
+  }
+
+  const res = await fetch(url);
+  const json = await res.json();
+
+  return json.code === 200 ? json.data : null;
+}
+/* ================================================================
+   6. MISES À JOUR UI
+   ================================================================ */
+function updateLocationUI(city) {
+  const el = document.getElementById("location-display");
+  if (!el) return;
+  // Cible le <span> enfant si présent (HTML amélioré avec icône), sinon écrit directement
+  const span = el.querySelector("span");
+  if (span) {
+    span.textContent = city;
+  } else {
+    el.textContent = city;
+  }
+}
+
+function updateHijriYearUI(year) {
+  const el = document.getElementById("hijri-ramadan-year");
+  if (el) el.textContent = `${year}H`;
+}
+
+function handlePreRamadanNotification(hijriMonth, now) {
+  const box = document.getElementById("ramadan-countdown-notification");
+  if (!box) return;
+
+  if (hijriMonth < 9) {
+    // Date fixe de début Ramadan 2026 (à mettre à jour chaque année)
+    const ramadanStart = new Date(2026, 2, 12);
+    const diffDays = Math.ceil((ramadanStart - now) / 86400000);
+
+    if (diffDays > 0) {
+      const daysEl = document.getElementById("days-until-ramadan");
+      if (daysEl) daysEl.textContent = diffDays;
+      box.style.display = "block";
+    }
+  } else {
+    box.style.display = "none";
+  }
+}
+
+function showCalendarError() {
+  const container = document.getElementById("monthly-events-list");
+  if (container) {
+    container.innerHTML = `
+      <div class="loading-state" style="color:var(--iftar)">
+        <i class="fas fa-triangle-exclamation" style="font-size:2rem;color:var(--iftar)"></i>
+        <p>Impossible de charger les horaires.<br>Vérifiez votre connexion et actualisez.</p>
+      </div>`;
+  }
+}
+
+/* ================================================================
+   7. RENDU CALENDRIER & COUNTDOWN
+   ================================================================ */
 function renderCalendar(days) {
+  const container = document.getElementById("monthly-events-list");
+  if (!container) return;
+
   const now = new Date();
-  const todayStr = `${String(now.getDate()).padStart(2, "0")}-${String(
-    now.getMonth() + 1
-  ).padStart(2, "0")}-${now.getFullYear()}`;
+  const todayStr = formatGregorianKey(now);
 
   let html = "";
   let todayTimings = null;
   let tomorrowTimings = null;
 
-  // Fonction pour forcer la bonne orthographe de Ramadan et Chaabane
-  const formatMonthName = (name) => {
-    if (!name) return "";
-    let formatted = name.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Enlève les accents/points (ḍ, ā...)
-    if (formatted.toLowerCase().includes("ramadan")) return "Ramadan";
-    if (
-      formatted.toLowerCase().includes("sha'ban") ||
-      formatted.toLowerCase().includes("chaabane")
-    )
-      return "Chaabane";
-    return formatted;
-  };
-
   days.forEach((day, index) => {
-    const gregorianDate = day.date.gregorian.date;
-    const isToday = gregorianDate === todayStr;
+    const gregDate = day.date.gregorian.date;
+    const isToday = gregDate === todayStr;
 
     if (isToday) {
       todayTimings = day.timings;
-      if (days[index + 1]) tomorrowTimings = days[index + 1].timings;
+      tomorrowTimings = days[index + 1]?.timings || null;
     }
 
-    const [d, m, y] = gregorianDate.split("-");
-    const dateObj = new Date(y, m - 1, d);
+    const [d, m, y] = gregDate.split("-");
+    const dateObj = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
 
-    const dayNameFr = dateObj
-      .toLocaleDateString("fr-FR", { weekday: "long" })
-      .replace(/^\w/, (l) => l.toUpperCase());
+    const dayFr = capitalize(
+      dateObj.toLocaleDateString("fr-FR", { weekday: "long" }),
+    );
+    const dateFr = capitalize(
+      dateObj.toLocaleDateString("fr-FR", { day: "numeric", month: "long" }),
+    );
+    const dayEn = day.date.hijri.weekday.en || "";
+    const hijriDay = parseInt(day.date.hijri.day);
 
-    let displayDate = dateObj.toLocaleDateString("fr-FR", {
-      day: "numeric",
-      month: "long",
-    });
-    displayDate = displayDate.replace(/(\s|^)\w/g, (l) => l.toUpperCase());
+    const monthRaw = day.date.hijri.month.fr || day.date.hijri.month.en || "";
+    const monthFr = normalizeHijriMonth(monthRaw);
 
-    // --- GESTION DYNAMIQUE ET CORRIGÉE DU MOIS HIJRI ---
-    const monthNameRaw = day.date.hijri.month.fr || day.date.hijri.month.en;
-    const monthNameFr = formatMonthName(monthNameRaw); // Force l'écriture propre
-    const dayPhonetic = day.date.hijri.weekday.en;
+    const imsak = formatTime(day.timings.Imsak);
+    const maghrib = formatTime(day.timings.Maghrib);
 
     html += `
-      <div class="ramadan-card ${isToday ? "active" : ""}" ${
-      isToday ? 'id="active-day"' : ""
-    }>
+      <article class="ramadan-card ${isToday ? "active" : ""}" ${isToday ? 'id="active-day"' : ""} role="listitem">
         <div class="hybrid-date-block">
-          <div class="day-number-circle">${parseInt(day.date.hijri.day)}</div>
-          
+          <div class="day-number-circle" aria-hidden="true">${hijriDay}</div>
+
           <div class="date-side-fr">
-            <span class="day-name">${dayNameFr}</span>
-            <span class="date-val">${displayDate}</span>
+            <span class="day-name">${dayFr}</span>
+            <span class="date-val">${dateFr}</span>
           </div>
-          
-          <div class="date-separator"></div>
-          
-          <div class="date-side-ar">
-            <span class="day-name">${dayPhonetic}</span>
-            <span class="date-val">${day.date.hijri.day} ${monthNameFr}</span>
+
+          <div class="date-separator" aria-hidden="true"></div>
+
+          <div class="date-side-ar" lang="ar">
+            <span class="day-name">${dayEn}</span>
+            <span class="date-val">${hijriDay} ${monthFr}</span>
           </div>
         </div>
 
-        <div class="card-times">
+        <div class="card-times" aria-label="Horaires de prière">
           <div class="time-group imsak-box">
             <span class="time-label imsak-label">IMSAK</span>
-            <span class="time-value">${day.timings.Imsak.split(" ")[0]}</span>
+            <span class="time-value">${imsak}</span>
           </div>
           <div class="time-group iftar-box">
             <span class="time-label iftar-label">IFTAR</span>
-            <span class="time-value">${day.timings.Maghrib.split(" ")[0]}</span>
+            <span class="time-value">${maghrib}</span>
           </div>
         </div>
-      </div>`;
+      </article>`;
   });
 
-  listContainer.innerHTML = html;
+  container.innerHTML = html;
 
   if (todayTimings) startCountdown(todayTimings, tomorrowTimings);
 
-  if (document.getElementById("active-day")) {
-    setTimeout(() => {
-      document
-        .getElementById("active-day")
-        .scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 800);
-  }
+  // Scroll vers aujourd'hui
+  setTimeout(() => {
+    const active = document.getElementById("active-day");
+    if (active) active.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, 700);
 }
-// --- LOGIQUE DU COMPTE À REBOURS ---
+
+/* -- Countdown -- */
 function startCountdown(todayTimings, tomorrowTimings) {
-  const label = document.getElementById("countdown-label");
-  const timer = document.getElementById("countdown-timer");
+  const labelEl = document.getElementById("countdown-label");
+  const timerEl = document.getElementById("countdown-timer");
+  if (!labelEl || !timerEl) return;
 
   if (countdownInterval) clearInterval(countdownInterval);
 
-  function update() {
+  function parseLocalTime(timeStr, addDay = false) {
+    const clean = timeStr.split(" ")[0];
+    const [h, m] = clean.split(":").map(Number);
+    const d = new Date();
+    if (addDay) d.setDate(d.getDate() + 1);
+    d.setHours(h, m, 0, 0);
+    return d;
+  }
+
+  function tick() {
     const now = new Date();
+    const imsak = parseLocalTime(todayTimings.Imsak);
+    const iftar = parseLocalTime(todayTimings.Maghrib);
 
-    const parseTime = (timeStr, isTomorrow = false) => {
-      const [h, m] = timeStr.split(":");
-      const d = new Date();
-      if (isTomorrow) d.setDate(d.getDate() + 1);
-      d.setHours(parseInt(h), parseInt(m), 0, 0);
-      return d;
-    };
+    let target, label;
 
-    const imsakToday = parseTime(todayTimings.Imsak.split(" ")[0]);
-    const iftarToday = parseTime(todayTimings.Maghrib.split(" ")[0]);
-
-    let target, text;
-
-    if (now < imsakToday) {
-      target = imsakToday;
-      text = "Fin du Suhoor (Imsak) dans";
-    } else if (now < iftarToday) {
-      target = iftarToday;
-      text = "Rupture du jeûne (Iftar) dans";
+    if (now < imsak) {
+      target = imsak;
+      label = "Fin du Suhoor (Imsak) dans";
+    } else if (now < iftar) {
+      target = iftar;
+      label = "Rupture du jeûne (Iftar) dans";
     } else if (tomorrowTimings) {
-      target = parseTime(tomorrowTimings.Imsak.split(" ")[0], true);
-      text = "Reprise du jeûne (Imsak) dans";
+      target = parseLocalTime(tomorrowTimings.Imsak, true);
+      label = "Reprise du jeûne (Imsak) dans";
     } else {
-      label.innerText = "Ramadan Moubarak";
-      timer.innerText = "00:00:00";
+      labelEl.textContent = "Ramadan Moubarak 🌙";
+      timerEl.textContent = "00:00:00";
       return;
     }
 
-    label.innerText = text;
+    labelEl.textContent = label;
 
-    const diff = target - now;
-    if (diff <= 0) {
-      timer.innerText = "00:00:00";
-      return;
-    }
+    const diff = Math.max(0, target - now);
+    const hh = Math.floor(diff / 3600000);
+    const mm = Math.floor((diff % 3600000) / 60000);
+    const ss = Math.floor((diff % 60000) / 1000);
 
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-    timer.innerText = `${String(hours).padStart(2, "0")}:${String(
-      minutes
-    ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    timerEl.textContent = `${pad(hh)}:${pad(mm)}:${pad(ss)}`;
   }
 
-  update();
-  countdownInterval = setInterval(update, 1000);
+  tick();
+  countdownInterval = setInterval(tick, 1000);
 }
 
-// 4. MODULE CHECK-LIST
-const CHECKLIST_STORAGE_KEY = "ramadan_checklist";
-
-const TASKS = [
-  "Les 5 prières quotidiennes",
-  "Lecture du Coran (portion du jour)",
-  "Prière du Tarawih",
-  "Acte de charité ou bonne action",
-];
-
-function getTodayKey() {
-  return new Date().toDateString();
+/* ================================================================
+   8. CHECK-LIST SPIRITUELLE
+   ================================================================ */
+function initChecklist() {
+  checklistOffset = 0;
+  renderChecklist();
 }
 
-function loadChecklistData() {
-  const today = getTodayKey();
-  const raw = localStorage.getItem(CHECKLIST_STORAGE_KEY);
-
-  if (!raw) {
-    return { date: today, items: [] };
-  }
-
-  let parsed;
-  try {
-    parsed = JSON.parse(raw);
-  } catch {
-    return { date: today, items: [] };
-  }
-
-  // Si la date a changé, on repart sur une nouvelle liste
-  if (parsed.date !== today) {
-    return { date: today, items: [] };
-  }
-
-  return parsed;
+function changeChecklistDate(delta) {
+  checklistOffset += delta;
+  renderChecklist();
 }
 
-function saveChecklistData(data) {
-  localStorage.setItem(CHECKLIST_STORAGE_KEY, JSON.stringify(data));
-}
-
-function setupChecklist() {
+function renderChecklist() {
   const container = document.getElementById("checklist-container");
+  const dayFrEl = document.getElementById("chk-day-fr");
+  const dateSubEl = document.getElementById("chk-date-detailed");
+
   if (!container) return;
 
-  const savedData = loadChecklistData();
+  const targetDate = new Date();
+  targetDate.setDate(targetDate.getDate() + checklistOffset);
 
-  container.innerHTML = TASKS.map((task, index) => {
-    const isChecked = savedData.items.includes(index);
+  const dayFr = capitalize(
+    targetDate.toLocaleDateString("fr-FR", { weekday: "long" }),
+  );
+  const dateFr = capitalize(
+    targetDate.toLocaleDateString("fr-FR", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }),
+  );
 
+  if (dayFrEl) dayFrEl.textContent = dayFr;
+  if (dateSubEl) dateSubEl.textContent = dateFr;
+
+  const key = checklistStorageKey(targetDate);
+  const checked = loadCheckedItems(key);
+
+  container.innerHTML = TASKS.map(({ id, label, icon }) => {
+    const isChecked = checked.includes(id);
     return `
-      <div 
-        class="checklist-item ${isChecked ? "checked" : ""}" 
-        data-index="${index}"
-      >
-        <span>${task}</span>
-        <div class="check-box"><i class="fas fa-check"></i></div>
-      </div>
-    `;
+      <div class="checklist-item ${isChecked ? "checked" : ""}"
+           data-index="${id}"
+           data-key="${key}"
+           role="listitem"
+           tabindex="0"
+           aria-checked="${isChecked}"
+           aria-label="${label}">
+        <span>${icon} ${escapeHtml(label)}</span>
+        <div class="check-box" aria-hidden="true">
+          <i class="fas fa-check"></i>
+        </div>
+      </div>`;
   }).join("");
 
-  // Évènement sur le container (délégation) au lieu de onclick inline
-  container.addEventListener("click", handleChecklistClick, { once: true });
+  // Délégation d'événements
+  container.addEventListener("click", handleChecklistToggle, { once: true });
+  container.addEventListener("keydown", handleChecklistKeydown, { once: true });
 }
 
-function handleChecklistClick(event) {
-  const item = event.target.closest(".checklist-item");
+function handleChecklistToggle(e) {
+  const item = e.target.closest(".checklist-item");
   if (!item) return;
-
-  const index = Number(item.getAttribute("data-index"));
-  toggleTask(index);
+  toggleCheckItem(item);
 }
 
-function toggleTask(index) {
-  const data = loadChecklistData();
-
-  if (data.items.includes(index)) {
-    data.items = data.items.filter((i) => i !== index);
-  } else {
-    data.items.push(index);
+function handleChecklistKeydown(e) {
+  if (e.key === "Enter" || e.key === " ") {
+    const item = e.target.closest(".checklist-item");
+    if (item) {
+      e.preventDefault();
+      toggleCheckItem(item);
+    }
   }
-
-  saveChecklistData(data);
-  setupChecklist();
 }
 
+function toggleCheckItem(item) {
+  const index = parseInt(item.getAttribute("data-index"), 10);
+  const key = item.getAttribute("data-key");
+  if (isNaN(index) || !key) return;
 
+  const checked = loadCheckedItems(key);
+  const newChecked = checked.includes(index)
+    ? checked.filter((i) => i !== index)
+    : [...checked, index];
 
-// 5. MODULE DOUAS
+  saveCheckedItems(key, newChecked);
+  renderChecklist();
+}
+
+function checklistStorageKey(date) {
+  return STORAGE_KEY_CHECKLIST + date.toDateString().replace(/ /g, "_");
+}
+
+function loadCheckedItems(key) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveCheckedItems(key, items) {
+  try {
+    localStorage.setItem(key, JSON.stringify(items));
+  } catch (e) {
+    console.warn("LocalStorage indisponible :", e);
+  }
+}
+
+/* ================================================================
+   9. MODULE DOUAS
+   ================================================================ */
+const DOUAS_DATA = [
+  {
+    category: "Début du Jeûne – Suhoor",
+    items: [
+      {
+        title: "Intention du Jeûne",
+        ar: "وَبِصَوْمِ غَدٍ نَّوَيْتُ مِنْ شَهْرِ رَمَضَانَ",
+        ph: "Wa bi-sawmi ghadin nawaytu min shahri Ramadan",
+        tr: "J'ai l'intention de jeûner demain pour le mois de Ramadan.",
+      },
+      {
+        title: "Invocation après le repas",
+        ar: "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَذَا وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلَا قُوَّةٍ",
+        ph: "Al-hamdu lillahi l-ladhi at'amani hadha wa razaqanihi min ghayri hawlin minni wa la quwwatin",
+        tr: "Louange à Allah qui m'a nourri de cela sans aucune force ni puissance de ma part.",
+      },
+      {
+        title: "Demande de Baraka",
+        ar: "اللَّهُمَّ بَارِكْ لَنَا فِيمَا رَزَقْتَنَا وَقِنَا عَذَابَ النَّارِ",
+        ph: "Allahumma barik lana fima razaqtana wa qina 'adhaba n-nar",
+        tr: "Ô Allah, bénis ce que Tu nous as accordé comme subsistance et protège-nous du châtiment du Feu.",
+      },
+    ],
+  },
+  {
+    category: "Fin du Jeûne – Iftar",
+    items: [
+      {
+        title: "Au moment de la rupture",
+        ar: "ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ وَثَبَتَ الأَجْرُ إِنْ شَاءَ اللَّهُ",
+        ph: "Dhahaba dh-dhama'u, wabtallati-l-'uruqu, wa thabata-l-ajru in sha Allah",
+        tr: "La soif est partie, les veines sont abreuvées et la récompense est certaine, si Allah le veut.",
+      },
+      {
+        title: "Invocation de gratitude",
+        ar: "اللَّهُمَّ لَكَ صُمْتُ وَعَلَى رِزْقِكَ أَفْطَرْتُ",
+        ph: "Allahumma laka sumtu wa 'ala rizqika aftartu",
+        tr: "Ô Allah, c'est pour Toi que j'ai jeûné et c'est avec Tes bienfaits que je romps mon jeûne.",
+      },
+      {
+        title: "Prière pour l'acceptation",
+        ar: "رَبَّنَا تَقَبَّلْ مِنَّا إِنَّكَ أَنْتَ السَّمِيعُ الْعَلِيمُ",
+        ph: "Rabbana taqabbal minna innaka anta s-sami'u l-'alim",
+        tr: "Seigneur, accepte ceci de notre part, car Tu es Celui qui entend tout et qui sait tout.",
+      },
+    ],
+  },
+  {
+    category: "Comportement & Patience",
+    items: [
+      {
+        title: "En cas de provocation",
+        ar: "إِنِّي صَائِمٌ ، إِنِّي صَائِمٌ",
+        ph: "Inni sa'im, inni sa'im",
+        tr: "Je jeûne, je jeûne (à dire pour ne pas répondre à la colère).",
+      },
+      {
+        title: "Prière pour les hôtes",
+        ar: "أَفْطَرَ عِنْدَكُمُ الصَّائِمُونَ وَأَكَلَ طَعَامَكُمُ الأَبْرَارُ",
+        ph: "Aftara 'indakumu s-sa'imuna, wa akala ta'amakumu l-abrar",
+        tr: "Que les jeûneurs rompent leur jeûne chez vous et que les pieux mangent votre nourriture.",
+      },
+      {
+        title: "Demande de pardon",
+        ar: "اللَّهُمَّ إِنِّي أَسْأَلُكَ بِرَحْمَتِكَ الَّتِي وَسِعَتْ كُلَّ شَيْءٍ أَنْ تَغْفِرَ لِي",
+        ph: "Allahumma inni as'aluka bi-rahmatika l-lati wasi'at kulla shay'in an taghfira li",
+        tr: "Ô Allah, je Te demande par Ta miséricorde qui englobe toute chose de me pardonner.",
+      },
+    ],
+  },
+  {
+    category: "Les Dix Dernières Nuits",
+    items: [
+      {
+        title: "Laylatul Qadr (recommandée par le Prophète ﷺ)",
+        ar: "اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي",
+        ph: "Allahumma innaka 'afuwwun tuhibbu-l-'afwa fa'fu 'anni",
+        tr: "Ô Allah, Tu es Pardonneur et Tu aimes le pardon, alors pardonne-moi.",
+      },
+      {
+        title: "Demande de guidée",
+        ar: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى وَالتُّقَى وَالْعَفَافَ وَالْغِنَى",
+        ph: "Allahumma inni as'aluka l-huda wa t-tuqa wa l-'afafa wa l-ghina",
+        tr: "Ô Allah, je Te demande la guidée, la piété, la pudeur et la richesse spirituelle.",
+      },
+      {
+        title: "Protection contre les soucis",
+        ar: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ وَالْعَجْزِ وَالْكَسَلِ",
+        ph: "Allahumma inni a'udhu bika mina l-hammi wa l-hazani wa l-'ajzi wa l-kasal",
+        tr: "Ô Allah, je cherche protection auprès de Toi contre l'angoisse, la tristesse, l'impuissance et la paresse.",
+      },
+      {
+        title: "Réussite ici-bas et dans l'au-delà",
+        ar: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+        ph: "Rabbana atina fi d-dunya hasanatan wa fi l-akhirati hasanatan wa qina 'adhaba n-nar",
+        tr: "Seigneur, accorde-nous un bien ici-bas et un bien dans l'au-delà, et protège-nous du châtiment du Feu.",
+      },
+      {
+        title: "Fermeté du cœur",
+        ar: "يَا مُقَلِّبَ الْقُلُوبِ ثَبِّتْ قَلْبِي عَلَى دِينِكَ",
+        ph: "Ya muqalliba l-qulubi thabbit qalbi 'ala dinik",
+        tr: "Ô Toi qui retournes les cœurs, affermis mon cœur sur Ta religion.",
+      },
+      {
+        title: "Demande du Paradis",
+        ar: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْجَنَّةَ وَأَعُوذُ بِكَ مِنَ النَّارِ",
+        ph: "Allahumma inni as'aluka l-jannata wa a'udhu bika mina n-nar",
+        tr: "Ô Allah, je Te demande le Paradis et je cherche protection auprès de Toi contre l'Enfer.",
+      },
+    ],
+  },
+];
+
 function renderDouas() {
-  const categories = [
-    {
-      name: "Début du Jeûne (Suhoor)",
-      items: [
-        {
-          title: "Intention du Jeûne",
-          ar: "وَبِصَوْمِ غَدٍ نَّوَيْتُ مِنْ شَهْرِ رَمَضَانَ",
-          ph: "Wa bi-sawmi ghadin nawaytu min shahri Ramadan",
-          tr: "J'ai l'intention de jeûner demain pour le mois de Ramadan.",
-        },
-        {
-          title: "Invocation après le repas",
-          ar: "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَذَا وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلَا قُوَّةٍ",
-          ph: "Al-hamdu lillahi l-ladhi at'amani hadha wa razaqanihi min ghayri hawlin minni wa la quwwatin",
-          tr: "Louange à Allah qui m'a nourri de cela sans aucune force ni puissance de ma part.",
-        },
-        {
-          title: "Demande de bénédiction (Baraka)",
-          ar: "اللَّهُمَّ بَارِكْ لَنَا فِيمَا رَزَقْتَنَا وَقِنَا عَذَابَ النَّارِ",
-          ph: "Allahumma barik lana fima razaqtana wa qina 'adhaba n-nar",
-          tr: "Ô Allah, bénis ce que Tu nous as accordé comme subsistance et protège-nous du châtiment du Feu.",
-        },
-      ],
-    },
-    {
-      name: "Fin du Jeûne (Iftar)",
-      items: [
-        {
-          title: "Au moment de la rupture",
-          ar: "ذَهَبَ الظَّمَأُ وَابْتَلَّتِ الْعُرُوقُ وَثَبَتَ الأَجْرُ إِنْ شَاءَ اللَّهُ",
-          ph: "Dhahaba dh-dhama'u, wabtallati-l-'uruqu, wa thabata-l-ajru in sha Allah",
-          tr: "La soif est partie, les veines sont abreuvées et la récompense est certaine, si Allah le veut.",
-        },
-        {
-          title: "Invocation de gratitude",
-          ar: "اللَّهُمَّ لَكَ صُمْتُ وَعَلَى رِزْقِكَ أَفْطَرْتُ",
-          ph: "Allahumma laka sumtu wa 'ala rizqika aftartu",
-          tr: "Ô Allah, c'est pour Toi que j'ai jeûné et c'est avec Tes bienfaits que je romps mon jeûne.",
-        },
-        {
-          title: "Prière pour l'acceptation",
-          ar: "رَبَّنَا تَقَبَّلْ مِنَّا إِنَّكَ أَنْتَ السَّمِيعُ الْعَلِيمُ",
-          ph: "Rabbana taqabbal minna innaka anta s-sami'u l-'alim",
-          tr: "Seigneur, accepte ceci de notre part, car Tu es Celui qui entend tout et qui sait tout.",
-        },
-      ],
-    },
-    {
-      name: "Comportement et Patience",
-      items: [
-        {
-          title: "En cas de provocation",
-          ar: "إِنِّي صَائِمٌ ، إِنِّي صَائِمٌ",
-          ph: "Inni sa'im, inni sa'im",
-          tr: "Je jeûne, je jeûne (à dire pour ne pas répondre à la colère).",
-        },
-        {
-          title: "Prière pour les hôtes",
-          ar: "أَفْطَرَ عِنْدَكُمُ الصَّائِمُونَ وَأَكَلَ طَعَامَكُمُ الأَبْرَارُ",
-          ph: "Aftara 'indakumu s-sa'imuna, wa akala ta'amakumu l-abrar",
-          tr: "Que les jeûneurs rompent leur jeûne chez vous et que les pieux mangent votre nourriture.",
-        },
-        {
-          title: "Demande de pardon",
-          ar: "اللَّهُمَّ إِنِّي أَسْأَلُكَ بِرَحْمَتِكَ الَّتِي وَسِعَتْ كُلَّ شَيْءٍ أَنْ تَغْفِرَ لِي",
-          ph: "Allahumma inni as'aluka bi-rahmatika l-lati wasi'at kulla shay'in an taghfira li",
-          tr: "Ô Allah, je Te demande par Ta miséricorde qui englobe toute chose de me pardonner.",
-        },
-      ],
-    },
-    {
-      name: "Les Dix Dernières Nuits",
-      items: [
-        {
-          title: "Laylatul Qadr (Recommandée)",
-          ar: "اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي",
-          ph: "Allahumma innaka 'afuwwun tuhibbu-l-'afwa fa'fu 'anni",
-          tr: "Ô Allah, Tu es Pardonneur et Tu aimes le pardon, alors pardonne-moi.",
-        },
-        {
-          title: "Pour la guidée (Nouveau)",
-          ar: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى وَالتُّقَى وَالْعَفَافَ وَالْغِنَى",
-          ph: "Allahumma inni as'aluka l-huda wa t-tuqa wa l-'afafa wa l-ghina",
-          tr: "Ô Allah, je Te demande la guidée, la piété, la pudeur et la richesse (spirituelle).",
-        },
-        {
-          title: "Protection contre les soucis (Nouveau)",
-          ar: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ وَالْعَجْزِ وَالْكَسَلِ",
-          ph: "Allahumma inni a'udhu bika mina l-hammi wa l-hazani wa l-'ajzi wa l-kasal",
-          tr: "Ô Allah, je cherche protection auprès de Toi contre l'angoisse, la tristesse, l'impuissance et la paresse.",
-        },
-        {
-          title: "Réussite ici-bas et dans l'au-delà",
-          ar: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
-          ph: "Rabbana atina fi d-dunya hasanatan wa fi l-akhirati hasanatan wa qina 'adhaba n-nar",
-          tr: "Seigneur, accorde-nous un bien ici-bas et un bien dans l'au-delà, et protège-nous du châtiment du Feu.",
-        },
-        {
-          title: "Fermeté du cœur",
-          ar: "يَا مُقَلِّبَ الْقُلُوبِ ثَبِّتْ قَلْبِي عَلَى دِينِكَ",
-          ph: "Ya muqalliba l-qulubi thabbit qalbi 'ala dinik",
-          tr: "Ô Toi qui retournes les cœurs, affermis mon cœur sur Ta religion.",
-        },
-        {
-          title: "Demande de Paradis (Nouveau)",
-          ar: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْجَنَّةَ وَأَعُوذُ بِكَ مِنَ النَّارِ",
-          ph: "Allahumma inni as'aluka l-jannata wa a'udhu bika mina n-nar",
-          tr: "Ô Allah, je Te demande le Paradis et je cherche protection auprès de Toi contre l'Enfer.",
-        },
-      ],
-    },
-  ];
-
   const container = document.getElementById("douas-container");
-  if (container) {
-    container.innerHTML = categories
-      .map(
-        (cat) => `
-            <div class="doua-category-section" style="margin-bottom: 30px;">
-                <h3 class="category-title" style="color:var(--gold); font-size:1.2rem; border-left: 3px solid var(--gold); padding-left: 10px; margin-bottom: 15px;">${
-                  cat.name
-                }</h3>
-                ${cat.items
-                  .map(
-                    (d) => `
-                    <div class="ramadan-card" style="flex-direction:column; align-items:flex-start; gap:10px; margin-bottom:15px; padding: 25px; border-radius:35px;">
-                        <h4 style="color:var(--gold); font-size:0.9rem; margin-bottom: 5px; opacity: 0.8; letter-spacing:1px;">${d.title}</h4>
-                        <p style="font-family:'Amiri',serif; font-size:1.8rem; text-align:right; width:100%; line-height:1.6; margin: 10px 0; background: linear-gradient(180deg, #ffffff, var(--gold-bright)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${d.ar}</p>
-                        <p style="font-size:0.9rem; color:var(--gold-bright); font-style:italic; opacity: 0.9;">${d.ph}</p>
-                        <p style="font-size:0.9rem; color:rgba(255,255,255,0.7); line-height:1.5;">${d.tr}</p>
-                    </div>
-                `
-                  )
-                  .join("")}
-            </div>
-        `
-      )
-      .join("");
-  }
+  if (!container) return;
+
+  container.innerHTML = DOUAS_DATA.map(
+    (cat) => `
+    <section class="doua-category-section" role="listitem">
+      <h3 class="category-title">${escapeHtml(cat.category)}</h3>
+      ${cat.items
+        .map(
+          (d) => `
+        <article class="doua-card">
+          <p class="doua-card-title">${escapeHtml(d.title)}</p>
+          <p class="arabic-text" lang="ar">${d.ar}</p>
+          <p class="phonetic-text">${escapeHtml(d.ph)}</p>
+          <div class="translation-text">${escapeHtml(d.tr)}</div>
+        </article>
+      `,
+        )
+        .join("")}
+    </section>
+  `,
+  ).join("");
 }
 
-document.addEventListener("DOMContentLoaded", initRamadanApp);
+/* ================================================================
+   10. UTILITAIRES
+   ================================================================ */
+
+/** Formate une date en clé "dd-MM-yyyy" */
+function formatGregorianKey(date) {
+  const d = String(date.getDate()).padStart(2, "0");
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const y = date.getFullYear();
+  return `${d}-${m}-${y}`;
+}
+
+/** Extrait HH:MM depuis un string d'horaire API ("05:23 (CEST)" → "05:23") */
+function formatTime(timeStr) {
+  return (timeStr || "").split(" ")[0];
+}
+
+/** Pad un nombre à 2 chiffres */
+function pad(n) {
+  return String(n).padStart(2, "0");
+}
+
+/** Capitalize 1ère lettre */
+function capitalize(str) {
+  return str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
+}
+
+/** Normalise les noms de mois hijri (enlève diacritiques arabes latins) */
+function normalizeHijriMonth(name) {
+  if (!name) return "";
+  const n = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  if (/ramadan/i.test(n)) return "Ramadan";
+  if (/sha.?ban|chaabane/i.test(n)) return "Chaabane";
+  if (/rajab/i.test(n)) return "Rajab";
+  return n;
+}
+
+/** Sécurise le HTML (anti-XSS basique) */
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+/* ================================================================
+   11. EXPOSITION GLOBALE (pour les onclick HTML)
+   ================================================================ */
+window.changeChecklistDate = changeChecklistDate;

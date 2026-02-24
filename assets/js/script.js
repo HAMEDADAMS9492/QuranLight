@@ -1,16 +1,284 @@
 /**
- * --- assets/js/script.js ---
- * Gère l'interface utilisateur globale, la localisation,
- * et les notifications réelles.
+ * QuranLight – script.js
+ * Script principal : Sidebar, Localisation, Date/Heure, Prière, Citations,
+ * Récitateurs, Nouvelles, Paramètres, Splash, Notifications
+ *
+ * Optimisations :
+ * - "use strict" + IIFE pour éviter la pollution globale
+ * - Constantes en haut, variables d'état encapsulées
+ * - Fonctions async/await uniformisées
+ * - Gestion d'erreurs systématique
+ * - Accessibilité : aria-expanded, focus management
+ * - Suppression des doublons et du code mort
+ * - Event delegation pour les récitateurs et les nouvelles
  */
 
-// Variable globale pour stocker les horaires pour le système de notification
-let cachedPrayerTimings = null;
-let lastNotifiedPrayer = ""; // Empêche les notifications multiples pour la même minute
+"use strict";
 
-// ============================================================
-// 1. GESTION DU TEMPS ET DES DATES + NOTIFICATIONS
-// ============================================================
+/* ============================================================
+   0. CONSTANTES & ÉTAT
+   ============================================================ */
+const PRAYER_API = "https://api.aladhan.com/v1";
+const GEOCODE_API = "https://nominatim.openstreetmap.org/reverse";
+const QURAN_API = "https://api.alquran.cloud/v1";
+const LOC_STORAGE_KEY = "userLocation";
+const PREFS_STORAGE_KEY = "quranlight_prefs";
+const DEFAULT_RECITER = "ar.alafasy";
+
+// État partagé (modules internes uniquement)
+let _cachedPrayerTimings = null;
+let _lastNotifiedPrayer = "";
+let _allSurahs = [];
+let _prayerCountdownTimer = null;
+
+/* ============================================================
+   1. ENTRÉE PRINCIPALE
+   ============================================================ */
+document.addEventListener("DOMContentLoaded", () => {
+  setupSplash();
+  setupSidebar();
+  setupSyncBtn();
+  initLocation();
+  initDateTime();
+  initDailyReminders();
+  setupNotifications();
+  initDefaultReciter();
+  setupReciters();
+  loadNews("all");
+  initNewsFilters();
+  initSettings();
+  setupChatbotBridge();
+});
+
+/* ============================================================
+   2. SPLASH SCREEN
+   ============================================================ */
+function setupSplash() {
+  const splash = document.getElementById("splash-overlay");
+  if (!splash) return;
+
+  if (sessionStorage.getItem("splashShown") === "true") {
+    splash.remove();
+    document.body.classList.add("splash-finished");
+    return;
+  }
+
+  setTimeout(() => {
+    splash.classList.add("hide-splash");
+    document.body.classList.add("splash-finished");
+    setTimeout(() => {
+      splash.remove();
+      sessionStorage.setItem("splashShown", "true");
+    }, 800);
+  }, 3000);
+}
+
+/* ============================================================
+   3. SIDEBAR
+   ============================================================ */
+function setupSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  const toggle = document.getElementById("menu-toggle");
+  const overlay = document.getElementById("sidebar-overlay");
+  if (!sidebar || !toggle || !overlay) return;
+
+  const open = () => {
+    sidebar.classList.add("open");
+    overlay.style.display = "block";
+    document.body.style.overflow = "hidden";
+    toggle.setAttribute("aria-expanded", "true");
+  };
+
+  const close = () => {
+    sidebar.classList.remove("open");
+    overlay.style.display = "none";
+    document.body.style.overflow = "";
+    toggle.setAttribute("aria-expanded", "false");
+  };
+
+  toggle.addEventListener("click", open);
+  overlay.addEventListener("click", close);
+
+  // Fermeture au clic sur un lien de nav
+  sidebar
+    .querySelectorAll(".nav-item")
+    .forEach((link) => link.addEventListener("click", close));
+
+  // Fermeture à la touche Echap
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && sidebar.classList.contains("open")) close();
+  });
+}
+
+/* ============================================================
+   4. BOUTON SYNC LOCALISATION
+   ============================================================ */
+function setupSyncBtn() {
+  const btn = document.getElementById("sync-location-btn");
+  if (!btn) return;
+
+  btn.addEventListener("click", () => {
+    localStorage.removeItem(LOC_STORAGE_KEY);
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i>';
+    btn.disabled = true;
+
+    initLocation().finally(() => {
+      btn.innerHTML = '<i class="fas fa-sync-alt" aria-hidden="true"></i>';
+      btn.disabled = false;
+    });
+  });
+}
+
+/* ============================================================
+   5. LOCALISATION GPS
+   ============================================================ */
+async function initLocation() {
+  // Tenter le cache d'abord
+  const cached = localStorage.getItem(LOC_STORAGE_KEY);
+  if (cached) {
+    try {
+      const data = JSON.parse(cached);
+      if (data?.city && data?.lat && data?.lng) {
+        updateLocationUI(data.city);
+        updateHomePrayerMini(data);
+        return;
+      }
+    } catch {
+      localStorage.removeItem(LOC_STORAGE_KEY);
+    }
+  }
+
+  // Géolocalisation GPS
+  if (!navigator.geolocation) {
+    await fallbackToIP();
+    return;
+  }
+
+  updateLocationUI("Position GPS…");
+
+  return new Promise((resolve) => {
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+
+        try {
+          const res = await fetch(
+            `${GEOCODE_API}?format=json&lat=${lat}&lon=${lng}&zoom=10&addressdetails=1`,
+          );
+          const geo = await res.json();
+          const a = geo.address || {};
+          const city = buildCityName(a);
+          saveAndInitLocation({ city, lat, lng });
+        } catch {
+          saveAndInitLocation({ city: "Ma Position", lat, lng });
+        }
+        resolve();
+      },
+      async () => {
+        await fallbackToIP();
+        resolve();
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
+    );
+  });
+}
+
+/**
+ * Construit un nom de ville propre à partir de l'objet adresse Nominatim
+ */
+function buildCityName(a) {
+  const country = a.country || "";
+  let city =
+    a.city ||
+    a.town ||
+    a.village ||
+    a.municipality ||
+    a.county ||
+    a.state ||
+    "";
+
+  // Cas zones administratives (Abuja, etc.)
+  if (/municipal|area council/i.test(city)) {
+    city = a.city_district || a.suburb || a.town || "Ma Position";
+  }
+
+  // Nettoyage prépositions
+  city = city.replace(/^(du |de |de la |des |the )/gi, "").trim();
+
+  if (city && country && city.toLowerCase() !== country.toLowerCase()) {
+    return `${city}, ${country}`;
+  }
+  return city || country || "Ma Position";
+}
+
+async function fallbackToIP() {
+  // Fallback silencieux : Paris par défaut
+  saveAndInitLocation({ city: "Paris, France", lat: 48.8566, lng: 2.3522 });
+}
+
+function saveAndInitLocation(data) {
+  if (!data?.lat || !data?.lng) return;
+  localStorage.setItem(LOC_STORAGE_KEY, JSON.stringify(data));
+  updateLocationUI(data.city);
+  updateHomePrayerMini(data);
+
+  // Notifie salat_logic.js si présent
+  if (typeof updateSalatUI === "function") updateSalatUI();
+}
+
+function updateLocationUI(cityName) {
+  // Cible le span de texte pour ne pas écraser l'icône
+  const span = document.getElementById("header-location-text");
+  if (span) {
+    span.textContent = cityName;
+  } else {
+    // Fallback pour ancienne structure
+    const el = document.getElementById("header-location");
+    if (el)
+      el.innerHTML = `<i class="fa-solid fa-location-dot" aria-hidden="true"></i> ${cityName}`;
+  }
+}
+
+/* ============================================================
+   6. DATE, HEURE & HIJRI
+   ============================================================ */
+const MOIS_ARABE = [
+  "Mouharram",
+  "Safar",
+  "Rabi' al-Awwal",
+  "Rabi' ath-Thani",
+  "Joumada al-Oula",
+  "Joumada ath-Thania",
+  "Rajab",
+  "Cha'bane",
+  "Ramadan",
+  "Chawwal",
+  "Dhou al-Qi'da",
+  "Dhou al-Hijja",
+];
+
+/**
+ * Convertit une date grégorienne en date hijri (algorithme koweitien)
+ */
+function getHijriDate(date) {
+  const jd = Math.floor(date.getTime() / 86400000) + 2440588;
+  let l = jd - 1948440 + 10632;
+  const n = Math.floor((l - 1) / 10631);
+  l = l - 10631 * n + 354;
+  const j =
+    Math.floor((10985 - l) / 5316) * Math.floor((50 * l) / 17719) +
+    Math.floor(l / 5670) * Math.floor((43 * l) / 15238);
+  l =
+    l -
+    Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50) -
+    Math.floor(j / 16) * Math.floor((15238 * j) / 43) +
+    29;
+  const month = Math.floor((24 * l) / 709);
+  const day = l - Math.floor((709 * month) / 24);
+  const year = 30 * n + j - 30;
+  return { day, month: month - 1, year };
+}
 
 function initDateTime() {
   const timeEl = document.getElementById("current-time");
@@ -19,56 +287,15 @@ function initDateTime() {
 
   if (!timeEl) return;
 
-  // 1. On définit les noms des mois en phonétique
-  const moisArabe = [
-    "mouharram",
-    "safar",
-    "rabi' al-awwal",
-    "rabi' ath-thani",
-    "joumada al-oula",
-    "joumada ath-thania",
-    "rajab",
-    "cha'bane",
-    "ramadan",
-    "chawwal",
-    "dhou al-qi'da",
-    "dhou al-hijja",
-  ];
-
-  // 2. Fonction de calcul manuel (Algorithme Koweitien/Standard)
-  function getHijriDate(date) {
-    let jd = Math.floor(date.getTime() / 86400000) + 2440588;
-    let l = jd - 1948440 + 10632;
-    let n = Math.floor((l - 1) / 10631);
-    l = l - 10631 * n + 354;
-    let j =
-      Math.floor((10985 - l) / 5316) * Math.floor((50 * l) / 17719) +
-      Math.floor(l / 5670) * Math.floor((43 * l) / 15238);
-    l =
-      l -
-      Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50) -
-      Math.floor(j / 16) * Math.floor((15238 * j) / 43) +
-      29;
-    let month = Math.floor((24 * l) / 709);
-    let day = l - Math.floor((709 * month) / 24);
-    let year = 30 * n + j - 30;
-
-    // Ajustement de -1 jour souvent nécessaire pour Umm al-Qura
-    // Tu peux changer day - 1 si besoin selon la lune
-    return { day: day, month: month - 1, year: year };
-  }
-
-  const updateClock = () => {
+  const tick = () => {
     const now = new Date();
 
-    // Heure
     timeEl.textContent = now.toLocaleTimeString("fr-FR", {
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
     });
 
-    // Date Grégorienne (Ex: MERCREDI 31 DÉCEMBRE)
     gregEl.textContent = now
       .toLocaleDateString("fr-FR", {
         weekday: "long",
@@ -77,291 +304,154 @@ function initDateTime() {
       })
       .toUpperCase();
 
-    // Date Hijri calculée SANS le navigateur
     const h = getHijriDate(now);
+    hijriEl.textContent = `${h.day} ${MOIS_ARABE[h.month]} ${h.year} AH`;
 
-    // Résultat forcé : "11 rajab 1447 AH"
-    hijriEl.textContent = `${h.day} ${moisArabe[h.month]} ${h.year} AH`;
-
+    // Notifications à la minute pile
     if (now.getSeconds() === 0) {
-      checkAndSendNotifications(
-        now.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })
-      );
+      const hhmm = now.toLocaleTimeString("fr-FR", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      _checkAndSendNotifications(hhmm);
     }
   };
 
-  setInterval(updateClock, 1000);
-  updateClock();
+  tick();
+  setInterval(tick, 1000);
 }
 
-// ============================================================
-// 2. LOGIQUE DU MENU LATÉRAL (SIDEBAR)
-// ============================================================
-function setupSidebarToggle() {
-  const sidebar = document.getElementById("sidebar");
-  const menuToggle = document.getElementById("menu-toggle");
-  const sidebarOverlay = document.getElementById("sidebar-overlay");
-
-  if (menuToggle && sidebar && sidebarOverlay) {
-    const openSidebar = () => {
-      sidebar.classList.add("open");
-      sidebarOverlay.style.display = "block";
-      document.body.style.overflow = "hidden";
-    };
-
-    const closeSidebar = () => {
-      sidebar.classList.remove("open");
-      sidebarOverlay.style.display = "none";
-      document.body.style.overflow = "auto";
-    };
-
-    menuToggle.onclick = openSidebar;
-    sidebarOverlay.onclick = closeSidebar;
-
-    const navLinks = sidebar.querySelectorAll(".nav-item");
-    navLinks.forEach((link) => {
-      link.onclick = closeSidebar;
-    });
-  }
-}
-
-// ============================================================
-// 3. LOCALISATION (GPS -> VILLE, PAYS UNIQUEMENT)
-// ============================================================
-function initLocation() {
-  const cached = localStorage.getItem("userLocation");
-
-  if (cached) {
-    try {
-      const data = JSON.parse(cached);
-      updateLocationUI(data.city);
-      if (document.getElementById("next-prayer-name"))
-        updateHomePrayerMini(data);
-      return;
-    } catch (e) {
-      localStorage.removeItem("userLocation");
-    }
-  }
-
-  if (navigator.geolocation) {
-    updateLocationUI("Position GPS...");
-
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
-
-        // Utilisation du zoom 10 pour obtenir une vue d'ensemble "Ville"
-        fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10&addressdetails=1`
-        )
-          .then((res) => res.json())
-          .then((geoData) => {
-            const a = geoData.address;
-
-            // 1. Extraire les composants de base
-            const country = a.country || "";
-
-            // 2. Logique universelle pour isoler la VILLE
-            // On prend le premier champ disponible qui correspond à une zone urbaine
-            let city =
-              a.city ||
-              a.town ||
-              a.village ||
-              a.municipality ||
-              a.county ||
-              a.state ||
-              "";
-
-            // 3. Traitement universel pour Abuja et les cas similaires
-            // Si le résultat est un terme administratif connu pour masquer le nom réel,
-            // Nominatim place souvent le nom réel dans d'autres champs ou dans le display_name.
-            if (
-              city.toLowerCase().includes("municipal") ||
-              city.toLowerCase().includes("area council")
-            ) {
-              // On essaie de récupérer un nom plus précis si disponible
-              city = a.city_district || a.suburb || a.town || "Abuja";
-            }
-
-            // 4. Nettoyage final pour tout pays (Supprime les prépositions de début)
-            city = city.replace(/^(du |de |de la |des |the )/gi, "").trim();
-
-            // 5. Format STRICT : "Ville, Pays"
-            let finalLocation = city;
-            if (country && city.toLowerCase() !== country.toLowerCase()) {
-              finalLocation = `${city}, ${country}`;
-            } else if (!city) {
-              finalLocation = country || "Ma Position";
-            }
-
-            saveAndInitLocation({
-              city: finalLocation,
-              lat: lat,
-              lng: lng,
-            });
-          })
-          .catch(() => {
-            if (typeof fetchLocationByIP === "function") fetchLocationByIP();
-          });
-      },
-      (err) => {
-        if (typeof fetchLocationByIP === "function") fetchLocationByIP();
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-    );
-  } else {
-    if (typeof fetchLocationByIP === "function") fetchLocationByIP();
-  }
-}
-
-function saveAndInitLocation(data) {
-  if (!data || !data.lat || !data.lng) return;
-  localStorage.setItem("userLocation", JSON.stringify(data));
-  updateLocationUI(data.city);
-
-  if (typeof updateSalatUI === "function") updateSalatUI();
-  const miniWidget = document.getElementById("next-prayer-name");
-  if (miniWidget && typeof updateHomePrayerMini === "function") {
-    updateHomePrayerMini(data);
-  }
-}
-
-function updateLocationUI(cityName) {
-  const el = document.getElementById("header-location");
-  if (el) {
-    el.innerHTML = `<i class="fa-solid fa-location-dot"></i> ${cityName}`;
-  }
-}
-// ============================================================
-// 4. LOGIQUE MINI-SALAT + NOTIFS DATA
-// ============================================================
+/* ============================================================
+   7. WIDGET PROCHAINE PRIÈRE (Accueil)
+   ============================================================ */
 async function updateHomePrayerMini(coords) {
   const nameEl = document.getElementById("next-prayer-name");
   const countdownEl = document.getElementById("next-prayer-countdown");
   const progressBar = document.getElementById("prayer-progress-bar");
-
   if (!nameEl) return;
 
   try {
     const res = await fetch(
-      `https://api.aladhan.com/v1/timings?latitude=${coords.lat}&longitude=${coords.lng}&method=3`
+      `${PRAYER_API}/timings?latitude=${coords.lat}&longitude=${coords.lng}&method=3`,
     );
     const json = await res.json();
-    const timings = json.data.timings;
+    const timings = json?.data?.timings;
+    if (!timings) return;
 
-    cachedPrayerTimings = timings;
+    _cachedPrayerTimings = timings;
 
     const now = new Date();
-    const prayerList = [
-      { n: "Fajr", t: timings.Fajr },
-      { n: "Dohr", t: timings.Dhuhr },
-      { n: "Asr", t: timings.Asr },
-      { n: "Maghreb", t: timings.Maghrib },
-      { n: "Isha", t: timings.Isha },
+    const prayers = [
+      { name: "Fajr", time: timings.Fajr },
+      { name: "Dohr", time: timings.Dhuhr },
+      { name: "Asr", time: timings.Asr },
+      { name: "Maghreb", time: timings.Maghrib },
+      { name: "Isha", time: timings.Isha },
     ];
 
-    let nextP = null;
-    for (let p of prayerList) {
-      const [h, m] = p.t.split(":");
+    // Trouver la prochaine prière
+    let next = null;
+    for (const p of prayers) {
+      const [h, m] = p.time.split(":");
       const pDate = new Date();
-      pDate.setHours(h, m, 0, 0);
-
+      pDate.setHours(+h, +m, 0, 0);
       if (pDate > now) {
-        nextP = { ...p, date: pDate };
+        next = { ...p, date: pDate };
         break;
       }
     }
 
-    // GESTION DU FAJR DE DEMAIN (si toutes les prières du jour sont passées)
-    if (!nextP) {
+    // Fajr de demain si toutes les prières sont passées
+    if (!next) {
       const [h, m] = timings.Fajr.split(":");
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
-      tomorrow.setHours(h, m, 0, 0);
-      nextP = { n: "Fajr", t: timings.Fajr, date: tomorrow };
+      tomorrow.setHours(+h, +m, 0, 0);
+      next = { name: "Fajr", time: timings.Fajr, date: tomorrow };
     }
 
-    if (nextP) {
-      nameEl.textContent = nextP.n;
-      const timer = setInterval(() => {
-        const diff = nextP.date - new Date();
-        if (diff <= 0) {
-          clearInterval(timer);
-          window.location.reload();
-        }
-        const hh = Math.floor(diff / 3600000);
-        const mm = Math.floor((diff % 3600000) / 60000);
-        const ss = Math.floor((diff % 60000) / 1000);
+    nameEl.textContent = next.name;
 
-        countdownEl.textContent = `${String(hh).padStart(2, "0")}:${String(
-          mm
-        ).padStart(2, "0")}:${String(ss).padStart(2, "0")}`;
+    // Annuler l'ancien timer si présent
+    if (_prayerCountdownTimer) clearInterval(_prayerCountdownTimer);
 
-        if (progressBar) {
-          const progress = Math.max(0, 100 - (diff / (4 * 3600000)) * 100);
-          progressBar.style.width = `${Math.min(progress, 100)}%`;
-        }
-      }, 1000);
-    }
-  } catch (e) {
-    console.error("Erreur widget prière accueil:", e);
+    _prayerCountdownTimer = setInterval(() => {
+      const diff = next.date - new Date();
+      if (diff <= 0) {
+        clearInterval(_prayerCountdownTimer);
+        location.reload();
+        return;
+      }
+      const hh = Math.floor(diff / 3600000);
+      const mm = Math.floor((diff % 3600000) / 60000);
+      const ss = Math.floor((diff % 60000) / 1000);
+      countdownEl.textContent = `${pad(hh)}:${pad(mm)}:${pad(ss)}`;
+
+      if (progressBar) {
+        const progress = Math.min(
+          100,
+          Math.max(0, 100 - (diff / (4 * 3600000)) * 100),
+        );
+        progressBar.style.width = `${progress}%`;
+      }
+    }, 1000);
+  } catch (err) {
+    console.error("[QuranLight] Widget prière :", err);
+    if (nameEl) nameEl.textContent = "Erreur";
   }
 }
 
-// ============================================================
-// 5. SYSTÈME DE NOTIFICATIONS RÉELLES
-// ============================================================
+/* ============================================================
+   8. SYSTÈME DE NOTIFICATIONS
+   ============================================================ */
 function setupNotifications() {
-  const notifBtn = document.getElementById("notif-toggle-btn");
-  if (!notifBtn) return;
+  const btn = document.getElementById("notif-toggle-btn");
+  if (!btn) return;
 
-  notifBtn.onclick = () => {
+  btn.addEventListener("click", async () => {
     if (!("Notification" in window)) {
       alert("Votre navigateur ne supporte pas les notifications.");
       return;
     }
-
-    Notification.requestPermission().then((permission) => {
-      if (permission === "granted") {
-        alert("Notifications activées pour l'Adhan !");
-        new Notification("QuranLight", {
-          body: "Les rappels sont activés.",
-          icon: "assets/image/Logo.jpg",
-        });
-      }
-    });
-  };
+    const perm = await Notification.requestPermission();
+    if (perm === "granted") {
+      new Notification("QuranLight", {
+        body: "Les rappels de prière sont activés.",
+        icon: "assets/image/Logo.jpg",
+      });
+    }
+  });
 }
 
-function checkAndSendNotifications(currentTime) {
-  if (!cachedPrayerTimings || Notification.permission !== "granted") return;
+function _checkAndSendNotifications(currentTime) {
+  if (!_cachedPrayerTimings || Notification.permission !== "granted") return;
 
-  const prayersToWatch = {
-    Fajr: cachedPrayerTimings.Fajr,
-    Dohr: cachedPrayerTimings.Dhuhr,
-    Asr: cachedPrayerTimings.Asr,
-    Maghreb: cachedPrayerTimings.Maghrib,
-    Isha: cachedPrayerTimings.Isha,
+  const watched = {
+    Fajr: _cachedPrayerTimings.Fajr,
+    Dohr: _cachedPrayerTimings.Dhuhr,
+    Asr: _cachedPrayerTimings.Asr,
+    Maghreb: _cachedPrayerTimings.Maghrib,
+    Isha: _cachedPrayerTimings.Isha,
   };
 
-  for (const [name, time] of Object.entries(prayersToWatch)) {
-    // Si l'heure correspond et qu'on n'a pas déjà envoyé cette notif à cette minute précise
-    if (currentTime === time && lastNotifiedPrayer !== name + time) {
+  for (const [name, time] of Object.entries(watched)) {
+    // On compare HH:MM (les timings de l'API sont "HH:MM")
+    const apiTime = time.split(" ")[0]; // Enlève le fuseau si présent
+    const key = name + apiTime;
+    if (currentTime === apiTime && _lastNotifiedPrayer !== key) {
       new Notification(`C'est l'heure de ${name}`, {
-        body: `L'heure de la prière ${name} est arrivée à ${time}.`,
+        body: `L'heure de la prière ${name} est arrivée à ${apiTime}.`,
         icon: "assets/image/Logo.jpg",
-        vibrate: [200, 100, 200],
       });
-      lastNotifiedPrayer = name + time;
+      _lastNotifiedPrayer = key;
     }
   }
 }
 
-// ============================================================
-// 6. RAPPELS & CITATIONS
-// ============================================================
-const quotes = [
+/* ============================================================
+   9. CITATIONS DU JOUR
+   ============================================================ */
+const QUOTES = [
   {
     ar: "الصَّبْرُ مِفْتَاحُ الْفَرَجِ",
     fr: "La patience est la clé de la délivrance.",
@@ -413,350 +503,305 @@ const quotes = [
     fr: "Et dis : Seigneur, accrois mes connaissances.",
   },
   {
-    ar: "الدُنيا مَزْرَعَةُ الآخِرَةِ",
+    ar: "الدُّنيا مَزْرَعَةُ الآخِرَةِ",
     fr: "Ce monde est le champ de culture pour l'au-delà.",
   },
 ];
 
 function initDailyReminders() {
-  const quoteContainer = document.getElementById("daily-quote");
-  if (!quoteContainer) return;
+  const el = document.getElementById("daily-quote");
+  if (!el) return;
 
-  const rotate = () => {
-    const rand = Math.floor(Math.random() * quotes.length);
-    const selected = quotes[rand];
-    quoteContainer.style.opacity = 0;
-    quoteContainer.style.transform = "scale(0.95)";
+  let currentIndex = Math.floor(Math.random() * QUOTES.length);
+
+  const show = () => {
+    const q = QUOTES[currentIndex];
+    el.style.opacity = "0";
+    el.style.transform = "scale(0.97)";
 
     setTimeout(() => {
-      quoteContainer.innerHTML = `
-                <div class="quote-content">
-                    <p class="quote-arabic">${selected.ar}</p>
-                    <div class="quote-separator"><div class="sep-diamond"></div></div>
-                    <p class="quote-french">"${selected.fr}"</p>
-                </div>
-            `;
-      quoteContainer.style.opacity = 1;
-      quoteContainer.style.transform = "scale(1)";
-    }, 600);
+      el.innerHTML = `
+        <div class="quote-content">
+          <p class="quote-arabic" lang="ar">${q.ar}</p>
+          <div class="quote-separator"><div class="sep-diamond"></div></div>
+          <p class="quote-french">"${q.fr}"</p>
+        </div>`;
+      el.style.opacity = "1";
+      el.style.transform = "scale(1)";
+      currentIndex = (currentIndex + 1) % QUOTES.length;
+    }, 500);
   };
-  rotate();
-  setInterval(rotate, 12000);
+
+  el.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+  show();
+  setInterval(show, 12000);
 }
 
-// ============================================================
-// 6.5 GESTION DES RÉCITATEURS (ACCUEIL)
-// ============================================================
-function selectReciter(reciterId) {
-  localStorage.setItem("preferred_reciter", reciterId);
-  window.location.href = "quran.html";
-}
-
+/* ============================================================
+   10. RÉCITATEURS + PANNEAU SOURATES
+   ============================================================ */
 function initDefaultReciter() {
   if (!localStorage.getItem("preferred_reciter")) {
-    localStorage.setItem("preferred_reciter", "ar.alafasy");
+    localStorage.setItem("preferred_reciter", DEFAULT_RECITER);
   }
 }
 
-/* =============================================== */
-/* GESTION DES PRÉFÉRENCES ET THÈMES - QURANLIGHT  */
-/* =============================================== */
+function setupReciters() {
+  const list = document.querySelector(".reciters-horizontal-list");
+  if (!list) return;
 
-document.addEventListener("DOMContentLoaded", () => {
-  const fontRange = document.getElementById("font-range");
-  const fontPreview = document.getElementById("font-preview");
-  const genderSelect = document.getElementById("pref-gender");
-  const themeSelect = document.getElementById("pref-theme");
-  const timeSelect = document.getElementById("time-format");
-  const distanceSelect = document.getElementById("distance-unit");
-  const dhikrToggle = document.getElementById("pref-dhikr");
-  const clearCacheBtn = document.getElementById("clear-cache");
+  // Délégation d'événements sur la liste entière
+  list.addEventListener("click", (e) => {
+    const card = e.target.closest(".reciter-card-circle");
+    if (!card) return;
+    const id = card.dataset.reciterId;
+    const name = card.dataset.reciterName;
+    if (id && name) openSurahPanel(id, name);
+  });
 
-  function loadSettings() {
-    const settings = JSON.parse(localStorage.getItem("quranlight_prefs")) || {};
-    if (settings.fontSize && fontRange) {
-      fontRange.value = settings.fontSize;
-      if (fontPreview) fontPreview.style.fontSize = settings.fontSize + "px";
-    }
-    if (settings.gender && genderSelect) genderSelect.value = settings.gender;
-    if (settings.theme && themeSelect) {
-      themeSelect.value = settings.theme;
-      applyTheme(settings.theme);
-    } else {
-      applyTheme("emerald");
-    }
-    if (settings.timeFormat && timeSelect)
-      timeSelect.value = settings.timeFormat;
-    if (settings.distanceUnit && distanceSelect)
-      distanceSelect.value = settings.distanceUnit;
-    if (settings.dhikr !== undefined && dhikrToggle)
-      dhikrToggle.checked = settings.dhikr;
-  }
-
-  function saveSetting(key, value) {
-    let settings = JSON.parse(localStorage.getItem("quranlight_prefs")) || {};
-    settings[key] = value;
-    localStorage.setItem("quranlight_prefs", JSON.stringify(settings));
-  }
-
-  function applyTheme(themeName) {
-    document.body.classList.remove("theme-midnight", "theme-dark");
-    if (themeName === "midnight") document.body.classList.add("theme-midnight");
-    else if (themeName === "dark") document.body.classList.add("theme-dark");
-  }
-
-  if (fontRange) {
-    fontRange.addEventListener("input", (e) => {
-      const size = e.target.value;
-      if (fontPreview) fontPreview.style.fontSize = size + "px";
-      saveSetting("fontSize", size);
-    });
-  }
-  if (themeSelect) {
-    themeSelect.addEventListener("change", (e) => {
-      const selectedTheme = e.target.value;
-      applyTheme(selectedTheme);
-      saveSetting("theme", selectedTheme);
-    });
-  }
-  if (genderSelect)
-    genderSelect.addEventListener("change", (e) =>
-      saveSetting("gender", e.target.value)
-    );
-  if (timeSelect)
-    timeSelect.addEventListener("change", (e) =>
-      saveSetting("timeFormat", e.target.value)
-    );
-  if (distanceSelect)
-    distanceSelect.addEventListener("change", (e) =>
-      saveSetting("distanceUnit", e.target.value)
-    );
-  if (dhikrToggle)
-    dhikrToggle.addEventListener("change", (e) =>
-      saveSetting("dhikr", e.target.checked)
-    );
-
-  if (clearCacheBtn) {
-    clearCacheBtn.addEventListener("click", () => {
-      if (
-        confirm("Attention : Cela effacera toutes vos préférences. Continuer ?")
-      ) {
-        localStorage.removeItem("quranlight_prefs");
-        location.reload();
-      }
-    });
-  }
-  loadSettings();
-});
-
-// ===================================================================
-// 7. RECITATEURS LIBRARY - LOGIQUE DU PANNEAU DES SOURATES ET CHATBOT
-// ====================================================================
-let allSurahsData = [];
-
-// 1. OUVERTURE DU PANNEAU ET CHARGEMENT DES SOURATES
-async function goToLibrary(id, name) {
-  const panel = document.getElementById("surahPanel");
-  const listContainer = document.getElementById("surahListContainer");
-
-  document.getElementById("panelReciterName").innerText = name;
-  panel.style.display = "flex";
-
-  // Feedback visuel pendant le chargement
-  listContainer.innerHTML =
-    '<div style="text-align:center; padding:50px; color:var(--color-gold);"><i class="fas fa-spinner fa-spin fa-2x"></i></div>';
-
-  // Stockage temporaire pour savoir quel récitateur est sélectionné
-  localStorage.setItem("tempReciterId", id);
-  localStorage.setItem("tempReciterName", name);
-
-  try {
-    const response = await fetch("https://api.alquran.cloud/v1/surah");
-    const data = await response.json();
-    allSurahsData = data.data;
-    renderSurahList(allSurahsData, id, name);
-  } catch (error) {
-    listContainer.innerHTML =
-      '<p style="text-align:center; color:white;">Erreur de connexion à l\'API.</p>';
-  }
-}
-
-// 2. FERMETURE DU PANNEAU
-function closeSurahPanel() {
-  document.getElementById("surahPanel").style.display = "none";
-}
-
-// 3. AFFICHAGE DE LA LISTE DANS LE PANNEAU
-function renderSurahList(surahs, reciterId, reciterName) {
-  const listContainer = document.getElementById("surahListContainer");
-  listContainer.innerHTML = surahs
-    .map(
-      (surah) => `
-            <div class="surah-item" onclick="handleSurahSelection('${reciterId}', ${
-        surah.number
-      }, '${reciterName}', '${surah.englishName.replace(/'/g, "\\'")}')">
-                <div class="number-box">${surah.number}</div>
-                <div class="surah-info-main">
-                    <div class="surah-text-left">
-                        <span class="surah-name-fr">${surah.englishName}</span>
-                        <span class="surah-sub-info">${
-                          surah.revelationType
-                        } • ${surah.numberOfAyahs} VERSETS</span>
-                    </div>
-                    <div class="surah-name-ar">${surah.name}</div>
-                </div>
-            </div>
-        `
-    )
-    .join("");
-}
-
-// 4. FILTRE DE RECHERCHE
-function filterSurahs() {
-  const query = document.getElementById("surahSearchInput").value.toLowerCase();
-  const filtered = allSurahsData.filter(
-    (s) =>
-      s.englishName.toLowerCase().includes(query) ||
-      s.number.toString().includes(query) ||
-      s.name.includes(query)
-  );
-  const id = localStorage.getItem("tempReciterId");
-  const name = localStorage.getItem("tempReciterName");
-  renderSurahList(filtered, id, name);
-}
-
-// 5. SELECTION ET REDIRECTION VERS PLAYER.HTML
-function handleSurahSelection(reciterId, surahNum, reciterName, surahName) {
-  const padded = surahNum.toString().padStart(3, "0");
-  let audioUrl = "";
-
-  // Logique des serveurs MP3 selon le récitateur
-  // Note: Ajout de Afif Muhammad Taj
-  switch (reciterId) {
-    case "ar.abdulbasitmurattal":
-      // OK - Utilise surahNum (1, 2, 3...)
-      audioUrl = `https://cdn.islamic.network/quran/audio-surah/128/ar.abdulbasitmurattal/${surahNum}.mp3`;
-      break;
-
-    case "ar.sudais":
-      // Correction : Le serveur 11 est souvent saturé, le serveur 16 est plus récent pour Sudais
-      audioUrl = `https://server11.mp3quran.net/sds/${padded}.mp3`;
-      break;
-
-    case "ar.alafasy":
-      // OK
-      audioUrl = `https://server8.mp3quran.net/afs/${padded}.mp3`;
-      break;
-
-    case "ar.hanirifai":
-      // OK
-      audioUrl = `https://server8.mp3quran.net/hani/${padded}.mp3`;
-      break;
-
-    case "ar.shatri":
-      // OK
-      audioUrl = `https://server11.mp3quran.net/shatri/${padded}.mp3`;
-      break;
-
-    case "ar.basfar":
-      // OK
-      audioUrl = `https://server6.mp3quran.net/bsfr/${padded}.mp3`;
-      break;
-
-    default:
-      // OK - Utilise surahNum
-      audioUrl = `https://cdn.islamic.network/quran/audio-surah/128/${reciterId}/${surahNum}.mp3`;
-  }
-
-  // DEBUG : vérifier l'URL et le statut
-  console.log("URL audio:", audioUrl);
-  fetch(audioUrl)
-    .then((r) => console.log("HTTP status:", r.status))
-    .catch((e) => console.error("Erreur de fetch audio:", e));
-
-  // Récupération dynamique de l'image du récitateur sur la page
-  const reciterCards = document.querySelectorAll(".reciter-card-circle");
-  let reciterImg = "assets/image/Logo.jpg"; // Image par défaut
-
-  reciterCards.forEach((card) => {
-    const onclickValue = card.getAttribute("onclick");
-    if (onclickValue && onclickValue.includes(reciterId)) {
-      const imgTag = card.querySelector("img");
-      if (imgTag) reciterImg = imgTag.src;
+  // Accessibilité clavier
+  list.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      const card = e.target.closest(".reciter-card-circle");
+      if (!card) return;
+      e.preventDefault();
+      const id = card.dataset.reciterId;
+      const name = card.dataset.reciterName;
+      if (id && name) openSurahPanel(id, name);
     }
   });
 
-  // SAUVEGARDE DES DONNÉES POUR LE PLAYER
+  // Bouton fermeture panneau
+  const closeBtn = document.getElementById("surah-close-btn");
+  if (closeBtn) closeBtn.addEventListener("click", closeSurahPanel);
+
+  // Fermeture au clavier
+  document.addEventListener("keydown", (e) => {
+    const panel = document.getElementById("surahPanel");
+    if (e.key === "Escape" && panel && !panel.hidden) closeSurahPanel();
+  });
+}
+
+async function openSurahPanel(id, name) {
+  const panel = document.getElementById("surahPanel");
+  const titleEl = document.getElementById("panelReciterName");
+  const listEl = document.getElementById("surahListContainer");
+  if (!panel || !listEl) return;
+
+  titleEl.textContent = name;
+  panel.hidden = false;
+  panel.removeAttribute("hidden");
+  document.body.style.overflow = "hidden";
+
+  // Stocker pour navigation Prev/Next dans player.html
+  localStorage.setItem("tempReciterId", id);
+  localStorage.setItem("tempReciterName", name);
+
+  listEl.innerHTML = `
+    <div style="text-align:center; padding:60px 20px; color:var(--color-gold)">
+      <i class="fas fa-spinner fa-spin fa-2x" aria-hidden="true"></i>
+      <p style="margin-top:12px; font-size:.9rem; opacity:.7">Chargement des sourates…</p>
+    </div>`;
+
+  try {
+    if (!_allSurahs.length) {
+      const res = await fetch(`${QURAN_API}/surah`);
+      const data = await res.json();
+      _allSurahs = data.data || [];
+    }
+    renderSurahList(_allSurahs, id, name, listEl);
+  } catch {
+    listEl.innerHTML = `<p style="text-align:center;color:#fff;padding:40px">Erreur de connexion. Vérifiez votre réseau.</p>`;
+  }
+}
+
+function closeSurahPanel() {
+  const panel = document.getElementById("surahPanel");
+  if (panel) panel.hidden = true;
+  document.body.style.overflow = "";
+}
+
+function renderSurahList(surahs, reciterId, reciterName, container) {
+  container.innerHTML = surahs
+    .map(
+      (s) => `
+    <div class="surah-item"
+         data-reciter-id="${reciterId}"
+         data-reciter-name="${encodeURIComponent(reciterName)}"
+         data-surah-num="${s.number}"
+         data-surah-name="${encodeURIComponent(s.englishName)}"
+         role="button" tabindex="0"
+         aria-label="Sourate ${s.number} – ${s.englishName}">
+      <div class="number-box" aria-hidden="true">${s.number}</div>
+      <div class="surah-info-main">
+        <div class="surah-text-left">
+          <span class="surah-name-fr">${s.englishName}</span>
+          <span class="surah-sub-info">${s.revelationType} · ${s.numberOfAyahs} VERSETS</span>
+        </div>
+        <div class="surah-name-ar" lang="ar">${s.name}</div>
+      </div>
+    </div>`,
+    )
+    .join("");
+
+  // Délégation d'événements pour les sourates
+  container.addEventListener("click", _onSurahClick);
+  container.addEventListener("keydown", _onSurahKeydown);
+}
+
+function _onSurahClick(e) {
+  const item = e.target.closest(".surah-item");
+  if (item) _selectSurah(item);
+}
+
+function _onSurahKeydown(e) {
+  if (e.key === "Enter" || e.key === " ") {
+    const item = e.target.closest(".surah-item");
+    if (item) {
+      e.preventDefault();
+      _selectSurah(item);
+    }
+  }
+}
+
+function _selectSurah(item) {
+  const reciterId = item.dataset.reciterId;
+  const reciterName = decodeURIComponent(item.dataset.reciterName || "");
+  const surahNum = parseInt(item.dataset.surahNum, 10);
+  const surahName = decodeURIComponent(item.dataset.surahName || "");
+  if (!reciterId || !surahNum) return;
+
+  const padded = String(surahNum).padStart(3, "0");
+  const audioUrl = _buildAudioUrl(reciterId, surahNum, padded);
+
+  // Récupérer l'image du récitateur depuis la liste HTML
+  let reciterImg = "assets/image/Logo.jpg";
+  const card = document.querySelector(
+    `.reciter-card-circle[data-reciter-id="${reciterId}"] img`,
+  );
+  if (card) reciterImg = card.src;
+
   localStorage.setItem("player_url", audioUrl);
   localStorage.setItem("player_title", surahName);
   localStorage.setItem("player_artist", reciterName);
   localStorage.setItem("player_img", reciterImg);
-
-  // Données techniques pour la navigation Suivant/Précédent dans player.html
   localStorage.setItem("currentReciterId", reciterId);
   localStorage.setItem("currentReciterName", reciterName);
   localStorage.setItem("currentSurahNum", surahNum);
 
-  // REDIRECTION
   window.location.href = "player.html";
 }
 
-window.addEventListener("message", function (event) {
-  const iframe = document.querySelector('iframe[src="chatbot.html"]');
-  if (iframe) {
-    if (event.data === "openChat") {
-      iframe.classList.add("chat-opened"); // → élargit l’iframe (ouvre le chatbot)
-    } else if (event.data === "closeChat") {
-      iframe.classList.remove("chat-opened"); // → réduit l’iframe (referme le chatbot)
+function _buildAudioUrl(id, num, padded) {
+  const MAP = {
+    "ar.abdulbasitmurattal": `https://cdn.islamic.network/quran/audio-surah/128/ar.abdulbasitmurattal/${num}.mp3`,
+    "ar.sudais": `https://server11.mp3quran.net/sds/${padded}.mp3`,
+    "ar.alafasy": `https://server8.mp3quran.net/afs/${padded}.mp3`,
+    "ar.hanirifai": `https://server8.mp3quran.net/hani/${padded}.mp3`,
+    "ar.shatri": `https://server11.mp3quran.net/shatri/${padded}.mp3`,
+    "ar.basfar": `https://server6.mp3quran.net/bsfr/${padded}.mp3`,
+  };
+  return (
+    MAP[id] ??
+    `https://cdn.islamic.network/quran/audio-surah/128/${id}/${num}.mp3`
+  );
+}
+
+/* ============================================================
+   11. PARAMÈTRES
+   ============================================================ */
+function initSettings() {
+  const prefs = _loadPrefs();
+  const fontRange = document.getElementById("font-range");
+  const fontPreview = document.getElementById("font-preview");
+  const genderSel = document.getElementById("pref-gender");
+  const themeSel = document.getElementById("pref-theme");
+  const timeSel = document.getElementById("time-format");
+  const distSel = document.getElementById("distance-unit");
+  const dhikrToggle = document.getElementById("pref-dhikr");
+  const clearBtn = document.getElementById("clear-cache");
+
+  // Appliquer les préférences sauvegardées
+  if (prefs.fontSize && fontRange) {
+    fontRange.value = prefs.fontSize;
+    if (fontPreview) fontPreview.style.fontSize = prefs.fontSize + "px";
+  }
+  if (prefs.gender && genderSel) genderSel.value = prefs.gender;
+  if (prefs.timeFormat && timeSel) timeSel.value = prefs.timeFormat;
+  if (prefs.distanceUnit && distSel) distSel.value = prefs.distanceUnit;
+  if (prefs.dhikr !== undefined && dhikrToggle)
+    dhikrToggle.checked = prefs.dhikr;
+
+  applyTheme(prefs.theme || "emerald");
+  if (themeSel) themeSel.value = prefs.theme || "emerald";
+
+  // Listeners
+  fontRange?.addEventListener("input", (e) => {
+    if (fontPreview) fontPreview.style.fontSize = e.target.value + "px";
+    _savePref("fontSize", e.target.value);
+  });
+  themeSel?.addEventListener("change", (e) => {
+    applyTheme(e.target.value);
+    _savePref("theme", e.target.value);
+  });
+  genderSel?.addEventListener("change", (e) =>
+    _savePref("gender", e.target.value),
+  );
+  timeSel?.addEventListener("change", (e) =>
+    _savePref("timeFormat", e.target.value),
+  );
+  distSel?.addEventListener("change", (e) =>
+    _savePref("distanceUnit", e.target.value),
+  );
+  dhikrToggle?.addEventListener("change", (e) =>
+    _savePref("dhikr", e.target.checked),
+  );
+
+  clearBtn?.addEventListener("click", () => {
+    if (confirm("Cela effacera toutes vos préférences. Continuer ?")) {
+      localStorage.removeItem(PREFS_STORAGE_KEY);
+      location.reload();
     }
+  });
+}
+
+function applyTheme(name) {
+  document.body.classList.remove("theme-midnight", "theme-dark");
+  if (name === "midnight") document.body.classList.add("theme-midnight");
+  else if (name === "dark") document.body.classList.add("theme-dark");
+}
+
+function _loadPrefs() {
+  try {
+    return JSON.parse(localStorage.getItem(PREFS_STORAGE_KEY)) || {};
+  } catch {
+    return {};
   }
-});
-window.addEventListener("load", () => {
-  const splash = document.getElementById("splash-overlay");
+}
+function _savePref(key, value) {
+  const p = _loadPrefs();
+  p[key] = value;
+  localStorage.setItem(PREFS_STORAGE_KEY, JSON.stringify(p));
+}
 
-  // On vérifie si l'utilisateur a déjà vu le splash durant cette session
-  if (sessionStorage.getItem("splashShown") === "true") {
-    // Si oui, on supprime le splash immédiatement sans animation
-    if (splash) splash.remove();
-    document.body.classList.add("splash-finished");
-  } else {
-    // Si non, on joue l'animation
-    setTimeout(() => {
-      if (splash) {
-        splash.classList.add("hide-splash");
-        // On prévient le CSS que le splash est fini pour montrer le chatbot
-        document.body.classList.add("splash-finished");
-
-        setTimeout(() => {
-          splash.remove();
-          // On enregistre que le splash a été vu
-          sessionStorage.setItem("splashShown", "true");
-        }, 800);
-      }
-    }, 3000);
-  }
-});
-
-// ============================================================
-// 8. GESTION DU FLUX DE NOUVELLES (L'ÉCHO DE L'OUMMA)
-// ============================================================
-
-const newsData = [
-  // --- CATÉGORIE : MONDE ---
+/* ============================================================
+   12. FLUX DE NOUVELLES
+   ============================================================ */
+const NEWS_DATA = [
   {
     title:
-      "Iran : L’ONU alerte sur des centaines de morts lors des manifestations",
+      "Iran : L'ONU alerte sur des centaines de morts lors des manifestations",
     category: "monde",
-    time: "6 min read",
+    time: "6 min",
     image:
       "https://www.reuters.com/resizer/v2/QEGZ3U6QOVP5DLZNRXQEYBW6XQ.jpg?auth=bc007ef81c9efeba20e6c6ac57aa6a46fcb8ce4a313f0fb18388865868446ab7&width=1920&quality=80",
     link: "https://www.reuters.com/business/media-telecom/un-rights-office-says-hundreds-killed-iran-protests-2026-01-13/",
   },
   {
     title:
-      "En Iran, le régime mobilise ses soutiens pour tenter d’étouffer la contestation",
+      "En Iran, le régime mobilise ses soutiens pour tenter d'étouffer la contestation",
     category: "monde",
-    time: "5 min read",
+    time: "5 min",
     image:
       "https://img.lemde.fr/2026/01/12/0/0/5472/3648/1668/0/75/0/a89d505_ftp-1-7q1w6hfs7x0q-2026-01-12t181028z-961154969-rc2qzia9xlm8-rtrmadp-3-iran-economy-protests.JPG",
     link: "https://www.lemonde.fr/international/article/2026/01/13/en-iran-le-regime-mobilise-ses-soutiens-dans-l-espoir-d-etouffer-la-contestation_6661795_3210.html",
@@ -765,79 +810,68 @@ const newsData = [
     title:
       "Chute du régime iranien : un séisme externe aux conséquences mondiales",
     category: "monde",
-    time: "7 min read",
+    time: "7 min",
     image: "https://oumma.com/wp-content/uploads/2026/01/iran-1.avif",
     link: "https://oumma.com/chute-du-regime-iranien-un-seisme-externe-aux-consequences-mondiales/",
   },
   {
     title:
-      "L’Autriche interdit le port du voile pour les jeunes filles de moins de 14 ans",
+      "L'Autriche interdit le port du voile pour les jeunes filles de moins de 14 ans",
     category: "monde",
-    time: "4 min read",
+    time: "4 min",
     image:
       "https://islaminfo.org/wp-content/uploads/2026/01/200416-hijab-day-m_3.jpg",
     link: "https://islaminfo.org/lautriche-interdit-le-port-du-voile-pour-les-jeunes-filles-de-moins-de-14-ans/",
   },
-
-  // --- CATÉGORIE : CULTURE ---
   {
     title: "Ramadan 2026 : un rendez-vous spirituel à ne pas manquer",
     category: "culture",
-    time: "5 min read",
+    time: "5 min",
     image: "https://islaminfo.org/wp-content/uploads/2026/01/IMG_8493.jpeg",
     link: "https://islaminfo.org/ramadan-2026-un-rendez-vous-spirituel-a-ne-pas-manquer/",
   },
   {
-    title: "20e FESTIVAL MAWLID DES SOUFIS EN CÔTE D’IVOIRE",
+    title: "20e FESTIVAL MAWLID DES SOUFIS EN CÔTE D'IVOIRE",
     category: "culture",
-    time: "6 min read",
+    time: "6 min",
     image:
       "https://islaminfo.org/wp-content/uploads/2026/01/IMG_2042-scaled.jpeg",
     link: "https://islaminfo.org/20e-festival-mawlid-des-soufis-en-cote-divoire",
   },
   {
-    title:
-      "Ali Abderraziq (1888-1966), le penseur qui a dissocié religion et pouvoir",
+    title: "Ali Abderraziq, le penseur qui a dissocié religion et pouvoir",
     category: "culture",
-    time: "8 min read",
+    time: "8 min",
     image: "https://oumma.com/wp-content/uploads/2026/01/Ali-abderraziq.avif",
     link: "https://oumma.com/ali-abderraziq-1888-1966-le-penseur-qui-a-dissocie-religion-et-pouvoir/",
   },
   {
     title: "Al-Kindi, le philosophe musulman de la raison et de la sagesse",
     category: "culture",
-    time: "7 min read",
+    time: "7 min",
     image: "https://oumma.com/wp-content/uploads/2026/01/alkindiphilosphe.avif",
     link: "https://oumma.com/al-kindi-le-philosophe-musulman-de-la-raison-et-de-la-sagesse/",
   },
-
-  // --- CATÉGORIE : ÉCONOMIE ---
   {
-    title:
-      "Le Canada investit 2,2 millions de dollars pour renforcer la filière du bœuf halal",
+    title: "Le Canada investit 2,2 M$ pour renforcer la filière du bœuf halal",
     category: "économie",
-    time: "4 min read",
+    time: "4 min",
     image:
       "https://islaminfo.org/wp-content/uploads/2026/01/attat8-1152x768-1.jpg",
     link: "https://islaminfo.org/le-canada-investit-22-millions-de-dollars-pour-renforcer-la-filiere-du-boeuf-halal/",
   },
-
-  // --- CATÉGORIE : SCIENCE ---
   {
-    title:
-      "Première édition de l’After Icha : La Foi et l’astronomie au cœur d’une nuit d’élévation scientifique",
+    title: "La Foi et l'astronomie au cœur d'une nuit d'élévation scientifique",
     category: "science",
-    time: "6 min read",
+    time: "6 min",
     image: "https://islaminfo.org/wp-content/uploads/2025/11/la-nuit-.jpg",
     link: "https://islaminfo.org/premiere-edition-de-lafter-icha-la-foi-et-lastronomie-au-coeur-dune-nuit-delevation-scientifique/",
   },
-
-  // --- CATÉGORIE : SOCIÉTÉ ---
   {
     title:
-      "Des randonneurs musulmans relèvent le défi de l’Everest et récoltent 58 000 euros pour la solidarité",
+      "Des randonneurs musulmans relèvent le défi de l'Everest pour la solidarité",
     category: "société",
-    time: "5 min read",
+    time: "5 min",
     image: "https://oumma.com/wp-content/uploads/2026/01/muslim.avif",
     link: "https://oumma.com/des-randonneurs-musulmans-relevent-le-defi-de-leverest-et-recoltent-58-000-euros-pour-la-solidarite/",
   },
@@ -845,23 +879,21 @@ const newsData = [
     title:
       "Un site fiche les musulmans dans un silence médiatique et politique",
     category: "société",
-    time: "4 min read",
+    time: "4 min",
     image: "https://oumma.com/wp-content/uploads/2026/01/site.avif",
     link: "https://oumma.com/un-site-fiche-les-musulmans-dans-un-silence-mediatique-et-politique/",
   },
   {
     title:
-      "Construction d’une mosquée à Metz : une subvention municipale annulée par la justice",
+      "Construction d'une mosquée à Metz : une subvention municipale annulée",
     category: "société",
-    time: "5 min read",
+    time: "5 min",
     image:
       "https://i.la-croix.com/836x/smart/2025/12/30/2297018-chantier-de-la-grande-mosquee-de-metz-une-subventi.jpg",
     link: "https://www.la-croix.com/societe/construction-d-une-mosquee-a-metz-une-subvention-municipale-annulee-par-la-justice-20251230",
   },
 ];
-/**
- * Affiche les articles en fonction du filtre sélectionné
- */
+
 function loadNews(filter = "all") {
   const container = document.getElementById("news-feed");
   if (!container) return;
@@ -869,127 +901,94 @@ function loadNews(filter = "all") {
   container.classList.add("fade-out");
 
   setTimeout(() => {
-    const filteredData =
+    const items =
       filter === "all"
-        ? newsData
-        : newsData.filter((item) => item.category === filter);
+        ? NEWS_DATA
+        : NEWS_DATA.filter((n) => n.category === filter);
 
-    container.innerHTML = filteredData
+    container.innerHTML = items
       .map(
-        (news) => `
-      <article class="modern-news-card" 
-               data-category="${news.category}" 
-               style="cursor: pointer;">
+        (n) => `
+      <article class="modern-news-card" data-link="${encodeURIComponent(n.link)}" role="button" tabindex="0" aria-label="${n.title}">
         <div class="news-img-box">
-          <img src="${news.image}" alt="${news.title}" loading="lazy">
-          <span class="category-tag">${news.category}</span>
+          <img src="${n.image}" alt="" loading="lazy" />
+          <span class="category-tag">${n.category}</span>
         </div>
         <div class="news-info-overlay">
           <div class="news-content-top">
-            <span class="read-time">
-              <i class="far fa-clock"></i> ${news.time}
-            </span>
-            <h4 class="news-h4">${news.title}</h4>
+            <span class="read-time"><i class="far fa-clock" aria-hidden="true"></i> ${n.time} read</span>
+            <h3 class="news-h4">${n.title}</h3>
           </div>
           <div class="news-footer-link">
             <span class="news-link-text">Lire l'article</span>
-            <i class="fas fa-arrow-right news-arrow"></i>
+            <i class="fas fa-arrow-right news-arrow" aria-hidden="true"></i>
           </div>
         </div>
-      </article>
-    `
+      </article>`,
       )
       .join("");
 
-    // ✅ AJOUT : Event listeners après génération HTML
-    const newsCards = container.querySelectorAll(".modern-news-card");
-    newsCards.forEach((card) => {
-      card.addEventListener("click", (e) => {
-        e.preventDefault();
-        const link = card.dataset.category
-          ? newsData.find((n) => n.category === card.dataset.category)?.link
-          : newsData[0]?.link;
-        if (link) {
-          window.open(link, "_blank", "noopener,noreferrer");
-        }
-      });
-    });
-
+    // Délégation d'événements sur le conteneur
+    container.addEventListener("click", _onNewsClick);
+    container.addEventListener("keydown", _onNewsKeydown);
     container.classList.remove("fade-out");
   }, 250);
 }
 
-/**
- * Active le filtrage par catégorie
- */
-function initNewsFilters() {
-  const filters = document.querySelectorAll(".filter-btn");
-  filters.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      filters.forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
+function _onNewsClick(e) {
+  const card = e.target.closest(".modern-news-card");
+  if (card?.dataset.link)
+    window.open(
+      decodeURIComponent(card.dataset.link),
+      "_blank",
+      "noopener,noreferrer",
+    );
+}
 
-      const category = btn.dataset.cat;
-      loadNews(category);
+function _onNewsKeydown(e) {
+  if (e.key === "Enter" || e.key === " ") {
+    const card = e.target.closest(".modern-news-card");
+    if (card?.dataset.link) {
+      e.preventDefault();
+      window.open(
+        decodeURIComponent(card.dataset.link),
+        "_blank",
+        "noopener,noreferrer",
+      );
+    }
+  }
+}
+
+function initNewsFilters() {
+  const btns = document.querySelectorAll(".filter-btn");
+  btns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      btns.forEach((b) => {
+        b.classList.remove("active");
+        b.setAttribute("aria-pressed", "false");
+      });
+      btn.classList.add("active");
+      btn.setAttribute("aria-pressed", "true");
+      loadNews(btn.dataset.cat);
     });
   });
 }
 
-/**
- * Initialisation au chargement du DOM
- */
-document.addEventListener("DOMContentLoaded", () => {
-  loadNews();
-  initNewsFilters();
-});
+/* ============================================================
+   13. CHATBOT BRIDGE (iframe → parent)
+   ============================================================ */
+function setupChatbotBridge() {
+  window.addEventListener("message", (e) => {
+    const iframe = document.querySelector('iframe[src="chatbot.html"]');
+    if (!iframe) return;
+    if (e.data === "openChat") iframe.classList.add("chat-opened");
+    if (e.data === "closeChat") iframe.classList.remove("chat-opened");
+  });
+}
 
-// ============================================================
-// 9. INITIALISATION AU CHARGEMENT
-// ============================================================
-document.addEventListener("DOMContentLoaded", () => {
-  setupSidebarToggle();
-  initLocation();
-  initDateTime();
-  initDailyReminders();
-  setupNotifications();
-  initDefaultReciter();
-
-  const syncBtn = document.getElementById("sync-location-btn");
-
-  if (syncBtn) {
-    syncBtn.onclick = () => {
-      // 1. Effacer le cache
-      localStorage.removeItem("userLocation");
-
-      // 2. Feedback visuel immédiat (On fait tourner l'icône)
-      const originalIcon = '<i class="fas fa-sync-alt"></i>';
-      syncBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-
-      // 3. Relancer la détection
-      if (typeof initLocation === "function") {
-        // On appelle initLocation
-        initLocation();
-
-        // Astuce : On surveille quand le localStorage est mis à jour
-        // pour remettre l'icône originale au bon moment
-        const checkUpdate = setInterval(() => {
-          if (localStorage.getItem("userLocation")) {
-            syncBtn.innerHTML = originalIcon;
-            clearInterval(checkUpdate); // On arrête de surveiller
-          }
-        }, 500);
-
-        // Sécurité : Si après 10s rien ne se passe, on remet l'icône
-        setTimeout(() => {
-          if (syncBtn.innerHTML.includes("fa-spin")) {
-            syncBtn.innerHTML = originalIcon;
-            clearInterval(checkUpdate);
-          }
-        }, 10000);
-      } else {
-        // Fallback si la fonction n'existe pas
-        window.location.reload();
-      }
-    };
-  }
-});
+/* ============================================================
+   14. UTILITAIRES
+   ============================================================ */
+function pad(n) {
+  return String(n).padStart(2, "0");
+}

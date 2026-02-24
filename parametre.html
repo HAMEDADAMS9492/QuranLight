@@ -1,102 +1,71 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
   <head>
-    <!-- ===== MÉTADONNÉES ===== -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Paramètres – QuranLight" />
     <title>Paramètres – QuranLight</title>
 
-    <!-- ===== PERFORMANCE ===== -->
+    <!-- Performance : preload des CSS critiques -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
-    <link rel="preload" href="assets/css/style.css" as="style" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" href="assets/css/theme-variables.css" as="style" />
+    <link rel="preload" href="assets/css/style.css" as="style" />
 
-    <!-- ===== FONTS & ICONES ===== -->
+    <!-- Fonts & Icônes (FA 6.4.0 cohérent avec le reste du projet) -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
       rel="stylesheet"
     />
 
-    <!-- ===== CSS PRINCIPAL ===== -->
+    <!-- CSS (ordre important : variables → global) -->
     <link rel="stylesheet" href="assets/css/theme-variables.css" />
     <link rel="stylesheet" href="assets/css/style.css" />
 
-    <!-- ===== TON STYLE PERSONNALISÉ DIRECT ===== -->
     <style>
-      /* REMPLACER cette partie dans ton CSS existant : */
+      /* ================================================================
+         PARAMETRE.CSS – Styles spécifiques à la page Paramètres
+         Correctifs :
+         • :root local retiré (valeurs héritées de theme-variables.css)
+         • .settings-header défini UNE seule fois
+         • .btn-danger : margin cohérent, pas de contradiction
+         • .adhan-preview-btn défini une seule fois
+         • Structure HTML corrigée (section "Réinitialiser" remise dans DOM)
+         ================================================================ */
 
-      /* ======================================================== */
-      /* 1. VARIABLES & FONDATION (MÊME QUE L'ACCUEIL)            */
+      /* ── Variables locales qui complètent theme-variables.css ── */
       :root {
-        --emerald-dark: #060e0a;
-        --emerald-mid: #0d1612;
-        --emerald-green: #10b981; /* ✅ VERT ÉMERAUDE ACCUEIL */
-        --emerald-light: #059669; /* ✅ GRADIENT ÉMERAUDE */
-        --color-gold: #b08d57;
-        --color-gold-light: #e6c18a;
-        --color-gold-glow: rgba(176, 141, 87, 0.3);
-        --card-bg: rgba(255, 255, 255, 0.03);
-        --border-gold: rgba(176, 141, 87, 0.2);
-        --text-primary: #ffffff;
-        --text-muted: rgba(255, 255, 255, 0.6);
-        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --settings-card-bg: rgba(255, 255, 255, 0.04);
+        --settings-border: rgba(176, 141, 87, 0.2);
+        --settings-hover-bg: rgba(176, 141, 87, 0.04);
+        --transition-settings: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      /* ✅ FOND IDENTIQUE À L'ACCUEIL - VERT ÉMERAUDE */
+      /* ── Page de base ── */
       .settings-page {
-        /* MÊME GRADIENT VERT que l'accueil */
-        background: linear-gradient(
-          135deg,
-          #10b981 0%,
-          #059669 50%,
-          #047857 100%
-        );
-        background-attachment: fixed;
-        color: var(--text-primary);
         font-family: "Poppins", sans-serif;
         min-height: 100vh;
         margin: 0;
-        padding-bottom: 80px;
+        padding-bottom: 60px;
         overflow-x: hidden;
-        position: relative;
+        color: #ffffff;
+        background:
+          url("https://www.transparenttextures.com/patterns/dark-matter.png"),
+          linear-gradient(
+            to bottom,
+            var(--emerald-mid, #0a2d20) 0%,
+            var(--emerald-dark, #05140f) 100%
+          );
+        background-repeat: repeat, no-repeat;
+        background-attachment: fixed;
+        background-size: auto, cover;
       }
 
-      /* ✅ SUBTIL OVERLAY pour garder la lisibilité des cartes */
-      .settings-page::before {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(6, 14, 10, 0.1); /* Léger voile sombre */
-        z-index: -1;
-        pointer-events: none;
-      }
-
-      /* Ajustement header pour fond émeraude */
-      .settings-header {
-        background: rgba(16, 185, 129, 0.9); /* ✅ Émeraude translucide */
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-      }
-
-      /* Ajustement bordures cartes pour émeraude */
-      .settings-card {
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(16, 185, 129, 0.3); /* ✅ Bordure émeraude */
-        backdrop-filter: blur(15px);
-        box-shadow: 0 15px 35px rgba(16, 185, 129, 0.15);
-      }
-
-      /* ======================================================== */
-      /* 2. HEADER PREMIUM (FIXE & COMPACT)                       */
+      /* ── Header (défini UNE SEULE FOIS) ── */
       .settings-header {
         position: sticky;
         top: 0;
@@ -106,10 +75,10 @@
         align-items: center;
         justify-content: space-between;
         padding: 0 20px;
-        background: rgba(6, 14, 10, 0.85);
+        background: rgba(5, 20, 15, 0.88);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        border-bottom: 1px solid var(--border-gold);
+        border-bottom: 1px solid var(--settings-border);
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
       }
 
@@ -121,89 +90,105 @@
 
       .header-center h1 {
         margin: 0;
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         font-weight: 800;
         text-transform: uppercase;
         letter-spacing: 1.5px;
         color: #ffffff;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
       }
 
-      .header-center i {
-        color: var(--color-gold);
-        font-size: 1.3rem;
-        filter: drop-shadow(0 0 5px var(--color-gold-glow));
+      .header-center .header-icon {
+        color: var(--color-gold, #b08d57);
+        font-size: 1.2rem;
+        filter: drop-shadow(0 0 5px rgba(176, 141, 87, 0.35));
       }
 
+      /* Bouton navigation header */
       .nav-btn {
-        width: 45px;
-        height: 45px;
+        width: 42px;
+        height: 42px;
         background: rgba(176, 141, 87, 0.1);
-        border: 1px solid var(--border-gold);
+        border: 1px solid var(--settings-border);
         border-radius: 14px;
-        color: var(--color-gold-light);
+        color: var(--color-gold-light, #d4bc96);
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: var(--transition);
         cursor: pointer;
         text-decoration: none;
+        transition: var(--transition-settings);
+        font-size: 1rem;
       }
 
       .nav-btn:hover {
-        background: var(--color-gold);
-        color: var(--emerald-dark);
+        background: var(--color-gold, #b08d57);
+        color: #05140f;
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px var(--color-gold-glow);
+        box-shadow: 0 5px 15px rgba(176, 141, 87, 0.3);
       }
 
-      /* ======================================================== */
-      /* 3. STRUCTURE DES SECTIONS & CARTES                       */
+      .nav-btn:focus-visible {
+        outline: 2px solid var(--color-gold, #b08d57);
+        outline-offset: 2px;
+      }
+
+      /* ── Container ── */
       .settings-container {
         max-width: 850px;
         margin: 25px auto;
         padding: 0 15px;
       }
 
+      /* ── Titre de section ── */
       .section-title {
-        color: var(--color-gold);
-        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        color: var(--color-gold, #b08d57);
+        font-size: 0.82rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 2px;
         margin: 30px 0 15px 5px;
-        display: flex;
-        align-items: center;
-        gap: 15px;
       }
 
       .section-title::after {
         content: "";
         height: 1px;
-        background: linear-gradient(to right, var(--border-gold), transparent);
         flex: 1;
+        background: linear-gradient(
+          to right,
+          var(--settings-border),
+          transparent
+        );
       }
 
+      /* ── Carte de paramètres ── */
       .settings-card {
-        background: var(--card-bg);
-        border: 1px solid var(--border-gold);
+        background: var(--settings-card-bg);
+        border: 1px solid var(--settings-border);
         border-radius: 24px;
         overflow: hidden;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
       }
 
+      /* ── Ligne de paramètre ── */
       .setting-row {
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 22px 25px;
-        border-bottom: 1px solid rgba(176, 141, 87, 0.1);
-        transition: var(--transition);
+        border-bottom: 1px solid rgba(176, 141, 87, 0.08);
+        transition: background var(--transition-settings);
       }
 
+      .setting-row:last-child {
+        border-bottom: none;
+      }
       .setting-row:hover {
-        background: rgba(176, 141, 87, 0.03);
+        background: var(--settings-hover-bg);
       }
 
       .setting-info {
@@ -212,53 +197,116 @@
         gap: 20px;
       }
 
-      .setting-info i {
-        font-size: 1.4rem;
-        color: var(--color-gold);
-        width: 35px;
+      .setting-info > i {
+        font-size: 1.3rem;
+        color: var(--color-gold, #b08d57);
+        width: 30px;
         text-align: center;
+        flex-shrink: 0;
       }
 
       .setting-label {
         font-weight: 700;
         color: #ffffff;
-        font-size: 1rem;
-        margin: 0;
+        font-size: 0.97rem;
+        display: block;
       }
 
       .setting-desc {
-        font-size: 0.8rem;
-        color: var(--text-muted);
+        font-size: 0.78rem;
+        color: rgba(255, 255, 255, 0.55);
         display: block;
         margin-top: 3px;
       }
 
-      /* ======================================================== */
-      /* 4. CONTROLES (INPUTS, SELECTS, SWITCHES)                 */
+      /* ── Select ── */
       select {
-        background: #0a110e;
-        color: var(--color-gold-light);
-        border: 1px solid var(--border-gold);
-        padding: 10px 18px;
+        background: rgba(5, 20, 15, 0.9);
+        color: var(--color-gold-light, #d4bc96);
+        border: 1px solid var(--settings-border);
+        padding: 10px 16px;
         border-radius: 12px;
         font-family: inherit;
+        font-size: 0.88rem;
         font-weight: 600;
         cursor: pointer;
-        transition: var(--transition);
         min-width: 140px;
+        transition: var(--transition-settings);
+        outline: none;
       }
 
+      select:hover {
+        border-color: var(--color-gold, #b08d57);
+      }
       select:focus {
-        border-color: var(--color-gold);
-        box-shadow: 0 0 0 3px var(--color-gold-glow);
+        border-color: var(--color-gold, #b08d57);
+        box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.2);
+      }
+      select option {
+        background: #051410;
+        color: #fff;
       }
 
-      /* Switch Modernisé */
+      /* ── Input range ── */
+      input[type="range"] {
+        width: 100%;
+        -webkit-appearance: none;
+        appearance: none;
+        height: 6px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.12);
+        outline: none;
+        cursor: pointer;
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 20px;
+        height: 20px;
+        background: var(--color-gold, #b08d57);
+        border-radius: 50%;
+        box-shadow: 0 0 8px rgba(176, 141, 87, 0.5);
+        cursor: pointer;
+      }
+
+      input[type="range"]::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        background: var(--color-gold, #b08d57);
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+
+      /* ── Preview taille police ── */
+      .preview-box {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--settings-border);
+        border-radius: 12px;
+        padding: 15px 18px;
+        margin-top: 14px;
+      }
+
+      .preview-label {
+        font-size: 0.72rem;
+        color: var(--color-gold, #b08d57);
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .preview-text {
+        font-size: 16px;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.85);
+        font-style: italic;
+      }
+
+      /* ── Switch toggle ── */
       .switch {
         position: relative;
         display: inline-block;
-        width: 56px;
-        height: 30px;
+        width: 54px;
+        height: 29px;
+        flex-shrink: 0;
       }
 
       .switch input {
@@ -269,224 +317,45 @@
 
       .slider {
         position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        inset: 0;
         background: rgba(255, 255, 255, 0.1);
-        border: 1px solid var(--border-gold);
+        border: 1px solid var(--settings-border);
         border-radius: 30px;
-        transition: var(--transition);
+        cursor: pointer;
+        transition: var(--transition-settings);
       }
 
-      .slider:before {
-        position: absolute;
+      .slider::before {
         content: "";
-        height: 22px;
-        width: 22px;
+        position: absolute;
+        width: 21px;
+        height: 21px;
         left: 3px;
         bottom: 3px;
-        background: #ffffff;
+        background: #fff;
         border-radius: 50%;
-        transition: var(--transition);
+        transition: var(--transition-settings);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
       }
 
-      input:checked + .slider {
+      .switch input:checked + .slider {
         background: linear-gradient(
           135deg,
-          var(--color-gold),
-          var(--color-gold-light)
+          var(--color-gold, #b08d57),
+          var(--color-gold-light, #d4bc96)
         );
+        border-color: transparent;
       }
 
-      input:checked + .slider:before {
-        transform: translateX(26px);
+      .switch input:checked + .slider::before {
+        transform: translateX(25px);
       }
-
-      /* ======================================================== */
-      /* 5. SECTION DHIKR & NOTIFICATIONS (STYLE COCHE SIMPLE)    */
-      .settings-section:last-of-type .section-title {
-        justify-content: center;
-        text-align: center;
-        margin-bottom: 25px;
-        color: var(--color-gold);
-      }
-
-      .notification-options {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        flex-wrap: wrap;
-        padding: 10px 0;
-      }
-
-      .notification-options input[type="checkbox"] {
-        display: none;
-      }
-
-      .check-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-        cursor: pointer;
-        transition: var(--transition);
-        min-width: 80px;
-      }
-
-      .check-box {
-        width: 32px;
-        height: 32px;
-        border: 1px solid var(--border-gold);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(255, 255, 255, 0.02);
-        color: transparent;
-        transition: var(--transition);
-        font-size: 0.8rem;
-      }
-
-      .check-label {
-        font-size: 0.75rem;
-        color: var(--text-muted);
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-
-      .notification-options
-        input[type="checkbox"]:checked
-        + .check-item
-        .check-box {
-        background: var(--color-gold);
-        border-color: var(--color-gold-light);
-        color: var(--emerald-dark);
-        box-shadow: 0 0 15px var(--color-gold-glow);
-      }
-
-      .notification-options
-        input[type="checkbox"]:checked
-        + .check-item
-        .check-label {
-        color: #ffffff;
-      }
-
-      /* Preview texte */
-      .preview-box {
-        background: rgba(255, 255, 255, 0.02);
-        border: 1px solid var(--border-gold);
-        border-radius: 12px;
-        padding: 15px;
-        margin-top: 12px;
-      }
-
-      .preview-label {
-        font-size: 0.75rem;
-        color: var(--color-gold);
-        margin-bottom: 8px;
-        font-weight: 600;
-      }
-
-      .preview-text {
-        font-size: 16px;
-        line-height: 1.5;
-        color: var(--text-primary);
-        font-style: italic;
-      }
-
-      /* Boutons Adhan */
-      .adhan-preview-btn {
-        width: 45px;
-        height: 45px;
-        background: rgba(176, 141, 87, 0.1);
-        border: 1px solid var(--border-gold);
-        border-radius: 12px;
-        color: var(--color-gold-light);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: var(--transition);
-        cursor: pointer;
-        font-size: 0.9rem;
-      }
-
-      .adhan-preview-btn.active,
-      .adhan-preview-btn:hover {
-        background: var(--color-gold);
-        color: var(--emerald-dark);
-        box-shadow: 0 0 15px var(--color-gold-glow);
-      }
-/* BOUTON RÉINITIALISER - PLUS GROS & ALIGNÉ */
-.btn-danger {
-  /* ALIGNÉ VERTICALEMENT avec le texte */
-  align-self: center;
-  justify-self: flex-end;
-  
-  /* PLUS GROS */
-  width: 180px;
-  height: 45px;
-  padding: 12px 24px;
-  font-size: 0.85rem; /* Légèrement plus grand */
-  line-height: 1.4;
-  
-  /* MARGES AUTOMatiques mais à droite */
-  margin: 40px auto 20px;
-  margin-left: auto; /* Pousse à droite */
-  
-  background: transparent;
-  border: 2px solid rgba(255, 68, 68, 0.3);
-  color: rgba(255, 128, 128, 0.8);
-  border-radius: 25px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  cursor: pointer;
-  transition: var(--transition);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-danger:hover {
-  background: rgba(255, 68, 68, 0.15);
-  color: #ff4444;
-  border-color: #ff4444;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(255, 68, 68, 0.3);
-}
-
-/* HTML - Ajustement du setting-row pour l'alignement */
-.setting-row.reset-row {
-  justify-content: space-between;
-  align-items: center;
-}
-
-@media (max-width: 480px) {
-  .btn-danger {
-    width: 90%;
-    max-width: 220px;
-    height: 50px;
-    font-size: 0.9rem;
-    padding: 14px 28px;
-  }
-}
-
-
-      /* ======================================================== */
-      /* ACCESSIBILITÉ - FOCUS VISIBLE                           */
-      .nav-btn:focus-visible,
-      select:focus-visible,
-      button:focus-visible,
-      input:focus-visible,
-      .switch:focus-within {
-        outline: 2px solid var(--color-gold);
+      .switch:focus-within .slider {
+        outline: 2px solid var(--color-gold, #b08d57);
         outline-offset: 2px;
       }
 
-      /* ALIGNEMENT HORIZONTAL ADHAN */
+      /* ── Boutons Adhan ── */
       .adhan-controls {
         display: flex;
         flex-direction: column;
@@ -501,57 +370,103 @@
       }
 
       .adhan-preview-btn {
-        flex-shrink: 0; /* Empêche le rétrécissement */
+        width: 44px;
+        height: 44px;
+        background: rgba(176, 141, 87, 0.08);
+        border: 1px solid var(--settings-border);
+        border-radius: 12px;
+        color: var(--color-gold-light, #d4bc96);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: var(--transition-settings);
+        flex-shrink: 0;
       }
 
-      /* Sur mobile, scroll horizontal si nécessaire */
-      @media (max-width: 480px) {
-        .adhan-group {
-          flex-wrap: nowrap;
-          overflow-x: auto;
-          padding: 8px 0;
-          -webkit-overflow-scrolling: touch;
-        }
-
-        .adhan-preview-btn {
-          width: 42px;
-          height: 42px;
-        }
+      .adhan-preview-btn:hover,
+      .adhan-preview-btn.active {
+        background: var(--color-gold, #b08d57);
+        color: #05140f;
+        box-shadow: 0 0 12px rgba(176, 141, 87, 0.35);
+        border-color: transparent;
       }
 
-      /* ======================================================== */
-      /* RESPONSIVE OPTIMISÉ (MOBILE-FIRST)                       */
+      .adhan-preview-btn:focus-visible {
+        outline: 2px solid var(--color-gold, #b08d57);
+        outline-offset: 2px;
+      }
 
+      /* ── Bouton réinitialiser ── */
+      .btn-danger {
+        background: transparent;
+        border: 2px solid rgba(255, 68, 68, 0.35);
+        color: rgba(255, 128, 128, 0.8);
+        border-radius: 25px;
+        padding: 11px 22px;
+        font-family: inherit;
+        font-size: 0.82rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: var(--transition-settings);
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .btn-danger:hover {
+        background: rgba(255, 68, 68, 0.12);
+        color: #ff5555;
+        border-color: #ff5555;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(255, 68, 68, 0.25);
+      }
+
+      .btn-danger:focus-visible {
+        outline: 2px solid #ff5555;
+        outline-offset: 2px;
+      }
+
+      /* ── Accessibilité globale ── */
+      *:focus-visible {
+        outline: 2px solid var(--color-gold, #b08d57);
+        outline-offset: 2px;
+      }
+
+      /* ── Responsive ── */
       @media (max-width: 768px) {
         .settings-header {
           height: 65px;
           padding: 0 15px;
         }
-
         .header-center h1 {
-          font-size: 0.95rem;
+          font-size: 0.9rem;
         }
       }
 
       @media (max-width: 480px) {
         .settings-container {
-          margin: 15px auto;
+          margin: 12px auto;
           padding: 0 10px;
         }
 
         .setting-row {
           flex-direction: column;
           align-items: flex-start;
-          gap: 15px;
-          padding: 20px;
+          gap: 14px;
+          padding: 18px;
         }
 
         .setting-info {
           width: 100%;
         }
 
-        select,
-        input[type="range"] {
+        select {
           width: 100%;
         }
 
@@ -559,91 +474,67 @@
           align-self: flex-end;
         }
 
-        .adhan-preview-btn {
-          width: 40px;
-          height: 40px;
-        }
-
-        .adhan-group {
-          display: flex;
-          flex-wrap: nowrap;
-          overflow-x: auto;
-          padding: 10px;
-          -webkit-overflow-scrolling: touch;
-          gap: 8px;
-        }
-
-        .adhan-preview-btn {
-          flex-shrink: 0;
-        }
-
-        .btn-danger {
-          width: 80%;
-          padding: 12px;
-        }
-
-        .section-title {
-          font-size: 0.75rem;
-          margin-top: 20px;
-        }
-
-        .preview-box {
-          padding: 20px;
+        .adhan-controls {
+          align-items: flex-start;
           width: 100%;
         }
 
-        .notification-options {
-          gap: 20px;
+        .adhan-group {
+          flex-wrap: nowrap;
+          overflow-x: auto;
+          padding: 4px 0 8px;
+          scrollbar-width: none;
+          -webkit-overflow-scrolling: touch;
         }
 
-        .check-box {
-          width: 38px;
-          height: 38px;
+        .adhan-group::-webkit-scrollbar {
+          display: none;
+        }
+
+        .btn-danger {
+          width: 100%;
+          justify-content: center;
         }
       }
 
-      /* Accessibilité : Réduction des mouvements */
       @media (prefers-reduced-motion: reduce) {
-        * {
+        *,
+        *::before,
+        *::after {
           transition: none !important;
-          animation: none !important;
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
         }
       }
     </style>
   </head>
 
   <body class="settings-page">
-    <!-- ===== HEADER ===== -->
+    <!-- ░░ HEADER ░░ -->
     <header class="settings-header" role="banner">
-      <a
-        href="index.html"
-        class="nav-btn"
-        title="Accueil"
-        aria-label="Retour à l'accueil"
-      >
+      <a href="index.html" class="nav-btn" aria-label="Retour à l'accueil">
         <i class="fas fa-arrow-left" aria-hidden="true"></i>
       </a>
 
       <div class="header-center">
-        <i class="fas fa-cog" aria-hidden="true"></i>
+        <i class="fas fa-cog header-icon" aria-hidden="true"></i>
         <h1>Réglages Généraux</h1>
       </div>
 
       <a
         href="conditions.html"
         class="nav-btn"
-        title="À propos"
         aria-label="À propos de l'application"
       >
         <i class="fas fa-info-circle" aria-hidden="true"></i>
       </a>
     </header>
 
-    <!-- ===== CONTENU PRINCIPAL ===== -->
-    <main class="settings-container" role="main">
-      <!-- 📿 1. EXPÉRIENCE SPIRITUELLE -->
-      <section class="settings-section" aria-labelledby="exp-spirituelle">
-        <h2 id="exp-spirituelle" class="section-title">
+    <!-- ░░ CONTENU PRINCIPAL ░░ -->
+    <main class="settings-container" role="main" id="main-content">
+      <!-- 1. EXPÉRIENCE SPIRITUELLE -->
+      <section class="settings-section" aria-labelledby="sect-spirituel">
+        <h2 id="sect-spirituel" class="section-title">
           <i class="fas fa-star-and-crescent" aria-hidden="true"></i>
           Expérience Spirituelle
         </h2>
@@ -675,11 +566,7 @@
                 <span class="setting-desc">Rappels discrets Tasbih</span>
               </div>
             </div>
-            <label
-              class="switch"
-              for="pref-dhikr"
-              aria-label="Activer les notifications Dhikr"
-            >
+            <label class="switch" aria-label="Activer les notifications Dhikr">
               <input type="checkbox" id="pref-dhikr" checked />
               <span class="slider" aria-hidden="true"></span>
             </label>
@@ -687,11 +574,11 @@
         </div>
       </section>
 
-      <!-- 🎨 2. INTERFACE & CONFORT -->
-      <section class="settings-section" aria-labelledby="interface-confort">
-        <h2 id="interface-confort" class="section-title">
+      <!-- 2. INTERFACE & CONFORT -->
+      <section class="settings-section" aria-labelledby="sect-interface">
+        <h2 id="sect-interface" class="section-title">
           <i class="fas fa-paint-brush" aria-hidden="true"></i>
-          Interface & Confort
+          Interface &amp; Confort
         </h2>
         <div class="settings-card">
           <div class="setting-row">
@@ -714,7 +601,7 @@
           >
             <div class="setting-info" style="margin-bottom: 0.75rem">
               <i class="fas fa-text-height" aria-hidden="true"></i>
-              <span class="setting-label">Taille Texte</span>
+              <span class="setting-label">Taille du texte</span>
             </div>
             <input
               type="range"
@@ -723,66 +610,70 @@
               max="32"
               value="18"
               aria-label="Ajuster la taille du texte"
+              aria-valuemin="14"
+              aria-valuemax="32"
+              aria-valuenow="18"
             />
-            <div class="preview-box">
-              <div class="preview-label">Aperçu Live</div>
-              <div class="preview-text" id="font-preview">
-                "Certes, c'est par l'évocation d'Allah que les cœurs
-                s'apaisent." (13:28)
-              </div>
+            <div
+              class="preview-box"
+              aria-live="polite"
+              aria-label="Aperçu de la taille du texte"
+            >
+              <div class="preview-label">Aperçu</div>
+              <p class="preview-text" id="font-preview">
+                « Certes, c'est par l'évocation d'Allah que les cœurs
+                s'apaisent. » (13:28)
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- 🕌 3. PRIÈRES & ADHAN -->
-      <section class="settings-section" aria-labelledby="prieres-adhan">
-        <h2 id="prieres-adhan" class="section-title">
+      <!-- 3. PRIÈRES & ADHAN -->
+      <section class="settings-section" aria-labelledby="sect-prieres">
+        <h2 id="sect-prieres" class="section-title">
           <i class="fas fa-pray" aria-hidden="true"></i>
-          Prières & Adhan
+          Prières &amp; Adhan
         </h2>
         <div class="settings-card">
-          <!-- Son Adhan - ALIGNÉ HORIZONTALEMENT -->
           <div class="setting-row">
             <div class="setting-info">
               <i class="fas fa-volume-up" aria-hidden="true"></i>
               <div>
                 <span class="setting-label">Son Adhan</span>
-                <span class="setting-desc">Alerte horaire prière</span>
+                <span class="setting-desc">Alerte horaire de prière</span>
               </div>
             </div>
-
-            <!-- ALIGNEMENT HORIZONTAL DES BOUTONS -->
             <div class="adhan-controls">
               <div
                 class="adhan-group"
-                role="radiogroup"
-                aria-label="Sélectionner le son Adhan"
+                role="group"
+                aria-label="Choisir le son de l'Adhan"
               >
                 <button
                   class="adhan-preview-btn"
                   data-sound="silent"
-                  title="🔇 Muet"
-                  aria-label="Son muet"
                   type="button"
+                  aria-label="Son muet"
+                  aria-pressed="false"
                 >
                   <i class="fas fa-volume-mute" aria-hidden="true"></i>
                 </button>
                 <button
                   class="adhan-preview-btn"
                   data-sound="discreet"
-                  title="📱 Discret"
-                  aria-label="Son discret"
                   type="button"
+                  aria-label="Son discret"
+                  aria-pressed="false"
                 >
                   <i class="fas fa-volume-down" aria-hidden="true"></i>
                 </button>
                 <button
                   class="adhan-preview-btn active"
                   data-sound="adhan"
-                  title="🕌 Adhan"
-                  aria-label="Adhan traditionnel"
                   type="button"
+                  aria-label="Adhan traditionnel"
+                  aria-pressed="true"
                 >
                   <i class="fas fa-mosque" aria-hidden="true"></i>
                 </button>
@@ -791,21 +682,20 @@
             </div>
           </div>
 
-          <!-- Ville + Méthode Calcul -->
           <div class="setting-row">
             <div class="setting-info">
               <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
               <div>
-                <span class="setting-label">Horaires Prière</span>
+                <span class="setting-label">Horaires de prière</span>
                 <span class="setting-desc" id="location-desc"
-                  >Lagos, NG - Méthode standard</span
+                  >Lagos, NG – Méthode standard</span
                 >
               </div>
             </div>
             <select
               id="pref-location"
-              aria-label="Sélectionner la localisation pour les horaires de prière"
-              style="min-width: 220px"
+              aria-label="Choisir la localisation pour les horaires"
+              style="min-width: 200px"
             >
               <option value="lagos-ng-muslim">🇳🇬 Lagos (Standard)</option>
               <option value="paris-fr-umm">🇫🇷 Paris (Umm Al-Qura)</option>
@@ -816,178 +706,191 @@
         </div>
       </section>
 
-     <!-- 🔒 4. CONFIDENTIALITÉ -->
-<div class="setting-row reset-row">
-  <div class="setting-info">
-    <i class="fas fa-database" aria-hidden="true"></i>
-    <div>
-      <span class="setting-label">Réinitialiser les Préférences</span>
-      <span class="setting-desc">Supprime tout l'historique local</span>
-    </div>
-  </div>
-  <button
-    id="clear-cache"
-    class="btn-danger"
-    aria-label="Réinitialiser toutes les préférences"
-    type="button"
-  >
-    Réinitialiser
-  </button>
-</div>
-
+      <!-- 4. RÉINITIALISATION (dans sa propre section, DOM correct) -->
+      <section class="settings-section" aria-labelledby="sect-reset">
+        <h2 id="sect-reset" class="section-title">
+          <i class="fas fa-database" aria-hidden="true"></i>
+          Données &amp; Confidentialité
+        </h2>
+        <div class="settings-card">
+          <div class="setting-row">
+            <div class="setting-info">
+              <i class="fas fa-trash-alt" aria-hidden="true"></i>
+              <div>
+                <span class="setting-label">Réinitialiser les préférences</span>
+                <span class="setting-desc"
+                  >Supprime tout l'historique local</span
+                >
+              </div>
+            </div>
+            <button
+              id="clear-cache"
+              class="btn-danger"
+              type="button"
+              aria-label="Réinitialiser toutes les préférences"
+            >
+              <i class="fas fa-rotate-left" aria-hidden="true"></i>
+              Réinitialiser
+            </button>
+          </div>
         </div>
       </section>
     </main>
 
-    <!-- ===== JS FINAL ===== -->
+    <!-- ░░ SCRIPTS ░░ -->
+    <!-- theme-loader.js chargé en premier pour éviter le flash -->
     <script src="assets/js/theme-loader.js" defer></script>
+
     <script defer>
+      "use strict";
+
       document.addEventListener("DOMContentLoaded", () => {
-        /* =============================================== */
-        /* 1. CONFIGURATION AUDIO ADHAN                   */
-        /* =============================================== */
-        const adhanSounds = {
+        /* ── Sons Adhan (base64 court pour "discret", URL externe pour adhan complet) ── */
+        const ADHAN_SOUNDS = {
           silent: null,
-          discreet: `data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVKMjI0wEAA`,
+          discreet:
+            "data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVKMjI0wEAA",
           adhan: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
         };
 
-        /* =============================================== */
-        /* 2. ÉLÉMENTS DOM & CACHE                        */
-        /* =============================================== */
-        const settings =
-          JSON.parse(localStorage.getItem("quranlight_prefs")) || {};
-        const els = {
-          fontRange: document.getElementById("font-range"),
-          fontPreview: document.getElementById("font-preview"),
-          genderSelect: document.getElementById("pref-gender"),
-          themeSelect: document.getElementById("pref-theme"),
-          dhikrToggle: document.getElementById("pref-dhikr"),
-          clearCache: document.getElementById("clear-cache"),
-          adhanSound: document.getElementById("pref-adhan-sound"),
-          adhanBtns: document.querySelectorAll(".adhan-preview-btn"),
-          locationSelect: document.getElementById("pref-location"),
-          locationDesc: document.getElementById("location-desc"),
+        const LOCATION_LABELS = {
+          "lagos-ng-muslim": "Lagos, Nigeria (Muslim World League)",
+          "paris-fr-umm": "Paris, France (Umm Al-Qura)",
+          "dubai-ae-uae": "Dubai, EAU (UAE Revised)",
+          custom: "📍 GPS Actuel (Auto)",
         };
 
-        /* =============================================== */
-        /* 3. FONCTIONS UTILITAIRES                       */
-        /* =============================================== */
-        const saveSetting = (key, value) => {
-          settings[key] = value;
-          localStorage.setItem("quranlight_prefs", JSON.stringify(settings));
+        /* ── Éléments DOM ── */
+        const fontRange = document.getElementById("font-range");
+        const fontPreview = document.getElementById("font-preview");
+        const genderSelect = document.getElementById("pref-gender");
+        const themeSelect = document.getElementById("pref-theme");
+        const dhikrToggle = document.getElementById("pref-dhikr");
+        const clearCacheBtn = document.getElementById("clear-cache");
+        const adhanBtns = document.querySelectorAll(".adhan-preview-btn");
+        const locationSelect = document.getElementById("pref-location");
+        const locationDesc = document.getElementById("location-desc");
 
-          // Événement spécial pour le thème
-          if (key === "theme") {
+        /* ── Chargement des préférences ── */
+        let prefs = {};
+        try {
+          prefs = JSON.parse(localStorage.getItem("quranlight_prefs")) || {};
+        } catch {
+          prefs = {};
+        }
+
+        /* ── Sauvegarde d'une préférence ── */
+        const save = (key, value) => {
+          prefs[key] = value;
+          localStorage.setItem("quranlight_prefs", JSON.stringify(prefs));
+          // Dispatch pour theme-loader.js si présent
+          if (key === "theme")
             document.dispatchEvent(
-              new CustomEvent("themechange", { detail: value })
+              new CustomEvent("themechange", { detail: value }),
             );
+        };
+
+        /* ── Initialisation des champs ── */
+        const init = () => {
+          if (prefs.fontSize) {
+            fontRange.value = prefs.fontSize;
+            fontPreview.style.fontSize = prefs.fontSize + "px";
+            fontRange.setAttribute("aria-valuenow", prefs.fontSize);
+          }
+          if (prefs.gender && genderSelect) genderSelect.value = prefs.gender;
+          if (prefs.theme && themeSelect) themeSelect.value = prefs.theme;
+          if (prefs.dhikr !== undefined) dhikrToggle.checked = prefs.dhikr;
+          if (prefs.adhanSound) {
+            updateAdhanUI(prefs.adhanSound);
+            document.getElementById("pref-adhan-sound").value =
+              prefs.adhanSound;
+          }
+          if (prefs.location && locationSelect) {
+            locationSelect.value = prefs.location;
+            updateLocationDesc(prefs.location);
           }
         };
 
+        /* ── Mise à jour UI Adhan ── */
         const updateAdhanUI = (sound) => {
-          els.adhanBtns.forEach((btn) => btn.classList.remove("active"));
-          document
-            .querySelector(`[data-sound="${sound}"]`)
-            ?.classList.add("active");
+          adhanBtns.forEach((btn) => {
+            const isActive = btn.dataset.sound === sound;
+            btn.classList.toggle("active", isActive);
+            btn.setAttribute("aria-pressed", isActive ? "true" : "false");
+          });
         };
 
-        const updateLocationDesc = (location) => {
-          const locations = {
-            "lagos-ng-muslim": "Lagos, Nigeria (Muslim World League)",
-            "paris-fr-umm": "Paris, France (Umm Al-Qura)",
-            "dubai-ae-uae": "Dubai, EAU (UAE Revised)",
-            custom: "📍 GPS Actuel (Auto)",
-          };
-          els.locationDesc.textContent = locations[location] || "Lagos, NG";
+        const updateLocationDesc = (loc) => {
+          if (locationDesc)
+            locationDesc.textContent = LOCATION_LABELS[loc] || loc;
         };
 
-        /* =============================================== */
-        /* 4. CHARGEMENT DES PARAMÈTRES                   */
-        /* =============================================== */
-        const loadSettings = () => {
-          // Paramètres existants
-          els.fontRange.value = settings.fontSize || 18;
-          els.fontPreview.style.fontSize = els.fontRange.value + "px";
-          els.genderSelect.value = settings.gender || "masculin";
-          els.themeSelect.value = settings.theme || "emerald";
-          els.dhikrToggle.checked = settings.dhikr !== false;
-
-          // Adhan + Location
-          els.adhanSound.value = settings.adhanSound || "adhan";
-          updateAdhanUI(settings.adhanSound || "adhan");
-          els.locationSelect.value = settings.location || "lagos-ng-muslim";
-          updateLocationDesc(settings.location || "lagos-ng-muslim");
+        /* ── Lecture audio Adhan ── */
+        let currentAdhanAudio = null;
+        const playAdhan = (sound) => {
+          if (currentAdhanAudio) {
+            currentAdhanAudio.pause();
+            currentAdhanAudio.currentTime = 0;
+            currentAdhanAudio = null;
+          }
+          if (sound === "silent" || !ADHAN_SOUNDS[sound]) return;
+          try {
+            currentAdhanAudio = new Audio(ADHAN_SOUNDS[sound]);
+            currentAdhanAudio.volume = 0.3;
+            currentAdhanAudio.play().catch(() => {});
+          } catch {
+            /* silently ignore */
+          }
         };
 
-        /* =============================================== */
-        /* 5. ÉVÉNEMENTS INTERACTIFS                      */
-        /* =============================================== */
-
-        // Taille de police
-        els.fontRange.oninput = (e) => {
-          els.fontPreview.style.fontSize = e.target.value + "px";
-          saveSetting("fontSize", +e.target.value);
-        };
-
-        // Paramètres généraux
-        els.genderSelect.onchange = (e) =>
-          saveSetting("gender", e.target.value);
-        els.dhikrToggle.onchange = (e) =>
-          saveSetting("dhikr", e.target.checked);
-        els.themeSelect.onchange = (e) => saveSetting("theme", e.target.value);
-
-        // Preview Adhan (avec gestion d'erreurs)
-        els.adhanBtns.forEach((btn) => {
-          btn.onclick = () => {
-            const sound = btn.dataset.sound;
-
-            // Arrêt audio précédent
-            document.querySelectorAll(".adhan-audio").forEach((audio) => {
-              audio.pause();
-              audio.currentTime = 0;
-            });
-
-            // Lecture preview
-            if (sound !== "silent" && adhanSounds[sound]) {
-              try {
-                const audio = new Audio(adhanSounds[sound]);
-                audio.className = "adhan-audio";
-                audio.volume = 0.3;
-                audio.play().catch(() => {});
-              } catch (e) {}
-            }
-
-            // MAJ UI + Sauvegarde
-            updateAdhanUI(sound);
-            els.adhanSound.value = sound;
-            saveSetting("adhanSound", sound);
-          };
+        /* ── Event Listeners (addEventListener, jamais .on*) ── */
+        fontRange.addEventListener("input", (e) => {
+          const size = e.target.value;
+          fontPreview.style.fontSize = size + "px";
+          fontRange.setAttribute("aria-valuenow", size);
+          save("fontSize", +size);
         });
 
-        // Localisation
-        els.locationSelect.onchange = (e) => {
-          saveSetting("location", e.target.value);
+        genderSelect.addEventListener("change", (e) =>
+          save("gender", e.target.value),
+        );
+        dhikrToggle.addEventListener("change", (e) =>
+          save("dhikr", e.target.checked),
+        );
+        locationSelect.addEventListener("change", (e) => {
+          save("location", e.target.value);
           updateLocationDesc(e.target.value);
-        };
+        });
 
-        // Reset total
-        els.clearCache.onclick = () => {
+        themeSelect.addEventListener("change", (e) => {
+          save("theme", e.target.value);
+          // Appliquer le thème immédiatement si applyTheme est disponible (script.js)
+          if (typeof applyTheme === "function") applyTheme(e.target.value);
+        });
+
+        adhanBtns.forEach((btn) =>
+          btn.addEventListener("click", () => {
+            const sound = btn.dataset.sound;
+            playAdhan(sound);
+            updateAdhanUI(sound);
+            document.getElementById("pref-adhan-sound").value = sound;
+            save("adhanSound", sound);
+          }),
+        );
+
+        clearCacheBtn.addEventListener("click", () => {
           if (
             confirm(
-              "⚠️ Réinitialiser TOUTES vos préférences ?\n\n" +
-                "• Thème • Sons Adhan • Ville • Police • Tout"
+              "⚠️ Réinitialiser TOUTES vos préférences ?\n\nThème • Sons Adhan • Ville • Police • Tout",
             )
           ) {
             localStorage.removeItem("quranlight_prefs");
             location.reload();
           }
-        };
+        });
 
-        /* =============================================== */
-        /* 6. INITIALISATION                              */
-        /* =============================================== */
-        loadSettings();
+        /* ── Init ── */
+        init();
       });
     </script>
   </body>

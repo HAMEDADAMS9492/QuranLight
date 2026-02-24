@@ -1,31 +1,48 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="referrer" content="no-referrer" />
-    <title>Lecture Premium | Al-Quran</title>
+    <meta name="description" content="Lecteur audio Coran – QuranLight" />
+    <title>Lecteur – QuranLight</title>
+
+    <!-- FA 6.4.0 (cohérent avec le reste du projet) -->
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+    <!-- Poppins (cohérent avec le projet, Inter retiré) -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="assets/css/theme-variables.css" />
+
     <style>
-      /* ======================================================== */
-      /* 1. CONFIGURATION DU THÈME & RESET                        */
-      /* ======================================================== */
+      /* ================================================================
+         PLAYER.CSS – Lecteur audio Coran
+         Correctifs :
+         • Inter → Poppins (cohérence projet)
+         • FA 6.0.0 → 6.4.0
+         • Gradient body via variables CSS (partagées avec theme-variables.css)
+         • progress gradient : CSS custom property au lieu de style inline répété
+         • Bouton back : <button> au lieu de <i onclick>
+         • Aria-label sur tous les boutons
+         ================================================================ */
+
       :root {
-        --gold: #b08d57;
-        --emerald-deep: #05140f;
-        --emerald-light: #0d3a27;
+        --player-gold: #b08d57;
+        --player-bg-top: #0d3a27;
+        --player-bg-mid: #05140f;
+        --player-bg-bot: #000000;
         --text-muted: #b3b3b3;
+        --progress-fill: 0%;
       }
 
-      * {
+      *,
+      *::before,
+      *::after {
         box-sizing: border-box;
         -webkit-tap-highlight-color: transparent;
       }
@@ -34,13 +51,13 @@
         margin: 0;
         background: linear-gradient(
           to bottom,
-          #0d3a27 0%,
-          #05140f 40%,
-          #000 100%
+          var(--player-bg-top) 0%,
+          var(--player-bg-mid) 40%,
+          var(--player-bg-bot) 100%
         );
         background-attachment: fixed;
-        color: white;
-        font-family: "Inter", sans-serif;
+        color: #ffffff;
+        font-family: "Poppins", sans-serif;
         height: 100dvh;
         display: flex;
         justify-content: center;
@@ -48,9 +65,7 @@
         overflow: hidden;
       }
 
-      /* ======================================================== */
-      /* 2. CONTAINER PRINCIPAL                                   */
-      /* ======================================================== */
+      /* ── Container ── */
       .player-container {
         width: 100%;
         max-width: 420px;
@@ -61,10 +76,8 @@
         justify-content: space-between;
       }
 
-      /* ======================================================== */
-      /* 3. HEADER                                                */
-      /* ======================================================== */
-      .header {
+      /* ── Header ── */
+      .player-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -72,24 +85,44 @@
         flex-shrink: 0;
       }
 
-      .header i {
-        font-size: 1.2rem;
-        color: #ccc;
-        cursor: pointer;
-        padding: 5px;
-      }
-
-      .header span {
+      .player-header .header-title {
         font-size: 0.7rem;
         font-weight: 700;
         letter-spacing: 1.5px;
         text-transform: uppercase;
-        color: #eee;
+        color: #eeeeee;
       }
 
-      /* ======================================================== */
-      /* 4. ALBUM ART (AGRANDI VERTICALEMENT)                     */
-      /* ======================================================== */
+      /* Bouton back (était <i onclick>) */
+      .btn-icon {
+        background: none;
+        border: none;
+        color: #cccccc;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          color 0.2s ease,
+          transform 0.2s ease;
+        line-height: 1;
+      }
+
+      .btn-icon:hover {
+        color: #fff;
+      }
+      .btn-icon:active {
+        transform: scale(0.9);
+      }
+      .btn-icon:focus-visible {
+        outline: 2px solid var(--player-gold);
+        outline-offset: 2px;
+      }
+
+      /* ── Pochette ── */
       .art-wrapper {
         flex-grow: 1;
         display: flex;
@@ -102,25 +135,20 @@
       .album-art {
         width: 100%;
         max-width: clamp(250px, 90vw, 380px);
-
         height: auto;
         max-height: 80dvh;
-        aspect-ratio: auto;
-
         border-radius: 20px;
         box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9);
         object-fit: cover;
         animation: scaleIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
       }
 
-      /* ======================================================== */
-      /* 5. INFO ZONE                                             */
-      /* ======================================================== */
+      /* ── Infos piste ── */
       .info-container {
-        padding: 12px 0;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        padding: 12px 0;
         flex-shrink: 0;
       }
 
@@ -133,7 +161,7 @@
       .info-text h1 {
         font-size: clamp(1.3rem, 5.5vw, 1.7rem);
         margin: 0;
-        font-weight: 800;
+        font-weight: 900;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -142,7 +170,7 @@
       .info-text p {
         margin: 3px 0 0;
         color: var(--text-muted);
-        font-size: clamp(0.95rem, 4vw, 1.1rem);
+        font-size: clamp(0.9rem, 3.5vw, 1.05rem);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -152,22 +180,40 @@
         font-size: 1.6rem;
         color: #1ed760;
         cursor: pointer;
+        padding: 4px;
+        border: none;
+        background: none;
+        border-radius: 8px;
+        transition: transform 0.2s ease;
+        flex-shrink: 0;
       }
 
-      /* ======================================================== */
-      /* 6. CONTROLS                                              */
-      /* ======================================================== */
+      .like-btn:hover {
+        transform: scale(1.15);
+      }
+      .like-btn:focus-visible {
+        outline: 2px solid #1ed760;
+        outline-offset: 2px;
+      }
+
+      /* ── Contrôles ── */
       .controls-wrapper {
         flex-shrink: 0;
         width: 100%;
       }
 
+      /* Progress bar : utilise une CSS custom property pour éviter le style inline répété */
       #progress-range {
         width: 100%;
         -webkit-appearance: none;
-        background: rgba(255, 255, 255, 0.15);
+        appearance: none;
         height: 5px;
         border-radius: 10px;
+        background: linear-gradient(
+          to right,
+          #fff var(--progress-fill),
+          rgba(255, 255, 255, 0.18) var(--progress-fill)
+        );
         outline: none;
         cursor: pointer;
       }
@@ -176,14 +222,25 @@
         -webkit-appearance: none;
         width: 14px;
         height: 14px;
-        background: white;
+        background: #fff;
         border-radius: 50%;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+        cursor: pointer;
+      }
+
+      #progress-range::-moz-range-thumb {
+        width: 14px;
+        height: 14px;
+        background: #fff;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
       }
 
       .time {
         display: flex;
         justify-content: space-between;
-        font-size: 0.75rem;
+        font-size: 0.72rem;
         color: var(--text-muted);
         margin-top: 8px;
         font-weight: 500;
@@ -197,52 +254,83 @@
       }
 
       .secondary-btn {
-        font-size: 1.3rem;
+        background: none;
+        border: none;
         color: var(--text-muted);
+        font-size: 1.3rem;
         padding: 10px;
+        cursor: pointer;
+        border-radius: 8px;
+        transition:
+          color 0.2s,
+          transform 0.2s;
+      }
+
+      .secondary-btn:hover {
+        color: #fff;
+      }
+      .secondary-btn:focus-visible {
+        outline: 2px solid var(--player-gold);
+        outline-offset: 2px;
       }
 
       .step-btn {
-        font-size: 2.2rem;
-        color: white;
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 2.1rem;
         padding: 10px;
+        cursor: pointer;
+        border-radius: 10px;
+        transition: transform 0.2s;
       }
 
-      .play-circle {
+      .step-btn:active {
+        transform: scale(0.9);
+      }
+      .step-btn:focus-visible {
+        outline: 2px solid var(--player-gold);
+        outline-offset: 2px;
+      }
+
+      .play-btn {
         width: clamp(65px, 18vw, 80px);
         height: clamp(65px, 18vw, 80px);
-        background: white;
+        background: #ffffff;
+        border: none;
         border-radius: 50%;
         display: flex;
         justify-content: center;
         align-items: center;
-        color: black;
+        color: #000;
         font-size: 1.7rem;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        transition: transform 0.2s;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+        cursor: pointer;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
       }
 
-      .play-circle:active {
+      .play-btn:active {
         transform: scale(0.92);
       }
+      .play-btn:focus-visible {
+        outline: 3px solid var(--player-gold);
+        outline-offset: 3px;
+      }
 
-      /* ======================================================== */
-      /* 7. COPYRIGHT                                             */
-      /* ======================================================== */
+      /* ── Copyright ── */
       .copyright-zone {
         text-align: center;
         padding-bottom: clamp(8px, 2dvh, 20px);
-        font-size: 0.6rem;
-        color: rgba(255, 255, 255, 0.25);
+        font-size: 0.58rem;
+        color: rgba(255, 255, 255, 0.22);
         letter-spacing: 2px;
         text-transform: uppercase;
         flex-shrink: 0;
       }
-      /* ======================================================== */
-      /* 8. ANIMATIONS & RESPONSIVE COMPLET (OPTIMISÉ)           */
-      /* ======================================================== */
 
-      /* Animations fluides améliorées */
+      /* ── Animations ── */
       @keyframes scaleIn {
         from {
           opacity: 0;
@@ -254,151 +342,79 @@
         }
       }
 
-      @keyframes float {
-        0%,
-        100% {
-          transform: translateY(0px);
-        }
-        50% {
-          transform: translateY(-6px);
-        }
-      }
-
-      /* ======================================================== */
-      /* RESPONSIVE COMPREHENSIF - TOUS LES ÉCRANS               */
-      /* ======================================================== */
-
-      /* Tablettes portrait / Petits écrans (768px et moins) */
-      @media (max-width: 768px) {
-        .player-container {
-          padding: 12px;
-          margin: 8px;
-          border-radius: 20px;
-        }
-
-        .header {
-          padding: 12px 0;
-          gap: 8px;
-        }
-
-        .header span {
-          font-size: 0.7rem;
-        }
-
-        .album-art {
-          max-width: 85vw;
-          border-radius: 24px;
-        }
-      }
-
-      /* Écrans petits (480px et moins) - Galaxy Fold, iPhone SE */
+      /* ── Responsive ── */
       @media (max-width: 480px) {
         .player-container {
-          padding: 10px;
-          margin: 4px;
+          padding: 0 16px;
         }
-
-        .header i {
-          font-size: 1.1rem;
-          padding: 6px;
-        }
-
         .info-text h1 {
           font-size: 1.3rem;
         }
-
         .info-text p {
           font-size: 0.85rem;
         }
       }
 
-      /* Hauteurs réduites (iPhone 12 mini, petits écrans) */
       @media (max-height: 700px) {
         .album-art {
-          max-height: 28dvh;
+          max-height: 30dvh;
         }
-
         .main-btns {
           padding: 12px 0 18px;
-          gap: 12px;
         }
-
-        .info-container {
-          padding: 12px 0;
-        }
-
         .art-wrapper {
-          padding: 8px 0;
+          padding: 6px 0;
         }
       }
 
-      /* Très petits écrans (iPhone SE 2016, petits Android) */
       @media (max-height: 650px) and (max-width: 375px) {
         .album-art {
           max-height: 25dvh;
-          max-width: 80vw;
+          max-width: 78vw;
         }
-
-        .play-circle {
+        .play-btn {
           width: 60px !important;
           height: 60px !important;
+          font-size: 1.5rem;
         }
-
         .main-btns {
-          gap: 8px;
           padding: 10px 0 16px;
-        }
-
-        .secondary-btn,
-        .step-btn {
-          padding: 8px;
-        }
-
-        .progress-container {
-          margin-bottom: 12px;
+          gap: 4px;
         }
       }
 
-      /* Safe Area iPhone (encoche, gesture bar) */
       @supports (padding: max(0px)) {
         .player-container {
           padding-bottom: max(20px, env(safe-area-inset-bottom));
         }
       }
 
-      /* Landscape forcé (tous petits écrans) */
       @media (max-height: 500px) and (orientation: landscape) {
         .player-container {
           flex-direction: row;
           padding: 12px;
-          gap: 12px;
+          gap: 16px;
         }
-
         .art-wrapper {
           flex: 1;
           max-height: 100%;
         }
-
         .album-art {
           max-height: 90%;
-          border-radius: 16px;
+          border-radius: 14px;
         }
-
-        .controls-wrapper,
-        .info-container,
-        .header {
-          flex-shrink: 0;
-          padding: 8px 0;
-        }
-
         .main-btns {
           flex-direction: column;
-          gap: 8px;
+          gap: 6px;
           padding: 8px 0;
+        }
+        .player-header,
+        .info-container,
+        .controls-wrapper {
+          flex-shrink: 0;
         }
       }
 
-      /* Accessibilité - Mouvement réduit */
       @media (prefers-reduced-motion: reduce) {
         *,
         *::before,
@@ -407,67 +423,58 @@
           animation-iteration-count: 1 !important;
           transition-duration: 0.01ms !important;
         }
-
         .album-art {
           animation: none;
         }
       }
 
-      /* High DPI écrans (Retina, 4K) */
       @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
         .album-art {
           image-rendering: -webkit-optimize-contrast;
-          image-rendering: crisp-edges;
-        }
-
-        #progress-range::-webkit-slider-thumb {
-          box-shadow: 0 4px 20px rgba(176, 141, 87, 0.6);
-        }
-      }
-
-      /* Mode focus (grosses tailles pour malvoyants) */
-      @media (prefers-contrast: high) {
-        .play-circle {
-          border: 3px solid var(--gold);
-        }
-
-        .header i,
-        .secondary-btn,
-        .step-btn {
-          border: 2px solid var(--text-muted);
-          padding: 10px;
-        }
-      }
-
-      /* Écrans ultra-larges (tablettes landscape > 768px) */
-      @media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
-        .player-container {
-          max-width: 600px;
-          border-radius: 32px;
         }
       }
     </style>
   </head>
+
   <body>
-    <div class="player-container">
-      <header class="header">
-        <i class="fas fa-chevron-down" onclick="handleBack()"></i>
-        <span>Bibliotheque de lecture</span>
-        <i class="fas fa-ellipsis-h"></i>
+    <div class="player-container" role="main">
+      <!-- Header -->
+      <header class="player-header">
+        <!-- Bouton retour : <button> au lieu de <i onclick> -->
+        <button
+          class="btn-icon"
+          id="back-btn"
+          aria-label="Retour à la liste des sourates"
+        >
+          <i class="fas fa-chevron-down" aria-hidden="true"></i>
+        </button>
+        <span class="header-title">Bibliothèque de lecture</span>
+        <button class="btn-icon" aria-label="Options" aria-haspopup="true">
+          <i class="fas fa-ellipsis-h" aria-hidden="true"></i>
+        </button>
       </header>
 
+      <!-- Pochette -->
       <div class="art-wrapper">
-        <img src="" id="art" class="album-art" alt="Récitateur" />
+        <img id="art" class="album-art" src="" alt="Pochette du récitateur" />
       </div>
 
+      <!-- Infos piste -->
       <div class="info-container">
         <div class="info-text">
-          <h1 id="surah-title">Chargement...</h1>
+          <h1 id="surah-title">Chargement…</h1>
           <p id="reciter-name">Récitateur</p>
         </div>
-        <i class="fas fa-check-circle like-btn"></i>
+        <button
+          class="like-btn"
+          aria-label="Ajouter aux favoris"
+          aria-pressed="false"
+        >
+          <i class="fas fa-check-circle" aria-hidden="true"></i>
+        </button>
       </div>
 
+      <!-- Contrôles -->
       <div class="controls-wrapper">
         <div class="progress-container">
           <input
@@ -477,40 +484,58 @@
             min="0"
             max="100"
             step="0.1"
+            aria-label="Progression de la lecture"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="0"
           />
-          <div class="time">
-            <span id="current">0:00</span>
-            <span id="duration">0:00</span>
+          <div class="time" aria-hidden="true">
+            <span id="current-time">0:00</span>
+            <span id="duration-time">0:00</span>
           </div>
         </div>
 
-        <div class="main-btns">
-          <i class="fas fa-random secondary-btn"></i>
-          <i class="fas fa-step-backward step-btn" id="prev-btn"></i>
-          <div class="play-circle" id="play-btn">
-            <i class="fas fa-play" id="play-icon"></i>
-          </div>
-          <i class="fas fa-step-forward step-btn" id="next-btn"></i>
-          <i class="fas fa-redo-alt secondary-btn"></i>
+        <div class="main-btns" role="group" aria-label="Contrôles de lecture">
+          <button
+            class="secondary-btn"
+            aria-label="Lecture aléatoire"
+            aria-pressed="false"
+          >
+            <i class="fas fa-random" aria-hidden="true"></i>
+          </button>
+          <button
+            class="step-btn"
+            id="prev-btn"
+            aria-label="Sourate précédente"
+          >
+            <i class="fas fa-step-backward" aria-hidden="true"></i>
+          </button>
+          <button class="play-btn" id="play-btn" aria-label="Lecture / Pause">
+            <i class="fas fa-play" id="play-icon" aria-hidden="true"></i>
+          </button>
+          <button class="step-btn" id="next-btn" aria-label="Sourate suivante">
+            <i class="fas fa-step-forward" aria-hidden="true"></i>
+          </button>
+          <button
+            class="secondary-btn"
+            aria-label="Répéter"
+            aria-pressed="false"
+          >
+            <i class="fas fa-redo-alt" aria-hidden="true"></i>
+          </button>
         </div>
       </div>
 
-      <div class="copyright-zone">&copy; QuranLight</div>
+      <div class="copyright-zone" aria-hidden="true">© QuranLight</div>
     </div>
 
-    <audio id="main-audio"></audio>
+    <audio id="main-audio" aria-hidden="true"></audio>
 
     <script>
-      const audio = document.getElementById("main-audio");
-      const playBtn = document.getElementById("play-btn");
-      const playIcon = document.getElementById("play-icon");
-      const progress = document.getElementById("progress-range");
-      const currentTimeEl = document.getElementById("current");
-      const durationTimeEl = document.getElementById("duration");
-      const nextBtn = document.getElementById("next-btn");
-      const prevBtn = document.getElementById("prev-btn");
+      "use strict";
 
-      const surahNames = [
+      /* ── Noms des sourates (1 → 114) ── */
+      const SURAH_NAMES = [
         "Al-Fatihah",
         "Al-Baqarah",
         "Al-Imran",
@@ -627,127 +652,157 @@
         "An-Nas",
       ];
 
-      window.onload = () => {
-        loadTrack();
-      };
+      /* ── URLs audio (cohérentes avec script.js) ── */
+      function buildAudioUrl(reciterId, num) {
+        const padded = String(num).padStart(3, "0");
+        const MAP = {
+          "ar.abdulbasitmurattal": `https://cdn.islamic.network/quran/audio-surah/128/ar.abdulbasitmurattal/${num}.mp3`,
+          "ar.sudais": `https://server11.mp3quran.net/sds/${padded}.mp3`,
+          "ar.alafasy": `https://server8.mp3quran.net/afs/${padded}.mp3`,
+          "ar.hanirifai": `https://server8.mp3quran.net/hani/${padded}.mp3`,
+          "ar.shatri": `https://server11.mp3quran.net/shatri/${padded}.mp3`,
+          "ar.basfar": `https://server6.mp3quran.net/bsfr/${padded}.mp3`,
+        };
+        return (
+          MAP[reciterId] ??
+          `https://cdn.islamic.network/quran/audio-surah/128/${reciterId}/${num}.mp3`
+        );
+      }
 
+      /* ── Éléments DOM ── */
+      const audio = document.getElementById("main-audio");
+      const playBtn = document.getElementById("play-btn");
+      const playIcon = document.getElementById("play-icon");
+      const progressEl = document.getElementById("progress-range");
+      const currentEl = document.getElementById("current-time");
+      const durationEl = document.getElementById("duration-time");
+      const nextBtn = document.getElementById("next-btn");
+      const prevBtn = document.getElementById("prev-btn");
+      const backBtn = document.getElementById("back-btn");
+      const artEl = document.getElementById("art");
+      const surahTitle = document.getElementById("surah-title");
+      const reciterName = document.getElementById("reciter-name");
+
+      /* ── Utilitaires ── */
+      const pad2 = (n) => String(Math.floor(n)).padStart(2, "0");
+
+      function formatTime(seconds) {
+        if (!isFinite(seconds) || seconds < 0) return "0:00";
+        const m = Math.floor(seconds / 60);
+        const s = Math.floor(seconds % 60);
+        return `${m}:${pad2(s)}`;
+      }
+
+      /* Factoriser play() avec gestion d'erreur uniforme */
+      async function tryPlay() {
+        try {
+          await audio.play();
+        } catch {
+          // Autoplay bloqué ou source manquante → silencieux
+        }
+        syncPlayUI();
+      }
+
+      function syncPlayUI() {
+        const playing = !audio.paused;
+        playIcon.className = playing ? "fas fa-pause" : "fas fa-play";
+        playIcon.style.transform = playing ? "none" : "translateX(2px)";
+        playBtn.setAttribute(
+          "aria-label",
+          playing ? "Mettre en pause" : "Lire",
+        );
+      }
+
+      /* ── Chargement d'une piste ── */
       function loadTrack() {
-        const url = localStorage.getItem("player_url");
+        const url = localStorage.getItem("player_url") || "";
         const artist = localStorage.getItem("player_artist") || "Récitateur";
-        const img = localStorage.getItem("player_img");
+        const img = localStorage.getItem("player_img") || "";
         const num = parseInt(
           localStorage.getItem("currentSurahNum") || "1",
-          10
+          10,
         );
+        const safeNum = num >= 1 && num <= 114 ? num : 1;
+
+        surahTitle.textContent = `${safeNum}. ${SURAH_NAMES[safeNum - 1] || "Sourate"}`;
+        reciterName.textContent = artist;
+        artEl.src = img || "assets/image/Logo.jpg";
+        artEl.alt = `Pochette – ${artist}`;
 
         if (url) {
-          const safeIndex = num >= 1 && num <= 114 ? num - 1 : 0;
-          document.getElementById("surah-title").innerText = `${num}. ${
-            surahNames[safeIndex] || "Sourate"
-          }`;
-          document.getElementById("reciter-name").innerText = artist;
-          document.getElementById("art").src =
-            img || "assets/image/default-quran.jpg";
           audio.src = url;
-          audio
-            .play()
-            .catch(() => console.log("Lecture auto bloquée ou erreur source"));
-          updateUI();
+          tryPlay();
         }
       }
+
+      /* ── Navigation Prev / Next ── */
+      function changeSurah(dir) {
+        const reciterId = localStorage.getItem("currentReciterId") || "";
+        const current = parseInt(
+          localStorage.getItem("currentSurahNum") || "1",
+          10,
+        );
+        const newNum = current + dir;
+
+        if (newNum < 1 || newNum > 114) return; // Limites 1–114
+
+        const newUrl = buildAudioUrl(reciterId, newNum);
+        localStorage.setItem("player_url", newUrl);
+        localStorage.setItem("currentSurahNum", newNum);
+        loadTrack();
+      }
+
+      /* ── Bouton Retour ── */
+      function handleBack() {
+        document.body.style.opacity = "0";
+        document.body.style.transition = "opacity .3s ease";
+        setTimeout(() => window.history.back(), 300);
+      }
+
+      /* ── Événements ── */
+      backBtn.addEventListener("click", handleBack);
 
       playBtn.addEventListener("click", () => {
         if (audio.paused) {
-          audio
-            .play()
-            .catch(() =>
-              console.log("Erreur de lecture (play) ou blocage navigateur")
-            );
+          tryPlay();
         } else {
           audio.pause();
+          syncPlayUI();
         }
-        updateUI();
       });
 
-      function updateUI() {
-        if (audio.paused) {
-          playIcon.className = "fas fa-play";
-          playIcon.style.transform = "translateX(2px)";
-        } else {
-          playIcon.className = "fas fa-pause";
-          playIcon.style.transform = "translateX(0px)";
-        }
-      }
+      nextBtn.addEventListener("click", () => changeSurah(1));
+      prevBtn.addEventListener("click", () => changeSurah(-1));
 
+      progressEl.addEventListener("input", () => {
+        if (isFinite(audio.duration) && audio.duration > 0) {
+          audio.currentTime = (progressEl.value / 100) * audio.duration;
+        }
+      });
+
+      /* timeupdate : mise à jour via CSS custom property (pas de style inline répété) */
       audio.addEventListener("timeupdate", () => {
-        if (!isNaN(audio.duration) && audio.duration > 0) {
-          const percent = (audio.currentTime / audio.duration) * 100;
-          progress.value = percent;
-          progress.style.background = `linear-gradient(to right, white ${percent}%, rgba(255,255,255,0.2) ${percent}%)`;
-          currentTimeEl.innerText = formatTime(audio.currentTime);
-          durationTimeEl.innerText = formatTime(audio.duration);
-        }
+        if (!isFinite(audio.duration) || audio.duration <= 0) return;
+        const pct = (audio.currentTime / audio.duration) * 100;
+        progressEl.value = pct;
+        progressEl.style.setProperty("--progress-fill", pct + "%");
+        progressEl.setAttribute("aria-valuenow", Math.round(pct));
+        currentEl.textContent = formatTime(audio.currentTime);
+        durationEl.textContent = formatTime(audio.duration);
       });
 
-      progress.addEventListener("input", () => {
-        if (!isNaN(audio.duration) && audio.duration > 0) {
-          const seekTime = (progress.value / 100) * audio.duration;
-          audio.currentTime = seekTime;
-        }
+      audio.addEventListener("ended", () => changeSurah(1));
+
+      audio.addEventListener("error", () => {
+        surahTitle.textContent = "Erreur de chargement";
+        syncPlayUI();
       });
 
-      function formatTime(seconds) {
-        const min = Math.floor(seconds / 60) || 0;
-        const sec = Math.floor(seconds % 60) || 0;
-        return `${min}:${sec < 10 ? "0" + sec : sec}`;
-      }
-
-      nextBtn.onclick = () => changeSurah(1);
-      prevBtn.onclick = () => changeSurah(-1);
-
-      function changeSurah(dir) {
-        let currentNum = parseInt(
-          localStorage.getItem("currentSurahNum") || "1",
-          10
-        );
-        let reciterId = localStorage.getItem("currentReciterId");
-        let newNum = currentNum + dir;
-
-        // Limites de l'index des sourates (1 à 114)
-        if (newNum >= 1 && newNum <= 114) {
-          const padded = newNum.toString().padStart(3, "0");
-          let newUrl = "";
-
-          // LOGIQUE DE NAVIGATION DES SERVEURS (cohérente avec tes autres pages)
-          if (reciterId === "ar.abdulbasitmurattal") {
-            newUrl = `https://server7.mp3quran.net/basit/murattal/${padded}.mp3`;
-          } else if (reciterId === "ar.sudais") {
-            newUrl = `https://server11.mp3quran.net/sds/${padded}.mp3`;
-          } else if (reciterId === "ar.alafasy") {
-            newUrl = `https://server8.mp3quran.net/afs/${padded}.mp3`;
-          } else if (reciterId === "ar.hanirifai") {
-            newUrl = `https://server8.mp3quran.net/hani/${padded}.mp3`;
-          } else if (reciterId === "ar.shatri") {
-            newUrl = `https://server11.mp3quran.net/shatri/${padded}.mp3`;
-          } else if (reciterId === "ar.basfar") {
-            newUrl = `https://server6.mp3quran.net/bsfr/${padded}.mp3`;
-          } else {
-            newUrl = `https://cdn.islamic.network/quran/audio-surah/128/${reciterId}/${newNum}.mp3`;
-          }
-
-          localStorage.setItem("player_url", newUrl);
-          localStorage.setItem("currentSurahNum", newNum);
-          loadTrack();
-        }
-      }
-
-      audio.onended = () => changeSurah(1);
-
-      function handleBack() {
-        document.body.style.opacity = "0";
-        setTimeout(() => window.history.back(), 300);
-      }
+      /* ── Initialisation au chargement ── */
+      window.addEventListener("load", loadTrack);
     </script>
-    <script src="assets/js/theme-loader.js"></script>
+
+    <!-- theme-loader en dernier avec defer -->
+    <script src="assets/js/theme-loader.js" defer></script>
   </body>
 </html>
