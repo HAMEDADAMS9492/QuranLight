@@ -15,6 +15,8 @@
       content="QuranLight helps Muslims follow prayer times, Ramadan calendar and Islamic reminders worldwide."
     />
 
+    <link rel="manifest" href="/manifest.json" />
+
     <meta property="og:title" content="QuranLight 🌙" />
     <meta
       property="og:description"
@@ -26,14 +28,8 @@
     />
     <meta property="og:url" content="https://quranlight.vercel.app/" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="QuranLight" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="QuranLight 🌙" />
-    <meta
-      name="twitter:description"
-      content="Prayer times & Ramadan Companion"
-    />
     <meta
       name="twitter:image"
       content="https://quranlight.vercel.app/Logo.jpg"
@@ -49,11 +45,6 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-    <link rel="stylesheet" href="assets/css/theme-variables.css" />
-    <link rel="stylesheet" href="assets/css/style.css" />
-    <link rel="stylesheet" href="assets/css/salat.css" />
-
     <link
       href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
       rel="stylesheet"
@@ -62,6 +53,10 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+
+    <link rel="stylesheet" href="assets/css/theme-variables.css" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="assets/css/salat.css" />
   </head>
   <body>
     <!-- ░░ SPLASH SCREEN ░░ -->
@@ -492,10 +487,8 @@
       </div>
     </footer>
 
-    <!-- Audio player (invisible) -->
     <audio id="mainAudio" aria-hidden="true" style="display: none"></audio>
 
-    <!-- Chatbot iframe -->
     <iframe
       src="chatbot.html"
       allowtransparency="true"
@@ -504,14 +497,16 @@
       tabindex="-1"
     ></iframe>
 
-    <!-- ░░ SCRIPTS ░░ -->
     <script src="assets/js/salat_logic.js" defer></script>
     <script src="assets/js/script.js" defer></script>
 
     <script>
       if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.getRegistrations().then((regs) => {
-          regs.forEach((r) => r.unregister());
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/sw.js")
+            .then((reg) => console.log("PWA Ready: QuranLight est actif !"))
+            .catch((err) => console.log("Erreur PWA:", err));
         });
       }
     </script>

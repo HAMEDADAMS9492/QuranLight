@@ -1,0 +1,22 @@
+{
+  "short_name": "QuranLight",
+  "name": "QuranLight – Prayer & Ramadan Companion",
+  "description": "Prayer times, Ramadan calendar and Islamic reminders.",
+  "icons": [
+    {
+      "src": "Logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "Logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#0f172a",
+  "background_color": "#0f172a",
+  "orientation": "portrait"
+}
