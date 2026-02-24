@@ -16,7 +16,7 @@
   ],
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#064e3b",
-  "background_color": "#064e3b",
+  "theme_color": "#0a2d20",
+  "background_color": "#0a2d20",
   "orientation": "portrait"
 }
